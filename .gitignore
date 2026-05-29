@@ -1,0 +1,36 @@
+src/wp-admin/
+src/wp-includes/
+src/wordpress-*/
+src/*.html
+src/*.txt
+src/*.php
+
+
+# Ignore sensitive files
+src/wp-config.php
+src/wp-config-sample.php
+src/wp-config-docker.php
+
+# Ignore Plugins dowload
+src/wp-content/plugins/*
+
+# Ignore root theme and defaults theme
+src/wp-content/themes/*
+!src/wp-content/themes/flatsome-child/
+
+# Ignore file uploads of user and cache folder 
+src/wp-content/uploads/
+src/wp-content/upgrade/
+src/wp-content/cache/
+src/wp-content/fonts/
+src/wp-content/index.php
+
+# Ignore Junk file
+.DS_Store
+Thumbs.db
+.vscode/
+*.sql
+*.tar
+*.gz
+*.phar
+plan.md
