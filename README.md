@@ -12,38 +12,17 @@
 
 ```bash
 git clone https://github.com/EurusDevSec/wp-ecommerce.git
+cd wp-ecommerce
 ```
 
-## 2. Staging/Production Hosting
-
-| Name | URL | Credentials |
-| --- | --- | --- |
-| Staging | https://ecommerce-staging.eurustudio.com/ | - |
-| Production | https://ecommerce-production.eurustudio.com/ | - |
-
-
-## 3. add wordpress-7.0 folder to src
-
-
-## 4. Docker Setup
-
+## 2. run setup.sh
 ```bash
-cd wp-ecommerce
+./setup.sh
+```
 
-# Start Docker containers
-docker-compose up -d
 
-# Install WooCommerce
-docker compose run --rm cli wp plugin install woocommerce --activate
 
-# Activate Flatsome Child Theme
-docker compose run --rm cli wp theme activate flatsome-child
 
-# View logs
-docker-compose logs -f wordpress
-
-# Access phpMyAdmin (if enabled)
-docker-compose up -d phpmyadmin
 
 # Access WordPress admin
 http://localhost:8000/wp-admin
@@ -53,22 +32,6 @@ http://localhost:8000
 
 # Access database client
 http://localhost:8080
-
-# Access wp-cli
-docker-compose run --rm cli wp ...
-
-# Stop Docker containers
-docker-compose down
-
-# Stop Docker containers and remove volumes
-docker-compose down -v
-
-# View logs
-docker-compose logs -f wordpress
-
-# View logs for specific service
-docker-compose logs -f wordpress
-```
 
 
 
