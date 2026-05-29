@@ -33,7 +33,18 @@ echo "⚡ Tối ưu hóa cấu hình WooCommerce (Bỏ qua Setup Wizard)..."
 docker compose run --rm cli wp option update woocommerce_onboarding_profile '{"skip_tracker":true,"completed":true}' --allow-root
 docker compose run --rm cli wp option update woocommerce_onboarding_opt_in 'no' --allow-root
 
-# 5. Tự động giải nén Flatsome parent theme từ file zip nếu chưa tồn tại
+# 5. Tự động Import dữ liệu mẫu của WooCommerce (Mock Products)
+if ! docker compose run --rm cli wp post list --post_type=product --format=count --allow-root | grep -q '[1-9]'; then
+    echo "📦 Đang import dữ liệu sản phẩm mẫu của WooCommerce..."
+    docker compose run --rm cli wp plugin install wordpress-importer --activate --allow-root
+    docker compose run --rm cli wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip --allow-root
+    docker compose run --rm cli wp plugin deactivate wordpress-importer --allow-root
+    echo "✅ Import sản phẩm mẫu thành công!"
+else
+    echo "ℹ️ Đã có sẵn sản phẩm trong cửa hàng, bỏ qua import mẫu."
+fi
+
+# 6. Tự động giải nén Flatsome parent theme từ file zip nếu chưa tồn tại
 if [ ! -d "src/wp-content/themes/flatsome" ]; then
     if [ -f "flatsome.zip" ]; then
         echo "📦 Đang giải nén Flatsome parent theme..."
@@ -45,7 +56,7 @@ if [ ! -d "src/wp-content/themes/flatsome" ]; then
     fi
 fi
 
-# 6. Kích hoạt Theme Flatsome Child
+# 7. Kích hoạt Theme Flatsome Child
 if [ -d "src/wp-content/themes/flatsome" ]; then
     echo "🎨 Đang kích hoạt Flatsome Child theme..."
     docker compose run --rm cli wp theme activate flatsome-child --allow-root
