@@ -64,6 +64,17 @@ else
     echo "❌ LỖI: Không thể kích hoạt Flatsome Child do thiếu Flatsome parent theme."
 fi
 
+# 8. Tự động cấu hình Permalinks dạng Post Name (Tránh lỗi 404 trang con)
+echo "🔗 Cấu hình đường dẫn tĩnh Permalinks (Post name)..."
+docker compose run --rm cli wp rewrite structure '/%postname%/' --hard --allow-root
+docker compose run --rm cli wp rewrite rules flush --allow-root
+echo "✅ Cấu hình đường dẫn tĩnh thành công!"
+
+# 9. Tự động cấu hình Trang chủ (Front Page) mặc định là trang Cửa hàng (Shop)
+echo "🏠 Cấu hình Trang chủ mặc định hiển thị trang Cửa hàng (Shop)..."
+docker compose run --rm cli wp eval "update_option('show_on_front', 'page'); \$shop = get_page_by_path('shop'); if (\$shop) { update_option('page_on_front', \$shop->ID); }" --allow-root
+echo "✅ Cấu hình Trang chủ thành công!"
+
 echo "--------------------------------------------------------"
 echo "✅ THIẾT LẬP HOÀN TẤT!"
 echo "💻 Link Website: http://localhost:8000"
