@@ -2,6 +2,11 @@
 
 echo "🚀 Bắt đầu thiết lập môi trường phát triển thương mại điện tử..."
 
+# 0. Tạo các thư mục cần thiết trước ở local để tránh lỗi Permission Denied của Docker trên Windows
+mkdir -p src/wp-content/upgrade
+mkdir -p src/wp-content/plugins
+mkdir -p src/wp-content/uploads
+
 # 1. Khởi chạy Docker containers (MySQL, WordPress, WP-CLI)
 docker compose up -d
 
@@ -75,7 +80,7 @@ fi
 # 9. Tự động cấu hình Permalinks dạng Post Name (Tránh lỗi 404 trang con)
 echo "🔗 Cấu hình đường dẫn tĩnh Permalinks (Post name)..."
 docker compose run --rm cli wp rewrite structure '/%postname%/' --hard --allow-root
-docker compose run --rm cli wp rewrite rules flush --allow-root
+docker compose run --rm cli wp rewrite flush --hard --allow-root
 echo "✅ Cấu hình đường dẫn tĩnh thành công!"
 
 # 10. Tự động cấu hình Trang chủ (Front Page) mặc định là trang Cửa hàng (Shop)
