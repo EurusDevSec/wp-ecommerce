@@ -17,8 +17,10 @@ echo "⏳ Đang chờ Database khởi động (15 giây)..."
 sleep 15
 
 # 2. Kiểm tra và tự động tải mã nguồn WordPress Core nếu chưa tồn tại
-if [ ! -f "src/wp-settings.php" ]; then
-    echo "🌐 Không tìm thấy mã nguồn WordPress trong thư mục src."
+# NOTE: check wp-includes/version.php (luôn có khi WP Core đã download đầy đủ)
+#       KHÔNG dùng wp-settings.php vì file này có thể đã bị track trong git
+if [ ! -f "src/wp-includes/version.php" ]; then
+    echo "🌐 Không tìm thấy mã nguồn WordPress Core trong thư mục src."
     echo "📥 Đang tải WordPress Core tự động qua WP-CLI..."
     docker compose run --rm --user root cli wp core download --allow-root
     echo "✅ Tải WordPress Core thành công!"
@@ -38,16 +40,21 @@ if [ ! -f "src/wp-config.php" ]; then
 fi
 
 # 4. Tự động cài đặt cơ sở dữ liệu WordPress (Bỏ qua giao diện cài đặt thủ công)
-if ! docker compose run --rm --user root cli wp core is-installed --allow-root; then
+if ! docker compose run --rm --user root cli wp core is-installed --allow-root 2>/dev/null; then
     echo "⚙️ Đang tiến hành cài đặt cơ sở dữ liệu WordPress tự động..."
-    docker compose run --rm --user root cli wp core install \
+    if ! docker compose run --rm --user root cli wp core install \
         --url="http://localhost:8000" \
         --title="E-Commerce" \
         --admin_user="admin" \
         --admin_password="admin_password" \
         --admin_email="admin@eurustudio.com" \
         --skip-email \
-        --allow-root
+        --allow-root; then
+        echo "❌ LỖI NGHIÊM TRỌNG: Không thể cài đặt WordPress. Vui lòng kiểm tra logs database."
+        echo "   Thử chạy: docker compose logs db"
+        docker compose down
+        exit 1
+    fi
     echo "✅ Cài đặt cơ sở dữ liệu WordPress thành công!"
 else
     echo "ℹ️ WordPress đã được cài đặt cơ sở dữ liệu từ trước."
