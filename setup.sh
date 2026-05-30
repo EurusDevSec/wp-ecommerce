@@ -17,15 +17,14 @@ echo "⏳ Đang chờ Database khởi động (15 giây)..."
 sleep 15
 
 # 2. Đảm bảo WordPress Core tồn tại và toàn vẹn
-# Chiến lược 3 lớp để xử lý mọi trường hợp:
-#   - Fresh clone: download bình thường
-#   - Files sót từ lần trước (partial): download --force để ghi đè/sửa chữa
-#   - Files đầy đủ: verify-checksums, nếu lỗi thì --force repair
 echo "🔍 Kiểm tra mã nguồn WordPress Core..."
 if ! docker compose run --rm --user root cli wp core download --allow-root 2>/dev/null; then
-    # "already present" hoặc files không đầy đủ → force overwrite
-    echo "⚠️  Phát hiện WP Core chưa hoàn chỉnh, đang sửa chữa với --force..."
-    docker compose run --rm --user root cli wp core download --force --allow-root
+    # Download fail = WP Core files partial/sót từ lần chạy trước
+    # Xóa các thư mục core cũ trên host rồi download lại (nhẹ hơn --force)
+    echo "⚠️  Phát hiện WP Core không đầy đủ, đang dọn dẹp và tải lại..."
+    rm -rf src/wp-admin src/wp-includes
+    find src/ -maxdepth 1 -name "*.php" ! -name "wp-config.php" -delete
+    docker compose run --rm --user root cli wp core download --allow-root
 fi
 echo "✅ WordPress Core sẵn sàng!"
 
