@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Bỏ qua chuyển đổi đường dẫn POSIX trên Windows (Git Bash)
+export MSYS_NO_PATHCONV=1
+
 echo "🚀 Bắt đầu thiết lập môi trường phát triển thương mại điện tử..."
 
 # 0. Tạo các thư mục cần thiết trước ở local để tránh lỗi Permission Denied của Docker trên Windows
@@ -17,7 +20,7 @@ sleep 15
 if [ ! -f "src/wp-settings.php" ]; then
     echo "🌐 Không tìm thấy mã nguồn WordPress trong thư mục src."
     echo "📥 Đang tải WordPress Core tự động qua WP-CLI..."
-    docker compose run --rm cli wp core download --allow-root
+    docker compose run --rm --user root cli wp core download --allow-root
     echo "✅ Tải WordPress Core thành công!"
 fi
 
@@ -25,7 +28,7 @@ fi
 if [ ! -f "src/wp-config.php" ]; then
     echo "⚙️ Không tìm thấy file cấu hình wp-config.php."
     echo "📝 Đang tự động tạo file wp-config.php kết nối database..."
-    docker compose run --rm cli wp config create \
+    docker compose run --rm --user root cli wp config create \
         --dbname=wordpress \
         --dbuser=wordpress \
         --dbpass=wordpress_password \
@@ -35,9 +38,9 @@ if [ ! -f "src/wp-config.php" ]; then
 fi
 
 # 4. Tự động cài đặt cơ sở dữ liệu WordPress (Bỏ qua giao diện cài đặt thủ công)
-if ! docker compose run --rm cli wp core is-installed --allow-root; then
+if ! docker compose run --rm --user root cli wp core is-installed --allow-root; then
     echo "⚙️ Đang tiến hành cài đặt cơ sở dữ liệu WordPress tự động..."
-    docker compose run --rm cli wp core install \
+    docker compose run --rm --user root cli wp core install \
         --url="http://localhost:8000" \
         --title="E-Commerce" \
         --admin_user="admin" \
@@ -52,19 +55,19 @@ fi
 
 # 5. Cài đặt và kích hoạt plugin WooCommerce
 echo "📦 Đang kiểm tra và cài đặt WooCommerce..."
-docker compose run --rm cli wp plugin install woocommerce --activate --allow-root
+docker compose run --rm --user root cli wp plugin install woocommerce --activate --allow-root
 
 # 6. Tự động bỏ qua Setup Wizard của WooCommerce
 echo "⚡ Tối ưu hóa cấu hình WooCommerce (Bỏ qua Setup Wizard)..."
-docker compose run --rm cli wp option update woocommerce_onboarding_profile '{"skip_tracker":true,"completed":true}' --allow-root
-docker compose run --rm cli wp option update woocommerce_onboarding_opt_in 'no' --allow-root
+docker compose run --rm --user root cli wp option update woocommerce_onboarding_profile '{"skip_tracker":true,"completed":true}' --allow-root
+docker compose run --rm --user root cli wp option update woocommerce_onboarding_opt_in 'no' --allow-root
 
 # 7. Tự động Import dữ liệu mẫu của WooCommerce (Mock Products)
-if ! docker compose run --rm cli wp post list --post_type=product --format=count --allow-root | grep -q '[1-9]'; then
+if ! docker compose run --rm --user root cli wp post list --post_type=product --format=count --user=admin --allow-root | grep -q '[1-9]'; then
     echo "📦 Đang import dữ liệu sản phẩm mẫu của WooCommerce..."
-    docker compose run --rm cli wp plugin install wordpress-importer --activate --allow-root
-    docker compose run --rm cli wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip --allow-root
-    docker compose run --rm cli wp plugin deactivate wordpress-importer --allow-root
+    docker compose run --rm --user root cli wp plugin install wordpress-importer --activate --allow-root
+    docker compose run --rm --user root cli wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip --user=admin --allow-root
+    docker compose run --rm --user root cli wp plugin deactivate wordpress-importer --allow-root
     echo "✅ Import sản phẩm mẫu thành công!"
 else
     echo "ℹ️ Đã có sẵn sản phẩm trong cửa hàng, bỏ qua import mẫu."
@@ -85,21 +88,26 @@ fi
 # 9. Kích hoạt Theme Flatsome Child
 if [ -d "src/wp-content/themes/flatsome" ]; then
     echo "🎨 Đang kích hoạt Flatsome Child theme..."
-    docker compose run --rm cli wp theme activate flatsome-child --allow-root
+    docker compose run --rm --user root cli wp theme activate flatsome-child --allow-root
 else
     echo "❌ LỖI: Không thể kích hoạt Flatsome Child do thiếu Flatsome parent theme."
 fi
 
 # 10. Tự động cấu hình Permalinks dạng Post Name (Tránh lỗi 404 trang con)
 echo "🔗 Cấu hình đường dẫn tĩnh Permalinks (Post name)..."
-docker compose run --rm cli wp rewrite structure '/%postname%/' --hard --allow-root
-docker compose run --rm cli wp rewrite rules flush --allow-root
+docker compose run --rm --user root cli wp rewrite structure '/%postname%/' --hard --allow-root
+docker compose run --rm --user root cli wp rewrite flush --hard --allow-root
 echo "✅ Cấu hình đường dẫn tĩnh thành công!"
 
 # 11. Tự động cấu hình Trang chủ (Front Page) mặc định là trang Cửa hàng (Shop)
 echo "🏠 Cấu hình Trang chủ mặc định hiển thị trang Cửa hàng (Shop)..."
-docker compose run --rm cli wp eval "update_option('show_on_front', 'page'); \$shop = get_page_by_path('shop'); if (\$shop) { update_option('page_on_front', \$shop->ID); }" --allow-root
+docker compose run --rm --user root cli wp eval "update_option('show_on_front', 'page'); \$shop = get_page_by_path('shop'); if (\$shop) { update_option('page_on_front', \$shop->ID); }" --user=admin --allow-root
 echo "✅ Cấu hình Trang chủ thành công!"
+
+# 12. Khôi phục quyền sở hữu thư mục wp-content cho www-data để webserver có quyền ghi
+echo "⚙️ Đang khôi phục quyền sở hữu thư mục wp-content cho www-data..."
+docker compose run --rm --user root cli chown -R www-data:www-data /var/www/html/wp-content
+echo "✅ Khôi phục quyền sở hữu thành công!"
 
 echo "--------------------------------------------------------"
 echo "✅ THIẾT LẬP HOÀN TẤT!"
