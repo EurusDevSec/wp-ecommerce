@@ -20,11 +20,17 @@ sleep 15
 echo "🔍 Kiểm tra mã nguồn WordPress Core..."
 if ! docker compose run --rm --user root cli wp core download --allow-root 2>/dev/null; then
     # Download fail = WP Core files partial/sót từ lần chạy trước
-    # Xóa các thư mục core cũ trên host rồi download lại (nhẹ hơn --force)
-    echo "⚠️  Phát hiện WP Core không đầy đủ, đang dọn dẹp và tải lại..."
+    # Xóa TOÀN BỘ WP Core cũ (kể cả file .php root) để download sạch không bị OOM
+    echo "⚠️  Phát hiện WP Core không đầy đủ, đang dọn dẹp toàn bộ và tải lại..."
     rm -rf src/wp-admin src/wp-includes
-    find src/ -maxdepth 1 -name "*.php" ! -name "wp-config.php" -delete
-    docker compose run --rm --user root cli wp core download --allow-root
+    # Xóa tất cả .php và .txt ở root src/ (trừ wp-config.php để giữ db credentials)
+    find src/ -maxdepth 1 \( -name "*.php" -o -name "*.txt" -o -name "*.html" \) \
+        ! -name "wp-config.php" -delete
+    if ! docker compose run --rm --user root cli wp core download --allow-root; then
+        echo "❌ LỖI: Không thể tải WordPress Core. Kiểm tra kết nối mạng."
+        docker compose down
+        exit 1
+    fi
 fi
 echo "✅ WordPress Core sẵn sàng!"
 

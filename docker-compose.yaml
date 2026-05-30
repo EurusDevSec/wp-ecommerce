@@ -52,8 +52,8 @@ services:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress_password
-      # Tăng PHP memory limit cho WP-CLI (mặc định 128M không đủ khi --force extract)
-      PHP_INI_VALUE_MEMORY_LIMIT: 256M
+      # Tăng PHP memory limit cho WP-CLI (mặc định 128M không đủ khi extract WP Core)
+      WP_CLI_PHP_ARGS: -d memory_limit=512M
     depends_on:
       - db
     networks:
