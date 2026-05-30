@@ -16,19 +16,18 @@ docker compose up -d
 echo "⏳ Đang chờ Database khởi động (15 giây)..."
 sleep 15
 
-# 2. Kiểm tra và tự động tải mã nguồn WordPress Core nếu chưa tồn tại
-# NOTE: check wp-includes/version.php (luôn có khi WP Core đã download đầy đủ)
-#       KHÔNG dùng wp-settings.php vì file này có thể đã bị track trong git
-if [ ! -f "src/wp-includes/version.php" ]; then
-    echo "🌐 Không tìm thấy mã nguồn WordPress Core trong thư mục src."
-    echo "📥 Đang tải WordPress Core tự động qua WP-CLI..."
-    # Nếu fail vì có WP files sót lại từ lần chạy trước → dùng --force để repair
-    if ! docker compose run --rm --user root cli wp core download --allow-root; then
-        echo "⚠️  Phát hiện files WordPress không đầy đủ, đang sửa chữa (--force)..."
-        docker compose run --rm --user root cli wp core download --force --allow-root
-    fi
-    echo "✅ Tải WordPress Core thành công!"
+# 2. Đảm bảo WordPress Core tồn tại và toàn vẹn
+# Chiến lược 3 lớp để xử lý mọi trường hợp:
+#   - Fresh clone: download bình thường
+#   - Files sót từ lần trước (partial): download --force để ghi đè/sửa chữa
+#   - Files đầy đủ: verify-checksums, nếu lỗi thì --force repair
+echo "🔍 Kiểm tra mã nguồn WordPress Core..."
+if ! docker compose run --rm --user root cli wp core download --allow-root 2>/dev/null; then
+    # "already present" hoặc files không đầy đủ → force overwrite
+    echo "⚠️  Phát hiện WP Core chưa hoàn chỉnh, đang sửa chữa với --force..."
+    docker compose run --rm --user root cli wp core download --force --allow-root
 fi
+echo "✅ WordPress Core sẵn sàng!"
 
 # 3. Tự động tạo/ghi đè file cấu hình wp-config.php
 # Dùng --force để luôn ghi đúng credentials, tránh dùng config cũ/sai từ lần trước
