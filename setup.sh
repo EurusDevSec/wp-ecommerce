@@ -22,22 +22,25 @@ sleep 15
 if [ ! -f "src/wp-includes/version.php" ]; then
     echo "🌐 Không tìm thấy mã nguồn WordPress Core trong thư mục src."
     echo "📥 Đang tải WordPress Core tự động qua WP-CLI..."
-    docker compose run --rm --user root cli wp core download --allow-root
+    # Nếu fail vì có WP files sót lại từ lần chạy trước → dùng --force để repair
+    if ! docker compose run --rm --user root cli wp core download --allow-root; then
+        echo "⚠️  Phát hiện files WordPress không đầy đủ, đang sửa chữa (--force)..."
+        docker compose run --rm --user root cli wp core download --force --allow-root
+    fi
     echo "✅ Tải WordPress Core thành công!"
 fi
 
-# 3. Kiểm tra và tự động tạo file cấu hình wp-config.php nếu chưa tồn tại
-if [ ! -f "src/wp-config.php" ]; then
-    echo "⚙️ Không tìm thấy file cấu hình wp-config.php."
-    echo "📝 Đang tự động tạo file wp-config.php kết nối database..."
-    docker compose run --rm --user root cli wp config create \
-        --dbname=wordpress \
-        --dbuser=wordpress \
-        --dbpass=wordpress_password \
-        --dbhost=db:3306 \
-        --allow-root
-    echo "✅ Tạo file wp-config.php thành công!"
-fi
+# 3. Tự động tạo/ghi đè file cấu hình wp-config.php
+# Dùng --force để luôn ghi đúng credentials, tránh dùng config cũ/sai từ lần trước
+echo "📝 Đang tạo/cập nhật file wp-config.php kết nối database..."
+docker compose run --rm --user root cli wp config create \
+    --dbname=wordpress \
+    --dbuser=wordpress \
+    --dbpass=wordpress_password \
+    --dbhost=db:3306 \
+    --force \
+    --allow-root
+echo "✅ Tạo file wp-config.php thành công!"
 
 # 4. Tự động cài đặt cơ sở dữ liệu WordPress (Bỏ qua giao diện cài đặt thủ công)
 if ! docker compose run --rm --user root cli wp core is-installed --allow-root 2>/dev/null; then
