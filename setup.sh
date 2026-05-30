@@ -20,7 +20,8 @@ sleep 15
 echo "🔍 Kiểm tra mã nguồn WordPress Core..."
 if ! docker compose run --rm --user root cli wp core download --allow-root 2>/dev/null; then
     # Download fail = WP Core files partial/sót từ lần chạy trước
-    # Dừng wordpress container (đang giữ lock Apache trên wp-admin/) trước khi xóa
+    # QUAN TRỌNG: dừng wordpress trước cleanup VÀ download
+    # (entrypoint của image wordpress:latest tự copy lại WP files khi container start)
     echo "⚠️  Phát hiện WP Core không đầy đủ, đang dọn dẹp và tải lại..."
     docker compose stop wordpress
     # Xóa WP Core cũ trong CLI container (không có Apache lock nữa)
@@ -30,14 +31,15 @@ if ! docker compose run --rm --user root cli wp core download --allow-root 2>/de
          find /var/www/html -maxdepth 1 -name '*.php' ! -name 'wp-config.php' -delete; \
          find /var/www/html -maxdepth 1 \( -name '*.txt' -o -name '*.html' \) -delete; \
          echo 'Cleanup done'"
-    # Khởi lại wordpress container
-    docker compose start wordpress
-    sleep 5
+    # Download WP Core TRONG KHI wordpress vẫn đang stopped (tránh bị entrypoint ghi đè)
     if ! docker compose run --rm --user root cli wp core download --allow-root; then
         echo "❌ LỖI: Không thể tải WordPress Core. Kiểm tra kết nối mạng."
         docker compose down
         exit 1
     fi
+    # Khởi lại wordpress container SAU KHI download xong
+    docker compose start wordpress
+    sleep 5
 fi
 echo "✅ WordPress Core sẵn sàng!"
 
