@@ -34,6 +34,7 @@ Thumbs.db
 *.gz
 *.phar
 plan.md
+meeting_analysis.md
 
 # Allow tracking premium Flatsome zip for automation
 !flatsome.zip
