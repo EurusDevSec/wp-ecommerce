@@ -30,11 +30,12 @@ src/wp-content/index.php
 Thumbs.db
 .vscode/
 *.sql
+!db/init.sql
 *.tar
 *.gz
 *.phar
 plan.md
 meeting_analysis.md
-
+docs/wordpress_deployment_guide.md
 # Allow tracking premium Flatsome zip for automation
 !flatsome.zip
