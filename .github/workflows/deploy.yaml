@@ -1,0 +1,27 @@
+name: Deploy to DigitalOcean Production
+
+on:
+  push:
+    branches:
+      - main # Kích hoạt khi có commit mới push vào main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/wp-ecommerce
+            # Cập nhật code mới nhất từ Git
+            git pull origin main
+            # Restart các container chạy ngầm
+            docker compose down
+            docker compose up -d --build
