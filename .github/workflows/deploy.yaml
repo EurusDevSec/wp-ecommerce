@@ -21,6 +21,6 @@ jobs:
           script: |
             cd /var/www/wp-ecommerce
             git pull origin main
-            # Restart các container chạy ngầm
+            export COMPOSE_HTTP_TIMEOUT=300
             docker-compose down
             docker-compose up -d --build
