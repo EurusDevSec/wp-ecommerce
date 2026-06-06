@@ -23,5 +23,5 @@ jobs:
             # Cập nhật code mới nhất từ Git
             git pull origin main
             # Restart các container chạy ngầm
-            docker compose down
-            docker compose up -d --build
+            docker-compose down
+            docker-compose up -d --build
