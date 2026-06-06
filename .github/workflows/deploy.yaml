@@ -20,7 +20,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/wp-ecommerce
-            # Cập nhật code mới nhất từ Git
             git pull origin main
             # Restart các container chạy ngầm
             docker-compose down
