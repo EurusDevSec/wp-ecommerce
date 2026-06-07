@@ -1,4 +1,4 @@
-/*
+﻿/*
 Theme Name: Flatsome Child
 Description: This is a child theme for Flatsome Theme
 Author: UX Themes
@@ -8,9 +8,35 @@ Version: 3.0
 
 /*************** ADD CUSTOM CSS HERE.   ***************/
 
+.flatsome-child-product-thumbnails {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 0.75rem;
+margin-top: 1rem;
+}
+
+.flatsome-child-product-thumbnails .woocommerce-product-gallery__image {
+border: 1px solid var(--border-color, #e1e1e1);
+border-radius: 0.75rem;
+overflow: hidden;
+transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.flatsome-child-product-thumbnails .woocommerce-product-gallery__image img {
+display: block;
+width: 100%;
+height: auto;
+object-fit: cover;
+}
+
+.flatsome-child-product-thumbnails .woocommerce-product-gallery__image:hover {
+border-color: var(--accent-color, #2ea3f2);
+transform: translateY(-2px);
+box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
 
 @media only screen and (max-width: 48em) {
-/*************** ADD MOBILE ONLY CSS HERE  ***************/
-
-
+.flatsome-child-product-thumbnails {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 }
