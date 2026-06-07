@@ -25,7 +25,7 @@ if ( ! function_exists( 'wc_get_gallery_image_html' ) ) {
 global $product;
 
 if ( ! $product || ! $product instanceof WC_Product ) {
-	return '';
+	return;
 }
 
 $attachment_ids = $product->get_gallery_image_ids();
