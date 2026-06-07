@@ -15,7 +15,9 @@
  * @version 9.4.0
  */
 
-declare( strict_types = 1);
+declare( strict_types = 1 );
+
+defined( 'ABSPATH' ) || exit;
 
 $wrapper_class = 'fluid-columns';
 if ( ! $fluid_columns && in_array( $columns, array( 1, 2, 3, 4, 5, 6 ), true ) ) {
