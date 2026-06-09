@@ -85,3 +85,34 @@ function dev_mobile_nav_register_fragments( $fragments ) {
     
     return $fragments;
 }
+
+/**
+ * 3. Chèn HTML của Widget liên hệ nhanh (Call, Zalo, Messenger) vào Footer
+ */
+add_action( 'wp_footer', 'dev_render_floating_contact_widget' );
+
+function dev_render_floating_contact_widget() {
+    if ( is_admin() ) {
+        return;
+    }
+    ?>
+    <div class="dev-floating-contact">
+        <!-- Zalo Button -->
+        <a href="https://zalo.me/0987654321" target="_blank" rel="noopener nofollow" class="dev-contact-btn dev-zalo-btn" title="Chat Zalo">
+            <span class="contact-icon">💬</span>
+            <span class="contact-text">Zalo</span>
+        </a>
+        <!-- Messenger Button -->
+        <a href="https://m.me/yourpage" target="_blank" rel="noopener nofollow" class="dev-contact-btn dev-messenger-btn" title="Chat Messenger">
+            <span class="contact-icon">✉️</span>
+            <span class="contact-text">Messenger</span>
+        </a>
+        <!-- Call Button -->
+        <a href="tel:0987654321" class="dev-contact-btn dev-phone-btn" title="Gọi ngay">
+            <span class="contact-icon">📞</span>
+            <span class="contact-text">Gọi ngay</span>
+        </a>
+    </div>
+    <?php
+}
+
