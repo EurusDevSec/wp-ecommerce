@@ -227,96 +227,153 @@ function dev_checkout_address_dropdown_script() {
             border-color: #d32f2f !important;
             background-color: #fff9f9 !important;
         }
+        /* Ensure city and address_2 look like proper selects */
+        #billing_city_field select,
+        #billing_address_2_field select,
+        #shipping_city_field select,
+        #shipping_address_2_field select {
+            width: 100%;
+        }
     </style>
     <script>
-        jQuery(document).ready(function($) {
-            function devInitAddressFields(prefix) {
-                var provinceSelect = $('#' + prefix + '_state');
-                var districtSelect = $('#' + prefix + '_city');       // Map Quận/Huyện vào trường City gốc
-                var wardSelect = $('#' + prefix + '_address_2');     // Map Xã/Phường vào trường Address_2 gốc
+    (function($) {
+        'use strict';
 
-                if (!provinceSelect.length) return;
+        var apiBase = '/wp-json/hkt/v1';
 
-                // 6.1. Khi chọn Tỉnh/Thành -> Tải danh sách Quận/Huyện tương ứng qua API hkt/v1
-                provinceSelect.on('change', function() {
-                    var provinceId = provinceSelect.val(); // Giá trị lúc này là ID (ví dụ: '01')
+        /**
+         * Đảm bảo trường city/address_2 là <select> không phải <input>
+         * WooCommerce country-select.js có thể chuyển về input text nên ta cần ép lại thành select
+         */
+        function devEnsureSelectField(fieldId, placeholder) {
+            var field = $('#' + fieldId);
+            if (!field.length) return;
 
-                    districtSelect.empty().append('<option value="">Chọn Quận / Huyện</option>');
-                    wardSelect.empty().append('<option value="">Chọn Xã / Phường / Thị trấn</option>');
-
-                    if (!provinceId) {
-                        districtSelect.trigger('change.select2');
-                        wardSelect.trigger('change.select2');
-                        return;
-                    }
-
-                    $.ajax({
-                        url: '/wp-json/hkt/v1/districts',
-                        method: 'GET',
-                        data: { province_id: provinceId },
-                        success: function(data) {
-                            $.each(data, function(i, district) {
-                                districtSelect.append($('<option>', {
-                                    value: district.district_name,
-                                    text: district.district_name,
-                                    'data-id': district.district_id
-                                }));
-                            });
-                            districtSelect.trigger('change.select2');
-                            wardSelect.trigger('change.select2');
-                        }
-                    });
-                });
-
-                // 6.2. Khi chọn Quận/Huyện -> Tải danh sách Xã/Phường tương ứng qua API hkt/v1
-                districtSelect.on('change', function() {
-                    var selectedOption = districtSelect.find('option:selected');
-                    var districtId = selectedOption.data('id');
-
-                    wardSelect.empty().append('<option value="">Chọn Xã / Phường / Thị trấn</option>');
-
-                    if (!districtId) {
-                        wardSelect.trigger('change.select2');
-                        return;
-                    }
-
-                    $.ajax({
-                        url: '/wp-json/hkt/v1/wards',
-                        method: 'GET',
-                        data: { district_id: districtId },
-                        success: function(data) {
-                            $.each(data, function(i, ward) {
-                                wardSelect.append($('<option>', {
-                                    value: ward.ward_name,
-                                    text: ward.ward_name
-                                }));
-                            });
-                            wardSelect.trigger('change.select2');
-                        }
-                    });
-                });
-                
-                // Kích hoạt load lần đầu nếu đã chọn sẵn Tỉnh/Thành
-                if (provinceSelect.val()) {
-                    provinceSelect.trigger('change');
-                }
+            // Nếu đang là input text, tạo một <select> mới thay thế
+            if (field.is('input')) {
+                var selectEl = $('<select>', {
+                    id: fieldId,
+                    name: fieldId,
+                    class: field.attr('class') || ''
+                }).append($('<option>', { value: '', text: placeholder }));
+                field.replaceWith(selectEl);
             }
+        }
 
-            // Khởi tạo cho cả Billing và Shipping
+        /**
+         * Khởi tạo logic cho một nhóm địa chỉ (billing hoặc shipping)
+         */
+        function devInitAddressFields(prefix) {
+            // Ép city và address_2 về dạng select nếu WooCommerce đã chuyển về input
+            devEnsureSelectField(prefix + '_city', 'Chọn Quận / Huyện');
+            devEnsureSelectField(prefix + '_address_2', 'Chọn Xã / Phường / Thị trấn');
+
+            var provinceSelect = $('#' + prefix + '_state');
+            var districtSelect = $('#' + prefix + '_city');
+            var wardSelect     = $('#' + prefix + '_address_2');
+
+            if (!provinceSelect.length) return;
+
+            // Gỡ event cũ trước để tránh gắn trùng khi re-init
+            provinceSelect.off('change.devVN select2:select.devVN');
+            districtSelect.off('change.devVN');
+
+            // Lắng nghe cả sự kiện native change VÀ select2:select (khi Select2 đang active)
+            provinceSelect.on('change.devVN select2:select.devVN', function() {
+                var provinceId = $(this).val();
+
+                // Reset các dropdown phụ
+                districtSelect.empty().append($('<option>', { value: '', text: 'Chọn Quận / Huyện' }));
+                wardSelect.empty().append($('<option>', { value: '', text: 'Chọn Xã / Phường / Thị trấn' }));
+                if (districtSelect.hasClass('select2-hidden-accessible')) {
+                    districtSelect.trigger('change.select2');
+                }
+                if (wardSelect.hasClass('select2-hidden-accessible')) {
+                    wardSelect.trigger('change.select2');
+                }
+
+                if (!provinceId) return;
+
+                $.ajax({
+                    url: apiBase + '/districts',
+                    method: 'GET',
+                    data: { province_id: provinceId },
+                    success: function(data) {
+                        if (!$.isArray(data) || data.length === 0) return;
+                        $.each(data, function(i, district) {
+                            districtSelect.append($('<option>', {
+                                value: district.district_name,
+                                text:  district.district_name,
+                                'data-id': district.district_id
+                            }));
+                        });
+                        if (districtSelect.hasClass('select2-hidden-accessible')) {
+                            districtSelect.trigger('change.select2');
+                        }
+                    }
+                });
+            });
+
+            // Khi chọn Quận/Huyện -> load Xã/Phường
+            districtSelect.on('change.devVN', function() {
+                var selectedOption = $(this).find('option:selected');
+                var districtId     = selectedOption.data('id');
+
+                wardSelect.empty().append($('<option>', { value: '', text: 'Chọn Xã / Phường / Thị trấn' }));
+                if (wardSelect.hasClass('select2-hidden-accessible')) {
+                    wardSelect.trigger('change.select2');
+                }
+
+                if (!districtId) return;
+
+                $.ajax({
+                    url: apiBase + '/wards',
+                    method: 'GET',
+                    data: { district_id: districtId },
+                    success: function(data) {
+                        if (!$.isArray(data) || data.length === 0) return;
+                        $.each(data, function(i, ward) {
+                            wardSelect.append($('<option>', {
+                                value: ward.ward_name,
+                                text:  ward.ward_name
+                            }));
+                        });
+                        if (wardSelect.hasClass('select2-hidden-accessible')) {
+                            wardSelect.trigger('change.select2');
+                        }
+                    }
+                });
+            });
+
+            // Load lần đầu nếu đã chọn Tỉnh/Thành
+            if (provinceSelect.val()) {
+                provinceSelect.trigger('change.devVN');
+            }
+        }
+
+        function devBootstrap() {
             devInitAddressFields('billing');
             devInitAddressFields('shipping');
+        }
 
-            // 6.3. Ẩn các dòng lỗi cụ thể của từng ô nhập liệu ở danh sách thông báo chung phía trên
+        $(document).ready(function() {
+            devBootstrap();
+
+            // Re-init sau khi WooCommerce cập nhật lại form (ví dụ: đổi country)
+            $(document.body).on('updated_checkout', function() {
+                devBootstrap();
+            });
+
+            // 6.3. Ẩn các dòng lỗi của từng ô nhập liệu ở danh sách thông báo chung phía trên
             $(document.body).on('checkout_error', function() {
                 var noticeGroup = $('.woocommerce-NoticeGroup-checkout');
-                var errorList = noticeGroup.find('.woocommerce-error');
+                var errorList   = noticeGroup.find('.woocommerce-error');
                 if (!errorList.length) {
                     errorList = $('.woocommerce-error');
                 }
 
                 if (errorList.length) {
                     var visibleErrorCount = 0;
-                    
                     errorList.find('li').each(function() {
                         var li = $(this);
                         if (li.attr('data-id')) {
@@ -326,7 +383,6 @@ function dev_checkout_address_dropdown_script() {
                             visibleErrorCount++;
                         }
                     });
-
                     if (visibleErrorCount === 0) {
                         noticeGroup.hide();
                     } else {
@@ -335,6 +391,8 @@ function dev_checkout_address_dropdown_script() {
                 }
             });
         });
+
+    })(jQuery);
     </script>
     <?php
 }
