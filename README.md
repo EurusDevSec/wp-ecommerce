@@ -69,7 +69,7 @@ graph TD
     end
 ```
 
-### 1. Hướng dẫn cho Khoa (Dev FE)
+### 1. workflow Khoa (Dev FE)
 Mỗi khi thiết kế xong layout hoặc thêm sản phẩm kèm ảnh mới ở local:
 1. Chạy `./db-export.sh` ở terminal local để xuất DB mới nhất ra file `db/init.sql`.
 2. Commit và push file code + `db/init.sql` lên branch cá nhân, tạo Pull Request vào `main`.
