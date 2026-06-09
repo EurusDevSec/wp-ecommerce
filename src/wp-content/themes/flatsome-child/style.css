@@ -652,5 +652,52 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
     font-size: 14px;
 }
 
+/* ==========================================================================
+   HOMEPAGE CUSTOM CONTAINER SECTIONS (ThoiTrang19 Banners)
+   ========================================================================== */
+.home-hero-section,
+.home-category-cards-section {
+    background-color: #ffffff !important;
+    border: 1px solid #eaeaea !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02) !important;
+    padding: 15px !important;
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
+    overflow: hidden;
+}
+
+/* Category cards 1:1 ratio square styling */
+.home-category-cards-section .col {
+    position: relative;
+    border-radius: 15px !important;
+    overflow: hidden;
+}
+
+.home-category-cards-section .ux-banner {
+    padding-top: 100% !important; /* Forces 1:1 Aspect Ratio (Square) */
+    height: 0 !important;
+}
+
+.home-category-cards-section .ux-banner-bg {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important;
+}
+
+/* Category card scale hover effect */
+.home-category-cards-section .col {
+    transition: all 0.35s ease;
+}
+
+.home-category-cards-section .col:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(247, 116, 38, 0.25) !important;
+}
+
+
 
 

@@ -10,78 +10,45 @@ get_header();
         // WordPress sẽ thực thi đoạn shortcode của Flatsome thông qua hàm này
         echo do_shortcode('
 <!-- wp:flatsome/uxbuilder -->
-[ux_banner_grid]
+[section padding="20px" background="rgb(255, 255, 255)" class="home-hero-section"]
+[ux_banner_grid spacing="20" height="500"]
     [col_grid span="8"]
-        [ux_banner height="500px" bg_color="rgb(247, 116, 38)" bg_overlay="rgba(0, 0, 0, 0.15)"]
-            [text_box position_x="10" position_y="50" text_align="left"]
-                <h2 class="uppercase" style="color: #ffffff; font-size: 2.2rem; font-weight: 700;"><strong>BỘ SƯU TẬP MỚI</strong></h2>
-                <p style="color: #ffffff; font-size: 1.1rem; margin-bottom: 20px;">Trải nghiệm phong cách thời trang trẻ trung, năng động và cá tính của HKT Fashion.</p>
-                [button text="Mua ngay" color="white" link="/shop/"]
-            [/text_box]
+        [ux_banner height="500px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/9f44f8b1-7919-0500-e2b6-0017deb04863.jpg" bg_overlay="rgba(0, 0, 0, 0)" image_radius="15"]
         [/ux_banner]
     [/col_grid]
     [col_grid span="4"]
-        [ux_banner height="240px" bg_color="rgb(0, 0, 0)" bg_overlay="rgba(0, 0, 0, 0.2)"]
-            [text_box position_x="50" position_y="50"]
-                <h3 style="color: #ffffff;" class="uppercase"><strong>Giảm giá tới 50%</strong></h3>
-                [button text="Xem ngay" color="white" style="outline" link="/shop/"]
-            [/text_box]
-        [/ux_banner]
-    [/col_grid]
-    [col_grid span="4"]
-        [ux_banner height="240px" bg_color="rgb(247, 116, 38)" bg_overlay="rgba(0, 0, 0, 0.1)"]
-            [text_box position_x="50" position_y="50"]
-                <h3 style="color: #ffffff;" class="uppercase"><strong>Hàng Mới Về</strong></h3>
-                [button text="Xem ngay" color="white" style="outline" link="/shop/"]
-            [/text_box]
+        [ux_banner height="500px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/c2a09fac-900e-4652-850b-caf496ed2c45-tuan4-thang5.jpg" bg_overlay="rgba(0, 0, 0, 0)" image_radius="15"]
         [/ux_banner]
     [/col_grid]
 [/ux_banner_grid]
+[/section]
 
-[section padding="40px" background="rgb(255, 255, 255)"]
-    [title style="center" text="DANH MỤC NỔI BẬT" icon="icon-menu" size="130"]
-    [row col_style="solid" col_bg="rgb(255, 255, 255)" col_bg_radius="15" h_align="center" class="phongvt-hieu-ung-toa-hinh"]
-        [col span="2" span__sm="4"]
-            <a href="/product-category/ao/" style="text-align: center; display: block; text-decoration: none;">
-                <div style="background: #FAF9F6; border-radius: 50%; width: 100px; height: 100px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <span style="font-size: 2.2rem;">👕</span>
-                </div>
-                <h5 class="uppercase" style="margin-top: 15px; font-weight: 700; font-size: 0.9rem;">Áo</h5>
-            </a>
-        [/col]
-        [col span="2" span__sm="4"]
-            <a href="/product-category/quan/" style="text-align: center; display: block; text-decoration: none;">
-                <div style="background: #FAF9F6; border-radius: 50%; width: 100px; height: 100px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <span style="font-size: 2.2rem;">👖</span>
-                </div>
-                <h5 class="uppercase" style="margin-top: 15px; font-weight: 700; font-size: 0.9rem;">Quần</h5>
-            </a>
-        [/col]
-        [col span="2" span__sm="4"]
-            <a href="/product-category/giay/" style="text-align: center; display: block; text-decoration: none;">
-                <div style="background: #FAF9F6; border-radius: 50%; width: 100px; height: 100px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <span style="font-size: 2.2rem;">👟</span>
-                </div>
-                <h5 class="uppercase" style="margin-top: 15px; font-weight: 700; font-size: 0.9rem;">Giày</h5>
-            </a>
-        [/col]
-        [col span="2" span__sm="4"]
-            <a href="/product-category/balo-tui/" style="text-align: center; display: block; text-decoration: none;">
-                <div style="background: #FAF9F6; border-radius: 50%; width: 100px; height: 100px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <span style="font-size: 2.2rem;">🎒</span>
-                </div>
-                <h5 class="uppercase" style="margin-top: 15px; font-weight: 700; font-size: 0.9rem;">Balo - Túi</h5>
-            </a>
-        [/col]
-        [col span="2" span__sm="4"]
-            <a href="/product-category/phu-kien/" style="text-align: center; display: block; text-decoration: none;">
-                <div style="background: #FAF9F6; border-radius: 50%; width: 100px; height: 100px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <span style="font-size: 2.2rem;">⌚</span>
-                </div>
-                <h5 class="uppercase" style="margin-top: 15px; font-weight: 700; font-size: 0.9rem;">Phụ kiện</h5>
-            </a>
-        [/col]
-    [/row]
+[section padding="20px" background="rgb(255, 255, 255)" class="home-category-cards-section"]
+[row columns="5" col_spacing="normal" v_align="equal" h_align="center"]
+    [col]
+        [ux_banner height="100%" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0, 0, 0, 0.15)" image_radius="15" link="/shop/"]
+            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2;">TUẦN 3 / THÁNG 5</h4>
+            [/text_box]
+        [/ux_banner]
+    [/col]
+    [col]
+        [ux_banner height="100%" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/304b2fcb-7241-0400-fff2-0017fd550a27.jpg" bg_overlay="rgba(0, 0, 0, 0)" image_radius="15" link="/shop/"]
+        [/ux_banner]
+    [/col]
+    [col]
+        [ux_banner height="100%" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f53d7c7e-a5e7-6100-1aa2-00176e5a5977.jpg" bg_overlay="rgba(0, 0, 0, 0)" image_radius="15" link="/shop/"]
+        [/ux_banner]
+    [/col]
+    [col]
+        [ux_banner height="100%" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/ea158967-c428-2900-80fa-001770b476d1.jpg" bg_overlay="rgba(0, 0, 0, 0)" image_radius="15" link="/shop/"]
+        [/ux_banner]
+    [/col]
+    [col]
+        [ux_banner height="100%" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f0567450-4362-5400-588a-001794113da6.jpg" bg_overlay="rgba(0, 0, 0, 0)" image_radius="15" link="/shop/"]
+        [/ux_banner]
+    [/col]
+[/row]
 [/section]
 
 [section padding="40px" background="rgb(250, 249, 246)"]
