@@ -3,7 +3,7 @@ Theme Name: Flatsome Child
 Description: This is a child theme for Flatsome Theme
 Author: UX Themes
 Template: flatsome
-Version: 3.0
+Version: 3.2
 */
 
 /*************** ADD CUSTOM CSS HERE.   ***************/
@@ -682,12 +682,13 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
     overflow: hidden;
 }
 
-.home-category-cards-section .ux-banner {
+.home-category-cards-section .banner {
     padding-top: 100% !important; /* Forces 1:1 Aspect Ratio (Square) */
     height: 0 !important;
+    min-height: 0 !important;
 }
 
-.home-category-cards-section .ux-banner-bg {
+.home-category-cards-section .bg {
     position: absolute !important;
     top: 0;
     left: 0;
@@ -696,14 +697,35 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
     object-fit: cover !important;
 }
 
-/* Category card scale hover effect */
+/* Category card scale hover effect & columns layout override */
 .home-category-cards-section .col {
     transition: all 0.35s ease;
+    flex-basis: 20% !important;
+    max-width: 20% !important;
+    width: 20% !important;
+    padding: 0 10px !important;
+    margin-bottom: 0 !important;
 }
 
 .home-category-cards-section .col:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(247, 116, 38, 0.25) !important;
+}
+
+@media (max-width: 849px) {
+    .home-category-cards-section .col {
+        flex-basis: 33.3333% !important;
+        max-width: 33.3333% !important;
+        width: 33.3333% !important;
+    }
+}
+
+@media (max-width: 549px) {
+    .home-category-cards-section .col {
+        flex-basis: 50% !important;
+        max-width: 50% !important;
+        width: 50% !important;
+    }
 }
 
 
