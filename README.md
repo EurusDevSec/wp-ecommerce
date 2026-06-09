@@ -20,45 +20,78 @@ cd wp-ecommerce
 ./setup.sh
 ```
 
-## 3. Install database-client extension from VS Code Marketplace
-## or antigravity, cursor, kiro,...
-## Connect to database
-Host: localhost
-Port: 8080
-Database: wordpress
-User: wordpress
-Password: [PASSWORD]
+## 3. Chạy môi trường Local
+* **Trang chủ WordPress:** `http://localhost:8000`
+* **Trang quản trị (Admin):** `http://localhost:8000/wp-admin`
+* **Công cụ quản lý Database:** `http://localhost:8080` (Kết nối Host: `db`, Database/User/Password: `wordpress`)
 
+---
 
+## 👥 QUY TRÌNH PHỐI HỢP NHÓM & ĐỒNG BỘ MEDIA (TEAM WORKFLOW)
 
-# Access WordPress admin
-http://localhost:8000/wp-admin
+Để tránh xung đột database và tránh việc push hàng Gigabyte ảnh lên Git gây nặng repo, nhóm 3 người thống nhất quy trình làm việc sau:
 
-# Access WordPress site
-http://localhost:8000
+```mermaid
+graph TD
+    subgraph LocalDev [MÔI TRƯỜNG PHÁT TRIỂN LOCAL]
+        FE[Khoa - Dev FE] -->|Thiết kế UX Builder + CSS| FEDB[(Database Local FE)]
+        BE[Dev BE] -->|Lập trình logic PHP trong 'inc/'| BEFiles[Code Logic Local]
+    end
 
-# Access database client
-http://localhost:8080
+    subgraph SyncFE [ĐỒNG BỘ FRONTEND]
+        FE -->|1. Xuất DB| FEExport["./db-export.sh"]
+        FEExport -->|Tạo ra| FEDBSql["db/init.sql (Chứa giao diện mới)"]
+        FEDBSql -->|2. Git Commit & Push| FEBranch[Branch: feature/frontend-xxx]
+        FE -->|3. Đẩy ảnh vật lý lên VPS| FESync["./media-vps-sync.sh -> Chọn 1 (Push)"]
+    end
 
+    subgraph SyncBE [ĐỒNG BỘ BACKEND]
+        BEFiles -->|Git Commit & Push| BEBranch[Branch: feature/backend-xxx]
+    end
 
+    subgraph ReviewMerge [PM REVIEW & DUYỆT PR]
+        FEBranch -->|Tạo Pull Request| PR[GitHub Pull Request]
+        BEBranch -->|Tạo Pull Request| PR
+        PR -->|PM Duyệt & Merge| Merge[Nhánh main]
+    end
 
-# How to contribute
+    subgraph DeployStaging [CẬP NHẬT VPS STAGING]
+        Merge -->|PM kéo code về VPS| PullVPS["git pull origin main"]
+        PullVPS -->|PM import DB trên VPS| VPSImport["./db-import.sh"]
+        VPSImport -->|Chọn 'y' và đổi URL thành| LiveDomain["http://167.172.91.249"]
+        LiveDomain -->|Kết quả| StagingOK[Staging VPS Live & Hiển thị ảnh 🚀]
+    end
 
-## 👥 How to contribute
+    subgraph SyncBack [ĐỒNG BỘ NGƯỢC CHO THÀNH VIÊN]
+        Merge -->|Devs kéo code mới| GitPull["git pull origin main"]
+        GitPull -->|Chạy ở local| ImportLocal["./db-import.sh"]
+        ImportLocal -->|Chọn 'n' (Không đổi URL)| LocalOK[Local Devs hiển thị giao diện mới nhất 💻]
+    end
+```
 
-### 🌿 Git Branching Convention
-Để tránh xung đột code, cả nhóm thống nhất không push trực tiếp lên nhánh `main`. Quy trình làm việc như sau:
-1. Tạo nhánh mới từ `main` để làm tính năng:
-   * Tính năng mới: `feature/[tên-tính-năng]` (Ví dụ: `feature/custom-header`, `feature/payment-momo`)
-   * Sửa lỗi: `bugfix/[lỗi-cần-sửa]` (Ví dụ: `bugfix/checkout-mobile-broken`)
-   * Cải tiến/Refactor: `refactor/[tên-cải-tiến]`
-2. Sau khi làm xong ở local và test kỹ ➔ Push nhánh đó lên GitHub và tạo **Pull Request (PR)** vào nhánh `main`.
-3. Người review code ➔ Merge vào `main` ➔ GitHub Actions sẽ tự động deploy lên server staging (`tt.phung.vn`).
+### 1. Hướng dẫn cho Khoa (Dev FE)
+Mỗi khi thiết kế xong layout hoặc thêm sản phẩm kèm ảnh mới ở local:
+1. Chạy `./db-export.sh` ở terminal local để xuất DB mới nhất ra file `db/init.sql`.
+2. Commit và push file code + `db/init.sql` lên branch cá nhân, tạo Pull Request vào `main`.
+3. Chạy `./media-vps-sync.sh` ở terminal local -> chọn **`1` (Push)** để đồng bộ ảnh vật lý mới lên VPS Staging.
 
-### 💬 Commit Message Convention
-Viết commit message rõ ràng theo định dạng: `<type>: <description>`
-*   `feat`: Thêm tính năng mới (Ví dụ: `feat: add momo payment gateway`)
-*   `fix`: Sửa lỗi (Ví dụ: `fix: resolve mobile layout breaking on cart page`)
-*   `style`: Thay đổi giao diện, CSS (Ví dụ: `style: change primary button color to green`)
-*   `chore`: Cập nhật cấu hình, thư viện, script (Ví dụ: `chore: update docker-compose for wp-cli`)
-*   `docs`: Cập nhật tài liệu, README (Ví dụ: `docs: update git convention`)
+### 2. Hướng dẫn cho Dev BE
+Khi cần code tiếp dựa trên giao diện mới nhất của Khoa:
+1. Chạy `git pull origin main` để lấy code và database mới nhất.
+2. Chạy `./db-import.sh` -> chọn **`n`** (Không đổi URL) để nhập giao diện mới vào máy local.
+3. **Hình ảnh:** Không cần tải ảnh về máy. Trình duyệt local của BE sẽ tự động tải các ảnh bị thiếu từ VPS Staging nhờ cấu hình chuyển tiếp tự động trong [.htaccess](file:///R:/_Projects/Eurus_Workspace/wp-ecommerce/src/wp-content/uploads/.htaccess).
+
+### 3. Hướng dẫn cho PM / DevOps (Bạn)
+Khi duyệt PR và đưa web lên Staging:
+1. Merge PR của Khoa/BE trên GitHub vào `main`.
+2. SSH vào VPS (`ssh root@167.172.91.249`), di chuyển tới `/var/www/wp-ecommerce/` và chạy:
+   ```bash
+   git pull origin main
+   ./db-import.sh
+   ```
+   *(Khi import hỏi đổi URL, chọn **`y`**, URL cũ nhấn Enter, URL mới nhập **`http://167.172.91.249`**)*.
+3. Nếu trang chủ Staging bị lỗi vỡ ảnh (thiếu ảnh thu nhỏ), chạy lệnh media-regenerate trên VPS:
+   ```bash
+   docker-compose run --rm --user 33 cli media regenerate --yes --allow-root
+   ```
+

@@ -23,19 +23,39 @@ read -r -p "Chọn hành động của bạn [1-3]: " choice
 case $choice in
     1)
         echo "📤 Đang quét và đồng bộ ảnh từ Local lên VPS..."
-        # Loại trừ file .htaccess để tránh đè cấu hình online
-        if rsync -avzh --progress --exclude='.htaccess' "$LOCAL_PATH" "$SSH_USER"@"$VPS_IP":"$REMOTE_PATH"; then
-            echo "✅ Đồng bộ ảnh lên VPS thành công!"
+        if command -v rsync >/dev/null 2>&1; then
+            # Loại trừ file .htaccess để tránh đè cấu hình online
+            if rsync -avzh --progress --exclude='.htaccess' "$LOCAL_PATH" "$SSH_USER"@"$VPS_IP":"$REMOTE_PATH"; then
+                echo "✅ Đồng bộ ảnh lên VPS (bằng rsync) thành công!"
+            else
+                echo "❌ Lỗi: Không thể đồng bộ qua rsync. Hãy chắc chắn có quyền SSH vào VPS."
+            fi
         else
-            echo "❌ Lỗi: Không thể đồng bộ qua rsync. Hãy chắc chắn máy đã cài rsync và cấu hình SSH Key cho user '$SSH_USER' trên CloudPanel."
+            echo "⚠️ Không tìm thấy 'rsync' ở local (thường gặp trên Windows Git Bash)."
+            echo "🔄 Tự động chuyển sang sử dụng SCP (sẽ tải toàn bộ file)..."
+            if scp -r "src/wp-content/uploads" "$SSH_USER"@"$VPS_IP":/var/www/wp-ecommerce/src/wp-content/; then
+                echo "✅ Đồng bộ ảnh lên VPS (bằng SCP) thành công!"
+            else
+                echo "❌ Lỗi: Không thể tải ảnh qua SCP. Hãy chắc chắn có quyền SSH vào VPS."
+            fi
         fi
         ;;
     2)
         echo "📥 Đang tải ảnh mới nhất từ VPS về Local..."
-        if rsync -avzh --progress --exclude='.htaccess' "$SSH_USER"@"$VPS_IP":"$REMOTE_PATH" "$LOCAL_PATH"; then
-            echo "✅ Tải ảnh từ VPS về Local thành công!"
+        if command -v rsync >/dev/null 2>&1; then
+            if rsync -avzh --progress --exclude='.htaccess' "$SSH_USER"@"$VPS_IP":"$REMOTE_PATH" "$LOCAL_PATH"; then
+                echo "✅ Tải ảnh từ VPS về Local (bằng rsync) thành công!"
+            else
+                echo "❌ Lỗi: Không thể tải ảnh qua rsync. Hãy chắc chắn có quyền SSH vào VPS."
+            fi
         else
-            echo "❌ Lỗi: Không thể đồng bộ qua rsync. Hãy chắc chắn máy đã cài rsync và cấu hình SSH Key cho user '$SSH_USER' trên CloudPanel."
+            echo "⚠️ Không tìm thấy 'rsync' ở local (thường gặp trên Windows Git Bash)."
+            echo "🔄 Tự động chuyển sang sử dụng SCP (sẽ tải toàn bộ file)..."
+            if scp -r "$SSH_USER"@"$VPS_IP":/var/www/wp-ecommerce/src/wp-content/uploads "src/wp-content/"; then
+                echo "✅ Tải ảnh từ VPS về Local (bằng SCP) thành công!"
+            else
+                echo "❌ Lỗi: Không thể tải ảnh qua SCP. Hãy chắc chắn có quyền SSH vào VPS."
+            fi
         fi
         ;;
     *)
