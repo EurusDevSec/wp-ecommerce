@@ -681,6 +681,7 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
     height: auto !important;
     min-height: 0 !important;
     padding-top: 0 !important;
+    background-color: transparent !important;
 }
 
 .home-category-cards-section .banner-inner {
