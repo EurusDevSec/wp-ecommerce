@@ -166,6 +166,31 @@ function dev_hardcode_hkt_menu( $items, $menu, $args ) {
     return $items;
 }
 
+/**
+ * Điều chỉnh các element trên Header Bottom bằng code (Code-driven layout)
+ * Đưa Menu chính sang trái, Ô tìm kiếm sang phải, dọn dẹp các vị trí khác
+ */
+add_filter( 'theme_mod_header_elements_left', 'dev_filter_header_elements_left' );
+function dev_filter_header_elements_left( $value ) {
+    return array(); // Bỏ search-form ở header main
+}
+
+add_filter( 'theme_mod_header_elements_bottom_left', 'dev_filter_header_bottom_left' );
+function dev_filter_header_bottom_left( $value ) {
+    return array( 'nav' ); // Đưa Main Menu sang bên trái của header bottom
+}
+
+add_filter( 'theme_mod_header_elements_bottom_center', 'dev_filter_header_bottom_center' );
+function dev_filter_header_bottom_center( $value ) {
+    return array(); // Xóa element ở giữa của header bottom
+}
+
+add_filter( 'theme_mod_header_elements_bottom_right', 'dev_filter_header_bottom_right' );
+function dev_filter_header_bottom_right( $value ) {
+    return array( 'search-form' ); // Đưa ô tìm kiếm (search-form) sang bên phải của header bottom
+}
+
+
 
 
 

@@ -11,21 +11,21 @@ Version: 3.0
 /* ==========================================================================
    DESIGN TOKENS & SYSTEM VARIABLES (AC-FE-01)
    ========================================================================== */
-:root {
-    --primary-bg: #FFFFFF;
-    --secondary-bg: #FAF9F6;
-    --border-color-light: #eaeaea;
-    --text-color-slate: #000000;
-    --primary-color: #f77426;
-    --fs-color-primary: #f77426;
-    --fs-color-secondary: #f77426;
-    --fs-color-success: #7a9c59;
-    --fs-color-alert: #b20000;
-    --accent-color-hover: #e0651b;
-    --border-radius-large: 15px;
-    --border-radius-minimal: 4px;
-    --glow-color: rgba(0, 142, 255, 0.12);
-    --glow-hover-color: #84c8ff;
+html:root {
+    --primary-bg: #FFFFFF !important;
+    --secondary-bg: #FAF9F6 !important;
+    --border-color-light: #eaeaea !important;
+    --text-color-slate: #000000 !important;
+    --primary-color: #f77426 !important;
+    --fs-color-primary: #f77426 !important;
+    --fs-color-secondary: #f77426 !important;
+    --fs-color-success: #7a9c59 !important;
+    --fs-color-alert: #b20000 !important;
+    --accent-color-hover: #e0651b !important;
+    --border-radius-large: 15px !important;
+    --border-radius-minimal: 4px !important;
+    --glow-color: rgba(0, 142, 255, 0.12) !important;
+    --glow-hover-color: #84c8ff !important;
 }
 
 /* ==========================================================================
@@ -36,6 +36,14 @@ body {
     color: var(--text-color-slate);
     font-family: 'Lato', sans-serif;
     font-weight: 400;
+}
+
+#wrapper, #main {
+    background-image: url("https://thoitrang19.mauthemewp.com/wp-content/themes/nunucorners/assets/images/background.png") !important;
+    background-size: auto !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    background-position: top center !important;
 }
 
 h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
@@ -659,9 +667,9 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
 .home-category-cards-section {
     background-color: #ffffff !important;
     border: 1px solid #eaeaea !important;
-    border-radius: 20px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02) !important;
-    padding: 15px !important;
+    border-radius: 25px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
+    padding: 20px !important;
     margin-top: 25px !important;
     margin-bottom: 25px !important;
     overflow: hidden;
