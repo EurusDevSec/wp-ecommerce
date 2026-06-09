@@ -8,35 +8,396 @@ Version: 3.0
 
 /*************** ADD CUSTOM CSS HERE.   ***************/
 
-.flatsome-child-product-thumbnails {
-display: grid;
-grid-template-columns: repeat(4, minmax(0, 1fr));
-gap: 0.75rem;
-margin-top: 1rem;
+/* ==========================================================================
+   DESIGN TOKENS & SYSTEM VARIABLES (AC-FE-01)
+   ========================================================================== */
+:root {
+    --primary-bg: #FFFFFF;
+    --secondary-bg: #FAF9F6;
+    --border-color-light: #eaeaea;
+    --text-color-slate: #333333;
+    --accent-color-matte-black: #1A1A1A;
+    --accent-color-hover: #333333;
+    --border-radius-minimal: 2px;
 }
 
-.flatsome-child-product-thumbnails .woocommerce-product-gallery__image {
-border: 1px solid var(--border-color, #e1e1e1);
-border-radius: 0.75rem;
-overflow: hidden;
-transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+/* ==========================================================================
+   MINIMALIST GLOBAL LAYOUTS & BORDERS (AC-FE-01)
+   ========================================================================== */
+body {
+    background-color: var(--primary-bg);
+    color: var(--text-color-slate);
+    font-family: 'Inter', sans-serif;
 }
 
-.flatsome-child-product-thumbnails .woocommerce-product-gallery__image img {
-display: block;
-width: 100%;
-height: auto;
-object-fit: cover;
+h1, h2, h3, h4, h5, h6, .uppercase {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color-slate);
 }
 
-.flatsome-child-product-thumbnails .woocommerce-product-gallery__image:hover {
-border-color: var(--accent-color, #2ea3f2);
-transform: translateY(-2px);
-box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+/* Remove heavy card shadows, use thin hairline borders */
+.product-card, 
+.product-box,
+.box-image,
+.cart-container,
+.checkout-group {
+    border: 1px solid var(--border-color-light) !important;
+    box-shadow: none !important;
+    border-radius: var(--border-radius-minimal) !important;
 }
 
-@media only screen and (max-width: 48em) {
-.flatsome-child-product-thumbnails {
-grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Minimalist SALE flash badge styling (AC-FE-01) */
+.badge-container .badge {
+    border-radius: 0 !important;
+    background-color: var(--accent-color-matte-black) !important;
+    color: #FFFFFF !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+    padding: 4px 8px !important;
 }
+
+/* ==========================================================================
+   PRIMARY CTAs & BUTTON OVERRIDES (AC-FE-01)
+   ========================================================================== */
+.button.checkout,
+.button.add_to_cart_button,
+.single_add_to_cart_button,
+.woocommerce-button,
+.dev-summary-actions .button.checkout {
+    background-color: var(--accent-color-matte-black) !important;
+    color: #FFFFFF !important;
+    border: 1px solid var(--accent-color-matte-black) !important;
+    border-radius: var(--border-radius-minimal) !important;
+    font-family: 'Montserrat', sans-serif !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    transition: all 0.3s ease !important;
+}
+
+.button.checkout:hover,
+.button.add_to_cart_button:hover,
+.single_add_to_cart_button:hover,
+.woocommerce-button:hover,
+.dev-summary-actions .button.checkout:hover {
+    background-color: var(--accent-color-hover) !important;
+    border-color: var(--accent-color-hover) !important;
+}
+
+/* ==========================================================================
+   SINGLE PRODUCT CUSTOM SWATCHES (AC-FE-04)
+   ========================================================================== */
+.dev-swatches-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.dev-swatch-item {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.25s ease;
+}
+
+/* Color Swatches (Round Circles) */
+.dev-color-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    padding: 2px;
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dev-swatch-color-circle {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.dev-swatch-color-circle.white-border {
+    border: 1px solid #ddd;
+}
+
+.dev-color-swatch.active {
+    border-color: var(--accent-color-matte-black);
+}
+
+/* Size Swatches (Squares) */
+.dev-size-swatch {
+    width: 44px; /* Tap Target size compliance */
+    height: 44px; /* Tap Target size compliance */
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    border-radius: var(--border-radius-minimal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dev-swatch-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-color-slate);
+}
+
+.dev-size-swatch.active {
+    background-color: var(--accent-color-matte-black);
+    border-color: var(--accent-color-matte-black);
+}
+
+.dev-size-swatch.active .dev-swatch-text {
+    color: #ffffff;
+}
+
+.dev-size-swatch:hover {
+    border-color: var(--accent-color-matte-black);
+}
+
+/* Out of Stock & Unavailable Swatches: Faded and Crossed Out (AC-FE-04) */
+.dev-swatch-item.disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+}
+
+.dev-swatch-item.disabled::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background-color: #ff3b30;
+    transform: rotate(-45deg);
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   SIZE GUIDE POPUP MODAL
+   ========================================================================== */
+.dev-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 1000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.dev-modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dev-modal-content {
+    background-color: #ffffff;
+    padding: 30px;
+    width: 500px;
+    max-width: 90%;
+    border-radius: var(--border-radius-minimal);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.dev-modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #888;
+    cursor: pointer;
+    line-height: 1;
+    padding: 5px;
+}
+
+.dev-modal-close-btn:hover {
+    color: #000;
+}
+
+.dev-modal-title {
+    margin-top: 0;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-color-matte-black);
+}
+
+.dev-size-guide-link {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.dev-size-guide-link:hover {
+    color: #000;
+}
+
+.dev-size-guide-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.dev-size-guide-table th, 
+.dev-size-guide-table td {
+    border: 1px solid #eee;
+    padding: 10px;
+    text-align: center;
+}
+
+.dev-size-guide-table th {
+    background-color: #fcfcfc;
+    font-weight: 700;
+    color: #111;
+}
+
+.dev-modal-footer {
+    font-size: 11px;
+    color: #777;
+    margin-top: 15px;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   TRUST BADGES (AC-FE-04)
+   ========================================================================== */
+.dev-trust-badges-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-color-light);
+}
+
+.dev-trust-badge-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dev-badge-icon {
+    font-size: 20px;
+}
+
+.dev-badge-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.dev-badge-info strong {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-color-matte-black);
+    letter-spacing: 0.5px;
+}
+
+.dev-badge-info span {
+    font-size: 11px;
+    color: #777;
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   MOBILE FIXED BOTTOM NAVIGATION (AC-FE-07)
+   ========================================================================== */
+.dev-mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #ffffff;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 99999;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.dev-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+    color: #666 !important;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    min-width: 44px; /* Tap Target compliance */
+    min-height: 44px; /* Tap Target compliance */
+}
+
+.dev-nav-icon {
+    font-size: 20px;
+}
+
+.dev-nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.dev-nav-item:hover,
+.dev-nav-item.active {
+    color: var(--accent-color-matte-black) !important;
+}
+
+/* Cart bubble count */
+.dev-nav-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dev-cart-bubble {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: #d32f2f;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    line-height: 1;
+}
+
+/* Responsive Hide/Show bottom nav */
+@media (min-width: 768px) {
+    .dev-mobile-bottom-nav {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-bottom: 60px !important;
+    }
 }

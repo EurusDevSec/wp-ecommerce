@@ -23,8 +23,8 @@ function dev_add_vietqr_to_bacs_thankyou( $order_id ) {
 
     // Cấu hình tài khoản Vietcombank (VCB) thụ hưởng của HKT FASHION
     $bank_id      = 'VCB'; // Vietcombank
-    $account_no   = '0011004123456'; // Số tài khoản mẫu
-    $account_name = 'CONG TY HKT FASHION'; // Tên chủ tài khoản (Không dấu)
+    $account_no   = '0123456789999'; // Số tài khoản HKT Fashion
+    $account_name = 'CONG TY CO PHAN HKT FASHION'; // Tên chủ tài khoản (Không dấu)
 
     $amount = (int) $order->get_total();
     
@@ -83,8 +83,8 @@ function dev_add_vietqr_to_bacs_email( $order, $sent_to_admin, $plain_text, $ema
 
     // Cấu hình tài khoản Vietcombank (VCB) thụ hưởng của HKT FASHION
     $bank_id      = 'VCB';
-    $account_no   = '0011004123456';
-    $account_name = 'CONG TY HKT FASHION';
+    $account_no   = '0123456789999';
+    $account_name = 'CONG TY CO PHAN HKT FASHION';
 
     $amount = (int) $order->get_total();
     

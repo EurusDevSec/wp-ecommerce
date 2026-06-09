@@ -59,11 +59,12 @@ function dev_get_vietnam_divisions_data() {
 add_action( 'rest_api_init', 'dev_register_vietnam_divisions_routes' );
 
 function dev_register_vietnam_divisions_routes() {
+    // --- KHÔNG GIAN TÊN CŨ (dev/v1) ---
     // 2.1. Lấy danh sách Tỉnh/Thành: GET /wp-json/dev/v1/provinces
     register_rest_route( 'dev/v1', '/provinces', array(
         'methods'             => 'GET',
         'callback'            => 'dev_api_get_provinces_callback',
-        'permission_callback' => '__return_true' // Cho phép mọi khách truy cập gọi API này công khai
+        'permission_callback' => '__return_true'
     ) );
 
     // 2.2. Lấy danh sách Quận/Huyện theo Tỉnh: GET /wp-json/dev/v1/districts?province_id=XX
@@ -77,6 +78,28 @@ function dev_register_vietnam_divisions_routes() {
     register_rest_route( 'dev/v1', '/wards', array(
         'methods'             => 'GET',
         'callback'            => 'dev_api_get_wards_callback',
+        'permission_callback' => '__return_true'
+    ) );
+
+    // --- KHÔNG GIAN TÊN MỚI CHUẨN ĐẶC TẢ (hkt/v1) ---
+    // GET /wp-json/hkt/v1/provinces
+    register_rest_route( 'hkt/v1', '/provinces', array(
+        'methods'             => 'GET',
+        'callback'            => 'dev_api_get_provinces_callback',
+        'permission_callback' => '__return_true'
+    ) );
+
+    // GET /wp-json/hkt/v1/districts?province_id=XX
+    register_rest_route( 'hkt/v1', '/districts', array(
+        'methods'             => 'GET',
+        'callback'            => 'dev_api_get_hkt_districts_callback',
+        'permission_callback' => '__return_true'
+    ) );
+
+    // GET /wp-json/hkt/v1/wards?district_id=XXX
+    register_rest_route( 'hkt/v1', '/wards', array(
+        'methods'             => 'GET',
+        'callback'            => 'dev_api_get_hkt_wards_callback',
         'permission_callback' => '__return_true'
     ) );
 }
@@ -165,3 +188,72 @@ function dev_api_get_wards_callback( $request ) {
 
     return rest_ensure_response( $wards );
 }
+
+/**
+ * 3.4. Trả về các Quận/Huyện dựa trên mã Tỉnh truyền vào với định dạng hkt/v1 (district_id, district_name)
+ */
+function dev_api_get_hkt_districts_callback( $request ) {
+    $province_id = sanitize_text_field( $request->get_param( 'province_id' ) );
+    
+    if ( empty( $province_id ) ) {
+        return new WP_Error( 'missing_parameter', 'Vui lòng cung cấp tham số province_id', array( 'status' => 400 ) );
+    }
+
+    $data = dev_get_vietnam_divisions_data();
+    $districts = array();
+
+    if ( is_array( $data ) ) {
+        foreach ( $data as $province ) {
+            if ( $province['Id'] === $province_id ) {
+                if ( isset( $province['Districts'] ) && is_array( $province['Districts'] ) ) {
+                    foreach ( $province['Districts'] as $district ) {
+                        $districts[] = array(
+                            'district_id'   => $district['Id'],
+                            'district_name' => $district['Name']
+                        );
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    return rest_ensure_response( $districts );
+}
+
+/**
+ * 3.5. Trả về các Xã/Phường dựa trên mã Quận/Huyện truyền vào với định dạng hkt/v1 (ward_id, ward_name)
+ */
+function dev_api_get_hkt_wards_callback( $request ) {
+    $district_id = sanitize_text_field( $request->get_param( 'district_id' ) );
+
+    if ( empty( $district_id ) ) {
+        return new WP_Error( 'missing_parameter', 'Vui lòng cung cấp tham số district_id', array( 'status' => 400 ) );
+    }
+
+    $data = dev_get_vietnam_divisions_data();
+    $wards = array();
+
+    if ( is_array( $data ) ) {
+        foreach ( $data as $province ) {
+            if ( isset( $province['Districts'] ) && is_array( $province['Districts'] ) ) {
+                foreach ( $province['Districts'] as $district ) {
+                    if ( $district['Id'] === $district_id ) {
+                        if ( isset( $district['Wards'] ) && is_array( $district['Wards'] ) ) {
+                            foreach ( $district['Wards'] as $ward ) {
+                                $wards[] = array(
+                                    'ward_id'   => $ward['Id'],
+                                    'ward_name' => $ward['Name']
+                                );
+                            }
+                        }
+                        break 2;
+                    }
+                }
+            }
+        }
+    }
+
+    return rest_ensure_response( $wards );
+}
+

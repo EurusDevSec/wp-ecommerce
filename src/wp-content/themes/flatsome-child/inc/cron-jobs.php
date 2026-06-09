@@ -48,7 +48,7 @@ function dev_cancel_expired_orders_callback() {
     // Cấu hình tham số truy vấn đơn hàng (Sử dụng CRUD API tương thích HPOS)
     $args = array(
         'status'         => array( 'on-hold', 'pending' ), // Đơn đang chờ thanh toán hoặc tạm giữ hàng
-        'payment_method' => array( 'dev_banking', 'dev_qr' ), // Chỉ quét 2 cổng thanh toán custom của chúng ta
+        'payment_method' => array( 'bacs', 'dev_banking', 'dev_qr' ), // Quét cả cổng BACS mặc định và các cổng custom
         'date_created'   => '<' . $date_limit, // Được tạo trước ngưỡng 30 phút
         'limit'          => -1, // Lấy tất cả các đơn thỏa mãn
     );

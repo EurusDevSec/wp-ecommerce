@@ -20,7 +20,7 @@ function dev_optimize_checkout_fields( $fields ) {
         unset( $fields['billing']['billing_company'] ); // Bỏ Tên công ty
     }
     if ( isset( $fields['billing']['billing_address_2'] ) ) {
-        unset( $fields['billing']['billing_address_2'] ); // Bỏ Địa chỉ dòng 2
+        unset( $fields['billing']['billing_address_2'] ); // Bỏ Địa chỉ dòng 2 mặc định
     }
     if ( isset( $fields['billing']['billing_postcode'] ) ) {
         unset( $fields['billing']['billing_postcode'] ); // Bỏ Mã bưu điện
@@ -44,6 +44,12 @@ function dev_optimize_checkout_fields( $fields ) {
     $fields['billing']['billing_state']['options']     = array( '' => 'Chọn Tỉnh / Thành phố' );
     $fields['billing']['billing_state']['class']       = array( 'form-row-wide' );
 
+    $fields['shipping']['shipping_state']['type']        = 'select';
+    $fields['shipping']['shipping_state']['label']       = 'Tỉnh / Thành phố';
+    $fields['shipping']['shipping_state']['placeholder'] = 'Chọn Tỉnh / Thành phố';
+    $fields['shipping']['shipping_state']['options']     = array( '' => 'Chọn Tỉnh / Thành phố' );
+    $fields['shipping']['shipping_state']['class']       = array( 'form-row-wide' );
+
     // 1.4. Đăng ký thêm trường Quận/Huyện (District) dưới dạng thẻ select động
     $fields['billing']['billing_district'] = array(
         'label'       => 'Quận / Huyện',
@@ -54,6 +60,15 @@ function dev_optimize_checkout_fields( $fields ) {
         'priority'    => 75 // Xếp sau trường Tỉnh/Thành
     );
 
+    $fields['shipping']['shipping_district'] = array(
+        'label'       => 'Quận / Huyện',
+        'required'    => true,
+        'class'       => array( 'form-row-first' ),
+        'type'        => 'select',
+        'options'     => array( '' => 'Chọn Quận / Huyện' ),
+        'priority'    => 75
+    );
+
     // 1.5. Đăng ký thêm trường Xã/Phường (Ward) dưới dạng thẻ select động
     $fields['billing']['billing_ward'] = array(
         'label'       => 'Xã / Phường / Thị trấn',
@@ -62,6 +77,15 @@ function dev_optimize_checkout_fields( $fields ) {
         'type'        => 'select',
         'options'     => array( '' => 'Chọn Xã / Phường / Thị trấn' ),
         'priority'    => 76 // Xếp sau trường Quận/Huyện
+    );
+
+    $fields['shipping']['shipping_ward'] = array(
+        'label'       => 'Xã / Phường / Thị trấn',
+        'required'    => true,
+        'class'       => array( 'form-row-last' ),
+        'type'        => 'select',
+        'options'     => array( '' => 'Chọn Xã / Phường / Thị trấn' ),
+        'priority'    => 76
     );
 
     // Định dạng lại chiều rộng tên và họ xếp song song
@@ -85,12 +109,36 @@ function dev_save_checkout_address_metadata( $order, $data ) {
     $district = isset( $_POST['billing_district'] ) ? sanitize_text_field( $_POST['billing_district'] ) : '';
     $ward     = isset( $_POST['billing_ward'] ) ? sanitize_text_field( $_POST['billing_ward'] ) : '';
 
-    // Lưu dạng chuỗi chữ (ví dụ: "Quận Ba Đình"), không lưu mã số ID
+    // Lưu dạng chuỗi chữ vào meta tùy chỉnh để tương thích code cũ
     if ( ! empty( $district ) ) {
         $order->update_meta_data( '_billing_district', $district );
+        // ĐỒNG BỘ VÀO BẢNG CHUẨN HPOS/METADATA THEO TIÊU CHÍ AC-BE-05:
+        $order->set_billing_city( $district );
     }
     if ( ! empty( $ward ) ) {
         $order->update_meta_data( '_billing_ward', $ward );
+        // ĐỒNG BỘ VÀO BẢNG CHUẨN HPOS/METADATA THEO TIÊU CHÍ AC-BE-05:
+        $order->set_billing_address_2( $ward );
+    }
+
+    // Xử lý thông tin nhận hàng (Shipping) nếu chọn địa chỉ khác
+    $shipping_district = isset( $_POST['shipping_district'] ) ? sanitize_text_field( $_POST['shipping_district'] ) : '';
+    $shipping_ward     = isset( $_POST['shipping_ward'] ) ? sanitize_text_field( $_POST['shipping_ward'] ) : '';
+
+    if ( ! empty( $shipping_district ) ) {
+        $order->update_meta_data( '_shipping_district', $shipping_district );
+        $order->set_shipping_city( $shipping_district );
+    } elseif ( ! empty( $district ) ) {
+        // Fallback về billing nếu không nhập shipping riêng biệt
+        $order->set_shipping_city( $district );
+    }
+
+    if ( ! empty( $shipping_ward ) ) {
+        $order->update_meta_data( '_shipping_ward', $shipping_ward );
+        $order->set_shipping_address_2( $shipping_ward );
+    } elseif ( ! empty( $ward ) ) {
+        // Fallback về billing nếu không nhập shipping riêng biệt
+        $order->set_shipping_address_2( $ward );
     }
 }
 
@@ -100,15 +148,30 @@ function dev_save_checkout_address_metadata( $order, $data ) {
 add_filter( 'woocommerce_formatted_billing_address', 'dev_custom_formatted_billing_address_display', 10, 2 );
 
 function dev_custom_formatted_billing_address_display( $address, $order ) {
-    // Đọc metadata sử dụng CRUD API tương thích HPOS
     $district = $order->get_meta( '_billing_district' );
     $ward     = $order->get_meta( '_billing_ward' );
 
     if ( ! empty( $ward ) ) {
-        $address['address_2'] = $ward; // Chèn xã phường vào địa chỉ dòng 2
+        $address['address_2'] = $ward;
     }
     if ( ! empty( $district ) ) {
-        $address['city'] = $district . ', ' . $address['city']; // Ghép quận huyện trước tỉnh thành
+        $address['city'] = $district . ', ' . $address['city'];
+    }
+
+    return $address;
+}
+
+add_filter( 'woocommerce_formatted_shipping_address', 'dev_custom_formatted_shipping_address_display', 10, 2 );
+
+function dev_custom_formatted_shipping_address_display( $address, $order ) {
+    $district = $order->get_meta( '_shipping_district' );
+    $ward     = $order->get_meta( '_shipping_ward' );
+
+    if ( ! empty( $ward ) ) {
+        $address['address_2'] = $ward;
+    }
+    if ( ! empty( $district ) ) {
+        $address['city'] = $district . ', ' . $address['city'];
     }
 
     return $address;
@@ -125,7 +188,6 @@ function dev_checkout_address_dropdown_script() {
     }
     ?>
     <style>
-        /* Biến chữ thông báo lỗi inline của WooCommerce thành màu đỏ */
         .woocommerce-checkout .checkout-inline-error-message {
             color: #d32f2f !important;
             font-size: 13px !important;
@@ -133,7 +195,6 @@ function dev_checkout_address_dropdown_script() {
             margin-top: 5px !important;
             font-weight: 500 !important;
         }
-        /* Viền đỏ và nền hồng nhạt cho các ô nhập liệu bị lỗi */
         .woocommerce-checkout .form-row.woocommerce-invalid input.input-text,
         .woocommerce-checkout .form-row.woocommerce-invalid select,
         .woocommerce-checkout .form-row.woocommerce-invalid textarea {
@@ -143,88 +204,94 @@ function dev_checkout_address_dropdown_script() {
     </style>
     <script>
         jQuery(document).ready(function($) {
-            var provinceSelect = $('#billing_state');
-            var districtSelect = $('#billing_district');
-            var wardSelect = $('#billing_ward');
+            function devInitAddressFields(prefix) {
+                var provinceSelect = $('#' + prefix + '_state');
+                var districtSelect = $('#' + prefix + '_district');
+                var wardSelect = $('#' + prefix + '_ward');
 
-            if (!provinceSelect.length) return;
+                if (!provinceSelect.length) return;
 
-            // 4.1. Tải danh sách Tỉnh/Thành khi load trang
-            $.ajax({
-                url: '/wp-json/dev/v1/provinces',
-                method: 'GET',
-                success: function(data) {
-                    provinceSelect.empty().append('<option value="">Chọn Tỉnh / Thành phố</option>');
-                    $.each(data, function(i, province) {
-                        provinceSelect.append($('<option>', {
-                            value: province.name,
-                            text: province.name,
-                            'data-id': province.id
-                        }));
-                    });
-                    provinceSelect.trigger('change.select2');
-                }
-            });
-
-            // 4.2. Khi chọn Tỉnh/Thành -> Tải danh sách Quận/Huyện tương ứng
-            provinceSelect.on('change', function() {
-                var selectedOption = provinceSelect.find('option:selected');
-                var provinceId = selectedOption.data('id');
-
-                districtSelect.empty().append('<option value="">Chọn Quận / Huyện</option>');
-                wardSelect.empty().append('<option value="">Chọn Xã / Phường / Thị trấn</option>');
-
-                if (!provinceId) {
-                    districtSelect.trigger('change.select2');
-                    wardSelect.trigger('change.select2');
-                    return;
-                }
-
+                // 4.1. Tải danh sách Tỉnh/Thành khi load trang qua API hkt/v1
                 $.ajax({
-                    url: '/wp-json/dev/v1/districts',
+                    url: '/wp-json/hkt/v1/provinces',
                     method: 'GET',
-                    data: { province_id: provinceId },
                     success: function(data) {
-                        $.each(data, function(i, district) {
-                            districtSelect.append($('<option>', {
-                                value: district.name,
-                                text: district.name,
-                                'data-id': district.id
+                        provinceSelect.empty().append('<option value="">Chọn Tỉnh / Thành phố</option>');
+                        $.each(data, function(i, province) {
+                            provinceSelect.append($('<option>', {
+                                value: province.name,
+                                text: province.name,
+                                'data-id': province.id
                             }));
                         });
+                        provinceSelect.trigger('change.select2');
+                    }
+                });
+
+                // 4.2. Khi chọn Tỉnh/Thành -> Tải danh sách Quận/Huyện tương ứng qua API hkt/v1
+                provinceSelect.on('change', function() {
+                    var selectedOption = provinceSelect.find('option:selected');
+                    var provinceId = selectedOption.data('id');
+
+                    districtSelect.empty().append('<option value="">Chọn Quận / Huyện</option>');
+                    wardSelect.empty().append('<option value="">Chọn Xã / Phường / Thị trấn</option>');
+
+                    if (!provinceId) {
                         districtSelect.trigger('change.select2');
                         wardSelect.trigger('change.select2');
+                        return;
                     }
+
+                    $.ajax({
+                        url: '/wp-json/hkt/v1/districts',
+                        method: 'GET',
+                        data: { province_id: provinceId },
+                        success: function(data) {
+                            $.each(data, function(i, district) {
+                                districtSelect.append($('<option>', {
+                                    value: district.district_name,
+                                    text: district.district_name,
+                                    'data-id': district.district_id
+                                }));
+                            });
+                            districtSelect.trigger('change.select2');
+                            wardSelect.trigger('change.select2');
+                        }
+                    });
                 });
-            });
 
-            // 4.3. Khi chọn Quận/Huyện -> Tải danh sách Xã/Phường tương ứng
-            districtSelect.on('change', function() {
-                var selectedOption = districtSelect.find('option:selected');
-                var districtId = selectedOption.data('id');
+                // 4.3. Khi chọn Quận/Huyện -> Tải danh sách Xã/Phường tương ứng qua API hkt/v1
+                districtSelect.on('change', function() {
+                    var selectedOption = districtSelect.find('option:selected');
+                    var districtId = selectedOption.data('id');
 
-                wardSelect.empty().append('<option value="">Chọn Xã / Phường / Thị trấn</option>');
+                    wardSelect.empty().append('<option value="">Chọn Xã / Phường / Thị trấn</option>');
 
-                if (!districtId) {
-                    wardSelect.trigger('change.select2');
-                    return;
-                }
-
-                $.ajax({
-                    url: '/wp-json/dev/v1/wards',
-                    method: 'GET',
-                    data: { district_id: districtId },
-                    success: function(data) {
-                        $.each(data, function(i, ward) {
-                            wardSelect.append($('<option>', {
-                                value: ward.name,
-                                text: ward.name
-                            }));
-                        });
+                    if (!districtId) {
                         wardSelect.trigger('change.select2');
+                        return;
                     }
+
+                    $.ajax({
+                        url: '/wp-json/hkt/v1/wards',
+                        method: 'GET',
+                        data: { district_id: districtId },
+                        success: function(data) {
+                            $.each(data, function(i, ward) {
+                                wardSelect.append($('<option>', {
+                                    value: ward.ward_name,
+                                    text: ward.ward_name
+                                }));
+                            });
+                            wardSelect.trigger('change.select2');
+                        }
+                    });
                 });
-            });
+            }
+
+            // Khởi tạo cho cả Billing và Shipping
+            devInitAddressFields('billing');
+            devInitAddressFields('shipping');
 
             // 4.4. Ẩn các dòng lỗi cụ thể của từng ô nhập liệu ở danh sách thông báo chung phía trên
             $(document.body).on('checkout_error', function() {
@@ -239,7 +306,6 @@ function dev_checkout_address_dropdown_script() {
                     
                     errorList.find('li').each(function() {
                         var li = $(this);
-                        // Nếu dòng lỗi có thuộc tính data-id (là lỗi của từng ô cụ thể) thì ẩn đi ở phía trên
                         if (li.attr('data-id')) {
                             li.hide();
                         } else {
@@ -248,7 +314,6 @@ function dev_checkout_address_dropdown_script() {
                         }
                     });
 
-                    // Nếu tất cả lỗi đều là lỗi từng ô (đã được hiển thị dưới mỗi ô), ẩn toàn bộ Notice Group phía trên
                     if (visibleErrorCount === 0) {
                         noticeGroup.hide();
                     } else {

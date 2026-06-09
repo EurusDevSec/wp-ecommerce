@@ -22,7 +22,9 @@ $custom_inc_files = array(
     'vietnam-divisions.php',   // Tải và tạo API Địa giới Hành chính Việt Nam
     'cron-jobs.php',            // Cron Job tự động hủy đơn quá hạn & Hoàn kho
     'vietqr-bacs.php',          // Tích hợp cổng VietQR động cho đơn hàng BACS
-    'smtp-settings.php'         // Cấu hình SMTP gửi mail hóa đơn tin cậy
+    'smtp-settings.php',         // Cấu hình SMTP gửi mail hóa đơn tin cậy
+    'product-swatches.php',     // Biến thể swatches màu/size & Size Guide & Trust Badges
+    'mobile-navigation.php'     // Thanh Bottom Navigation Bar trên mobile
 );
 
 foreach ( $custom_inc_files as $file ) {

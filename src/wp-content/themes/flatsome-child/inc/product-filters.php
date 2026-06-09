@@ -37,6 +37,12 @@ function dev_render_ajax_filter_bar() {
         'hide_empty' => false,
     ) );
 
+    // 1.3. Lấy thông tin Kích thước tự động (AC-FE-03)
+    $sizes = get_terms( array(
+        'taxonomy'   => 'pa_size',
+        'hide_empty' => false,
+    ) );
+
     // Hàm phụ trợ để lấy mã màu HEX từ tên tiếng Anh của màu sắc để hiển thị vòng tròn màu sắc đẹp mắt
     function dev_map_color_name_to_hex( $name ) {
         $name_lower = strtolower( trim( $name ) );
@@ -67,6 +73,7 @@ function dev_render_ajax_filter_bar() {
         $current_brand = isset( $_GET[$url_key] ) ? sanitize_text_field( $_GET[$url_key] ) : '';
     }
     $current_color = isset( $_GET['filter_color'] ) ? sanitize_text_field( $_GET['filter_color'] ) : '';
+    $current_size = isset( $_GET['filter_size'] ) ? sanitize_text_field( $_GET['filter_size'] ) : '';
 
     // Lấy URL hiện tại để làm base URL khi reset filter
     $shop_page_url = get_permalink( wc_get_page_id( 'shop' ) );
@@ -127,10 +134,27 @@ function dev_render_ajax_filter_bar() {
                     </div>
                 </div>
             <?php endif; ?>
+
+            <!-- PHẦN 4: LỌC THEO KÍCH THƯỚC (AC-FE-03) -->
+            <?php if ( ! empty( $sizes ) && ! is_wp_error( $sizes ) ) : ?>
+                <div class="dev-filter-group">
+                    <span class="dev-group-label">Kích thước:</span>
+                    <div class="dev-filter-options dev-size-options">
+                        <a href="<?php echo esc_url( remove_query_arg( 'filter_size' ) ); ?>" class="dev-filter-link <?php echo empty( $current_size ) ? 'active' : ''; ?>">Tất cả</a>
+                        <?php foreach ( $sizes as $size ) : 
+                            $is_active = ( $current_size === $size->slug );
+                        ?>
+                            <a href="<?php echo esc_url( add_query_arg( 'filter_size', $size->slug ) ); ?>" class="dev-size-square <?php echo $is_active ? 'active' : ''; ?>" title="<?php echo esc_attr( $size->name ); ?>">
+                                <?php echo esc_html( $size->name ); ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
 
         <!-- Nút xóa bộ lọc nhanh -->
-        <?php if ( ! empty( $current_min_price ) || ! empty( $current_max_price ) || ! empty( $current_brand ) || ! empty( $current_color ) ) : ?>
+        <?php if ( ! empty( $current_min_price ) || ! empty( $current_max_price ) || ! empty( $current_brand ) || ! empty( $current_color ) || ! empty( $current_size ) ) : ?>
             <div class="dev-filter-reset">
                 <a href="<?php echo esc_url( $shop_page_url ); ?>" class="dev-reset-btn">❌ Xóa tất cả bộ lọc</a>
             </div>
@@ -216,6 +240,37 @@ function dev_render_ajax_filter_bar() {
         }
         .dev-color-circle:hover {
             transform: scale(1.1);
+        }
+        
+        /* CSS Lọc Size dạng ô vuông (AC-FE-03) */
+        .dev-size-options {
+            gap: 8px;
+        }
+        .dev-size-square {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #e2e8f0;
+            background-color: #f7fafc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568 !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .dev-size-square.active {
+            background-color: #1a1a1a; /* Tone đen nhám tối giản */
+            color: #ffffff !important;
+            border-color: #1a1a1a;
+            transform: scale(1.05);
+        }
+        .dev-size-square:hover {
+            border-color: #1a1a1a;
+            color: #1a1a1a !important;
         }
         .dev-filter-reset {
             margin-top: 15px;
