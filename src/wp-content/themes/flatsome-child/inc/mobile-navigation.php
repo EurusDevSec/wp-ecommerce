@@ -99,18 +99,15 @@ function dev_render_floating_contact_widget() {
     <div class="dev-floating-contact">
         <!-- Zalo Button -->
         <a href="https://zalo.me/0987654321" target="_blank" rel="noopener nofollow" class="dev-contact-btn dev-zalo-btn" title="Chat Zalo">
-            <span class="contact-icon">💬</span>
-            <span class="contact-text">Zalo</span>
+            Chat Zalo
         </a>
-        <!-- Messenger Button -->
-        <a href="https://m.me/yourpage" target="_blank" rel="noopener nofollow" class="dev-contact-btn dev-messenger-btn" title="Chat Messenger">
-            <span class="contact-icon">✉️</span>
-            <span class="contact-text">Messenger</span>
+        <!-- Facebook Button -->
+        <a href="https://m.me/yourpage" target="_blank" rel="noopener nofollow" class="dev-contact-btn dev-facebook-btn" title="Chat Facebook">
+            Chat Facebook
         </a>
-        <!-- Call Button -->
-        <a href="tel:0987654321" class="dev-contact-btn dev-phone-btn" title="Gọi ngay">
-            <span class="contact-icon">📞</span>
-            <span class="contact-text">Gọi ngay</span>
+        <!-- Hotline Button -->
+        <a href="tel:0999999999" class="dev-contact-btn dev-hotline-btn" title="Hotline: 0999999999">
+            Hotline: 0999999999
         </a>
     </div>
     <?php
