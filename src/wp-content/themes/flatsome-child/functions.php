@@ -190,6 +190,48 @@ function dev_filter_header_bottom_right( $value ) {
     return array( 'search-form' ); // Đưa ô tìm kiếm (search-form) sang bên phải của header bottom
 }
 
+/**
+ * Tự động loại trừ các danh mục đồ lót, nội y, đồ ngủ khỏi trang chủ
+ */
+add_action( 'pre_get_posts', 'dev_exclude_lingerie_from_homepage', 99 );
+function dev_exclude_lingerie_from_homepage( $query ) {
+    if ( is_admin() ) {
+        return;
+    }
+    
+    // Chỉ can thiệp vào truy vấn sản phẩm
+    if ( $query->get( 'post_type' ) === 'product' ) {
+        // Chỉ áp dụng trên trang chủ/custom homepage
+        if ( is_front_page() || is_home() || is_page_template( 'template-custom-home.php' ) ) {
+            $tax_query = $query->get( 'tax_query' );
+            if ( ! is_array( $tax_query ) ) {
+                $tax_query = array();
+            }
+            
+            // Các slug danh mục liên quan đồ lót, nội y, váy ngủ, áo choàng ngủ
+            $excluded_slugs = array( 
+                'do-lot', 
+                'do-noi-y', 
+                'quan-lot', 
+                'quan-lot-ren', 
+                'vay-ngu', 
+                'vay-ngu-2-day', 
+                'ao-choang-ngu',
+                'noi-y'
+            );
+            
+            $tax_query[] = array(
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $excluded_slugs,
+                'operator' => 'NOT IN',
+            );
+            
+            $query->set( 'tax_query', $tax_query );
+        }
+    }
+}
+
 
 
 
