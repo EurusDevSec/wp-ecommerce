@@ -46,15 +46,15 @@ services:
       - db
     networks:
       - wpsite
-
-  cf-tunnel:
-    image: cloudflare/cloudflared:latest
-    restart: always
-    command: tunnel --url http://wordpress:80
-    depends_on:
-      - wordpress
-    networks:
-      - wpsite
+  # Hide temporary
+  # cf-tunnel:
+  #   image: cloudflare/cloudflared:latest
+  #   restart: always
+  #   command: tunnel --url http://wordpress:80
+  #   depends_on:
+  #     - wordpress
+  #   networks:
+  #     - wpsite
   
 
 networks:

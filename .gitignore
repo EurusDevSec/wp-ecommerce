@@ -19,7 +19,8 @@ src/wp-content/themes/*
 !src/wp-content/themes/flatsome-child/
 
 # Ignore file uploads of user and cache folder 
-src/wp-content/uploads/
+src/wp-content/uploads/*
+!src/wp-content/uploads/.htaccess
 src/wp-content/upgrade/
 src/wp-content/cache/
 src/wp-content/fonts/
@@ -38,5 +39,6 @@ plan.md
 meeting_analysis.md
 docs/wordpress_deployment_guide.md
 docs/digitalocean_deployment_guide.md
+docs/cloudpanel_deployment_guide.md
 # Allow tracking premium Flatsome zip for automation
 !flatsome.zip

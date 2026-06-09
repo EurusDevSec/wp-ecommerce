@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /wp-content/uploads/
+  
+  # Nếu file ảnh KHÔNG tồn tại ở thư mục uploads local
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  
+  # Tự động redirect yêu cầu sang lấy ảnh từ server Staging đã chạy online
+  RewriteRule ^(.*)$ http://167.172.91.249/wp-content/uploads/$1 [R=301,L]
+</IfModule>
