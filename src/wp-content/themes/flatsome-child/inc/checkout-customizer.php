@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * 1. Rút gọn Form thanh toán: loại bỏ các trường không cần thiết như Postcode, Company, Address 2...
+ * 1. Rút gọn Form thanh toán: loại bỏ các trường không cần thiết như Postcode, Company
  */
 add_filter( 'woocommerce_checkout_fields', 'dev_optimize_checkout_fields' );
 
@@ -18,9 +18,6 @@ function dev_optimize_checkout_fields( $fields ) {
     // 1.1. Lọc bỏ các trường thừa trong phần thông tin thanh toán (Billing Info)
     if ( isset( $fields['billing']['billing_company'] ) ) {
         unset( $fields['billing']['billing_company'] ); // Bỏ Tên công ty
-    }
-    if ( isset( $fields['billing']['billing_address_2'] ) ) {
-        unset( $fields['billing']['billing_address_2'] ); // Bỏ Địa chỉ dòng 2 mặc định
     }
     if ( isset( $fields['billing']['billing_postcode'] ) ) {
         unset( $fields['billing']['billing_postcode'] ); // Bỏ Mã bưu điện
@@ -30,63 +27,54 @@ function dev_optimize_checkout_fields( $fields ) {
     if ( isset( $fields['shipping']['shipping_company'] ) ) {
         unset( $fields['shipping']['shipping_company'] );
     }
-    if ( isset( $fields['shipping']['shipping_address_2'] ) ) {
-        unset( $fields['shipping']['shipping_address_2'] );
-    }
     if ( isset( $fields['shipping']['shipping_postcode'] ) ) {
         unset( $fields['shipping']['shipping_postcode'] );
     }
 
-    // 1.3. Chuyển đổi trường Tỉnh/Thành (State) mặc định thành thẻ select động
+    // 1.3. Cấu hình trường Tỉnh/Thành (State) thành thẻ select động
     $fields['billing']['billing_state']['type']        = 'select';
     $fields['billing']['billing_state']['label']       = 'Tỉnh / Thành phố';
     $fields['billing']['billing_state']['placeholder'] = 'Chọn Tỉnh / Thành phố';
     $fields['billing']['billing_state']['options']     = array( '' => 'Chọn Tỉnh / Thành phố' );
     $fields['billing']['billing_state']['class']       = array( 'form-row-wide' );
+    $fields['billing']['billing_state']['required']    = true;
 
     $fields['shipping']['shipping_state']['type']        = 'select';
     $fields['shipping']['shipping_state']['label']       = 'Tỉnh / Thành phố';
     $fields['shipping']['shipping_state']['placeholder'] = 'Chọn Tỉnh / Thành phố';
     $fields['shipping']['shipping_state']['options']     = array( '' => 'Chọn Tỉnh / Thành phố' );
     $fields['shipping']['shipping_state']['class']       = array( 'form-row-wide' );
+    $fields['shipping']['shipping_state']['required']    = true;
 
-    // 1.4. Đăng ký thêm trường Quận/Huyện (District) dưới dạng thẻ select động
-    $fields['billing']['billing_district'] = array(
-        'label'       => 'Quận / Huyện',
-        'required'    => true,
-        'class'       => array( 'form-row-first' ),
-        'type'        => 'select',
-        'options'     => array( '' => 'Chọn Quận / Huyện' ),
-        'priority'    => 75 // Xếp sau trường Tỉnh/Thành
-    );
+    // 1.4. Đổi trường Quận/Huyện (City) thành thẻ select động (AC-BE-05)
+    $fields['billing']['billing_city']['type']        = 'select';
+    $fields['billing']['billing_city']['label']       = 'Quận / Huyện';
+    $fields['billing']['billing_city']['placeholder'] = 'Chọn Quận / Huyện';
+    $fields['billing']['billing_city']['options']     = array( '' => 'Chọn Quận / Huyện' );
+    $fields['billing']['billing_city']['class']       = array( 'form-row-first' );
+    $fields['billing']['billing_city']['required']    = true;
 
-    $fields['shipping']['shipping_district'] = array(
-        'label'       => 'Quận / Huyện',
-        'required'    => true,
-        'class'       => array( 'form-row-first' ),
-        'type'        => 'select',
-        'options'     => array( '' => 'Chọn Quận / Huyện' ),
-        'priority'    => 75
-    );
+    $fields['shipping']['shipping_city']['type']        = 'select';
+    $fields['shipping']['shipping_city']['label']       = 'Quận / Huyện';
+    $fields['shipping']['shipping_city']['placeholder'] = 'Chọn Quận / Huyện';
+    $fields['shipping']['shipping_city']['options']     = array( '' => 'Chọn Quận / Huyện' );
+    $fields['shipping']['shipping_city']['class']       = array( 'form-row-first' );
+    $fields['shipping']['shipping_city']['required']    = true;
 
-    // 1.5. Đăng ký thêm trường Xã/Phường (Ward) dưới dạng thẻ select động
-    $fields['billing']['billing_ward'] = array(
-        'label'       => 'Xã / Phường / Thị trấn',
-        'required'    => true,
-        'class'       => array( 'form-row-last' ),
-        'type'        => 'select',
-        'options'     => array( '' => 'Chọn Xã / Phường / Thị trấn' ),
-        'priority'    => 76 // Xếp sau trường Quận/Huyện
-    );
+    // 1.5. Đổi trường Xã/Phường (Address 2) thành thẻ select động (AC-BE-05)
+    $fields['billing']['billing_address_2']['type']        = 'select';
+    $fields['billing']['billing_address_2']['label']       = 'Xã / Phường / Thị trấn';
+    $fields['billing']['billing_address_2']['placeholder'] = 'Chọn Xã / Phường / Thị trấn';
+    $fields['billing']['billing_address_2']['options']     = array( '' => 'Chọn Xã / Phường / Thị trấn' );
+    $fields['billing']['billing_address_2']['class']       = array( 'form-row-last' );
+    $fields['billing']['billing_address_2']['required']    = true;
 
-    $fields['shipping']['shipping_ward'] = array(
-        'label'       => 'Xã / Phường / Thị trấn',
-        'required'    => true,
-        'class'       => array( 'form-row-last' ),
-        'type'        => 'select',
-        'options'     => array( '' => 'Chọn Xã / Phường / Thị trấn' ),
-        'priority'    => 76
-    );
+    $fields['shipping']['shipping_address_2']['type']        = 'select';
+    $fields['shipping']['shipping_address_2']['label']       = 'Xã / Phường / Thị trấn';
+    $fields['shipping']['shipping_address_2']['placeholder'] = 'Chọn Xã / Phường / Thị trấn';
+    $fields['shipping']['shipping_address_2']['options']     = array( '' => 'Chọn Xã / Phường / Thị trấn' );
+    $fields['shipping']['shipping_address_2']['class']       = array( 'form-row-last' );
+    $fields['shipping']['shipping_address_2']['required']    = true;
 
     // Định dạng lại chiều rộng tên và họ xếp song song
     if ( isset( $fields['billing']['billing_first_name'] ) ) {
@@ -100,85 +88,70 @@ function dev_optimize_checkout_fields( $fields ) {
 }
 
 /**
- * 2. Lưu trữ chuỗi chữ Tỉnh/Quận/Xã vào metadata đơn hàng khi tạo đơn (AC-BE-05)
- * Sử dụng CRUD API của đối tượng WC_Order để tương thích hoàn toàn với HPOS
+ * 2. Lưu trữ bổ sung metadata tùy chỉnh để tương thích ngược với code cũ (nếu cần)
+ * Đồng thời đồng bộ các trường chuẩn của WooCommerce
  */
 add_action( 'woocommerce_checkout_create_order', 'dev_save_checkout_address_metadata', 10, 2 );
 
 function dev_save_checkout_address_metadata( $order, $data ) {
-    $district = isset( $_POST['billing_district'] ) ? sanitize_text_field( $_POST['billing_district'] ) : '';
-    $ward     = isset( $_POST['billing_ward'] ) ? sanitize_text_field( $_POST['billing_ward'] ) : '';
+    $billing_city = $order->get_billing_city();
+    $billing_address_2 = $order->get_billing_address_2();
 
-    // Lưu dạng chuỗi chữ vào meta tùy chỉnh để tương thích code cũ
-    if ( ! empty( $district ) ) {
-        $order->update_meta_data( '_billing_district', $district );
-        // ĐỒNG BỘ VÀO BẢNG CHUẨN HPOS/METADATA THEO TIÊU CHÍ AC-BE-05:
-        $order->set_billing_city( $district );
+    // Đồng bộ sang metadata cũ để không gây lỗi hiển thị ở các chức năng khác
+    if ( ! empty( $billing_city ) ) {
+        $order->update_meta_data( '_billing_district', $billing_city );
     }
-    if ( ! empty( $ward ) ) {
-        $order->update_meta_data( '_billing_ward', $ward );
-        // ĐỒNG BỘ VÀO BẢNG CHUẨN HPOS/METADATA THEO TIÊU CHÍ AC-BE-05:
-        $order->set_billing_address_2( $ward );
+    if ( ! empty( $billing_address_2 ) ) {
+        $order->update_meta_data( '_billing_ward', $billing_address_2 );
     }
 
-    // Xử lý thông tin nhận hàng (Shipping) nếu chọn địa chỉ khác
-    $shipping_district = isset( $_POST['shipping_district'] ) ? sanitize_text_field( $_POST['shipping_district'] ) : '';
-    $shipping_ward     = isset( $_POST['shipping_ward'] ) ? sanitize_text_field( $_POST['shipping_ward'] ) : '';
+    $shipping_city = $order->get_shipping_city();
+    $shipping_address_2 = $order->get_shipping_address_2();
 
-    if ( ! empty( $shipping_district ) ) {
-        $order->update_meta_data( '_shipping_district', $shipping_district );
-        $order->set_shipping_city( $shipping_district );
-    } elseif ( ! empty( $district ) ) {
-        // Fallback về billing nếu không nhập shipping riêng biệt
-        $order->set_shipping_city( $district );
+    if ( ! empty( $shipping_city ) ) {
+        $order->update_meta_data( '_shipping_district', $shipping_city );
     }
-
-    if ( ! empty( $shipping_ward ) ) {
-        $order->update_meta_data( '_shipping_ward', $shipping_ward );
-        $order->set_shipping_address_2( $shipping_ward );
-    } elseif ( ! empty( $ward ) ) {
-        // Fallback về billing nếu không nhập shipping riêng biệt
-        $order->set_shipping_address_2( $ward );
+    if ( ! empty( $shipping_address_2 ) ) {
+        $order->update_meta_data( '_shipping_ward', $shipping_address_2 );
     }
 }
 
 /**
- * 3. Nhúng dữ liệu địa giới hành chính mới vào cấu trúc hiển thị địa chỉ (Checkout, My Account, Email)
+ * 3. Hỗ trợ định dạng cấu trúc hiển thị địa chỉ Việt Nam chuẩn đẹp
  */
-add_filter( 'woocommerce_formatted_billing_address', 'dev_custom_formatted_billing_address_display', 10, 2 );
+add_filter( 'woocommerce_localisation_address_formats', 'dev_vietnam_address_format_override' );
 
-function dev_custom_formatted_billing_address_display( $address, $order ) {
-    $district = $order->get_meta( '_billing_district' );
-    $ward     = $order->get_meta( '_billing_ward' );
-
-    if ( ! empty( $ward ) ) {
-        $address['address_2'] = $ward;
-    }
-    if ( ! empty( $district ) ) {
-        $address['city'] = $district . ', ' . $address['city'];
-    }
-
-    return $address;
-}
-
-add_filter( 'woocommerce_formatted_shipping_address', 'dev_custom_formatted_shipping_address_display', 10, 2 );
-
-function dev_custom_formatted_shipping_address_display( $address, $order ) {
-    $district = $order->get_meta( '_shipping_district' );
-    $ward     = $order->get_meta( '_shipping_ward' );
-
-    if ( ! empty( $ward ) ) {
-        $address['address_2'] = $ward;
-    }
-    if ( ! empty( $district ) ) {
-        $address['city'] = $district . ', ' . $address['city'];
-    }
-
-    return $address;
+function dev_vietnam_address_format_override( $formats ) {
+    // Định dạng hiển thị địa chỉ Việt Nam: Họ tên -> Số nhà đường -> Phường Xã -> Quận Huyện -> Tỉnh Thành -> Quốc gia
+    $formats['VN'] = "{name}\n{address_1}\n{address_2}\n{city}\n{state}\n{country}";
+    return $formats;
 }
 
 /**
- * 4. Kịch bản Javascript gọi API REST động để cập nhật các dropdown
+ * 4. Điều chỉnh cấu hình vùng miền của WooCommerce cho Việt Nam (VN)
+ * Đảm bảo trường Tỉnh/Thành (state) luôn hiển thị và bắt buộc, không bị country-select.js ẩn đi.
+ */
+add_filter( 'woocommerce_get_country_locale', 'dev_custom_vietnam_country_locale' );
+
+function dev_custom_vietnam_country_locale( $locale ) {
+    if ( isset( $locale['VN'] ) ) {
+        $locale['VN']['state']['required'] = true;
+        $locale['VN']['state']['hidden']   = false;
+        $locale['VN']['state']['label']    = 'Tỉnh / Thành phố';
+        
+        $locale['VN']['city']['required'] = true;
+        $locale['VN']['city']['hidden']   = false;
+        $locale['VN']['city']['label']    = 'Quận / Huyện';
+        
+        $locale['VN']['address_2']['required'] = true;
+        $locale['VN']['address_2']['hidden']   = false;
+        $locale['VN']['address_2']['label']    = 'Xã / Phường / Thị trấn';
+    }
+    return $locale;
+}
+
+/**
+ * 5. Kịch bản Javascript gọi API REST động để cập nhật các dropdown
  */
 add_action( 'wp_footer', 'dev_checkout_address_dropdown_script' );
 
@@ -206,29 +179,34 @@ function dev_checkout_address_dropdown_script() {
         jQuery(document).ready(function($) {
             function devInitAddressFields(prefix) {
                 var provinceSelect = $('#' + prefix + '_state');
-                var districtSelect = $('#' + prefix + '_district');
-                var wardSelect = $('#' + prefix + '_ward');
+                var districtSelect = $('#' + prefix + '_city');       // Map Quận/Huyện vào trường City gốc
+                var wardSelect = $('#' + prefix + '_address_2');     // Map Xã/Phường vào trường Address_2 gốc
 
                 if (!provinceSelect.length) return;
 
-                // 4.1. Tải danh sách Tỉnh/Thành khi load trang qua API hkt/v1
+                // 5.1. Tải danh sách Tỉnh/Thành khi load trang qua API hkt/v1
                 $.ajax({
                     url: '/wp-json/hkt/v1/provinces',
                     method: 'GET',
                     success: function(data) {
+                        var currentVal = provinceSelect.val();
                         provinceSelect.empty().append('<option value="">Chọn Tỉnh / Thành phố</option>');
                         $.each(data, function(i, province) {
-                            provinceSelect.append($('<option>', {
+                            var option = $('<option>', {
                                 value: province.name,
                                 text: province.name,
                                 'data-id': province.id
-                            }));
+                            });
+                            if (province.name === currentVal) {
+                                option.attr('selected', 'selected');
+                            }
+                            provinceSelect.append(option);
                         });
                         provinceSelect.trigger('change.select2');
                     }
                 });
 
-                // 4.2. Khi chọn Tỉnh/Thành -> Tải danh sách Quận/Huyện tương ứng qua API hkt/v1
+                // 5.2. Khi chọn Tỉnh/Thành -> Tải danh sách Quận/Huyện tương ứng qua API hkt/v1
                 provinceSelect.on('change', function() {
                     var selectedOption = provinceSelect.find('option:selected');
                     var provinceId = selectedOption.data('id');
@@ -260,7 +238,7 @@ function dev_checkout_address_dropdown_script() {
                     });
                 });
 
-                // 4.3. Khi chọn Quận/Huyện -> Tải danh sách Xã/Phường tương ứng qua API hkt/v1
+                // 5.3. Khi chọn Quận/Huyện -> Tải danh sách Xã/Phường tương ứng qua API hkt/v1
                 districtSelect.on('change', function() {
                     var selectedOption = districtSelect.find('option:selected');
                     var districtId = selectedOption.data('id');
@@ -293,7 +271,7 @@ function dev_checkout_address_dropdown_script() {
             devInitAddressFields('billing');
             devInitAddressFields('shipping');
 
-            // 4.4. Ẩn các dòng lỗi cụ thể của từng ô nhập liệu ở danh sách thông báo chung phía trên
+            // 5.4. Ẩn các dòng lỗi cụ thể của từng ô nhập liệu ở danh sách thông báo chung phía trên
             $(document.body).on('checkout_error', function() {
                 var noticeGroup = $('.woocommerce-NoticeGroup-checkout');
                 var errorList = noticeGroup.find('.woocommerce-error');
@@ -326,9 +304,8 @@ function dev_checkout_address_dropdown_script() {
     <?php
 }
 
-
 /**
- * 2. Xác thực (Validate) Số điện thoại định dạng Việt Nam tại trang Checkout
+ * 6. Xác thực (Validate) Số điện thoại định dạng Việt Nam tại trang Checkout
  * Đảm bảo số điện thoại hợp lệ theo tiêu chuẩn đầu số Việt Nam (tiêu chí AC-BE-03)
  */
 add_action( 'woocommerce_checkout_process', 'dev_validate_vietnamese_phone_number' );
