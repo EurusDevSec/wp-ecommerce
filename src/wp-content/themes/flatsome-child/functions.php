@@ -191,7 +191,7 @@ function dev_filter_header_bottom_right( $value ) {
 }
 
 /**
- * Tự động loại trừ các danh mục đồ lót, nội y, đồ ngủ khỏi trang chủ
+ * Tự động loại trừ các danh mục đồ lót, đồ ngủ khỏi trang chủ
  */
 add_action( 'pre_get_posts', 'dev_exclude_lingerie_from_homepage', 99 );
 function dev_exclude_lingerie_from_homepage( $query ) {
@@ -208,16 +208,14 @@ function dev_exclude_lingerie_from_homepage( $query ) {
                 $tax_query = array();
             }
             
-            // Các slug danh mục liên quan đồ lót, nội y, váy ngủ, áo choàng ngủ
+            // Các slug danh mục liên quan đồ lót, váy ngủ, áo choàng ngủ
             $excluded_slugs = array( 
                 'do-lot', 
-                'do-noi-y', 
                 'quan-lot', 
                 'quan-lot-ren', 
                 'vay-ngu', 
                 'vay-ngu-2-day', 
-                'ao-choang-ngu',
-                'noi-y'
+                'ao-choang-ngu'
             );
             
             $tax_query[] = array(
@@ -232,7 +230,102 @@ function dev_exclude_lingerie_from_homepage( $query ) {
     }
 }
 
+/**
+ * Footer chuyên nghiệp 4 cột - Code-driven (giống ThoiTrang19)
+ * Cột 1: Giới thiệu cửa hàng + social icons
+ * Cột 2: Về chúng tôi - navigation links
+ * Cột 3: Thông tin - policy links
+ * Cột 4: Chấp nhận thanh toán - payment icons
+ */
+add_action( 'wp_footer', 'dev_render_custom_footer', 5 );
+function dev_render_custom_footer() {
+    ?>
+    <style>
+        /* Override default footer widgets */
+        .footer-widgets { display: none !important; }
+    </style>
+    <div id="dev-custom-footer" class="dev-custom-footer">
+        <div class="dev-footer-inner">
+            <!-- Column 1: Store Info -->
+            <div class="dev-footer-col dev-footer-about">
+                <div class="dev-footer-logo">
+                    <span class="dev-logo-text">HKT</span>
+                    <span class="dev-logo-sub">FASHION</span>
+                </div>
+                <p class="dev-footer-desc">
+                    Cửa hàng HKT Fashion chuyên kinh doanh các sản phẩm thời trang: Quần áo, Giày dép, Balo, Túi xách, Phụ kiện...
+                </p>
+                <div class="dev-footer-social">
+                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="dev-social-icon dev-social-fb">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="dev-social-icon dev-social-ig">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    </a>
+                    <a href="https://pinterest.com" target="_blank" rel="noopener" aria-label="Pinterest" class="dev-social-icon dev-social-pin">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>
+                    </a>
+                </div>
+            </div>
 
+            <!-- Column 2: Về chúng tôi -->
+            <div class="dev-footer-col">
+                <h4 class="dev-footer-heading">Về chúng tôi</h4>
+                <ul class="dev-footer-links">
+                    <li><a href="/gioi-thieu/">› Giới thiệu</a></li>
+                    <li><a href="/lien-he/">› Liên hệ</a></li>
+                    <li><a href="/my-account/orders/">› Kiểm tra đơn hàng</a></li>
+                </ul>
+            </div>
 
+            <!-- Column 3: Thông tin -->
+            <div class="dev-footer-col">
+                <h4 class="dev-footer-heading">Thông tin</h4>
+                <ul class="dev-footer-links">
+                    <li><a href="/thoa-thuan-dich-vu/">› Thỏa thuận dịch vụ</a></li>
+                    <li><a href="/chinh-sach-bao-mat/">› Chính sách bảo mật</a></li>
+                    <li><a href="/van-chuyen-va-giao-hang/">› Vận chuyển và Giao hàng</a></li>
+                    <li><a href="/chinh-sach-doi-tra/">› Chính sách đổi trả</a></li>
+                </ul>
+            </div>
 
+            <!-- Column 4: Chấp nhận thanh toán -->
+            <div class="dev-footer-col">
+                <h4 class="dev-footer-heading">Chấp nhận thanh toán</h4>
+                <div class="dev-payment-icons">
+                    <span class="dev-payment-badge">
+                        <svg width="40" height="25" viewBox="0 0 50 35" fill="none"><rect width="50" height="35" rx="4" fill="#1A1F71"/><text x="25" y="22" fill="white" font-size="12" font-weight="bold" text-anchor="middle" font-family="Arial">VISA</text></svg>
+                    </span>
+                    <span class="dev-payment-badge">
+                        <svg width="40" height="25" viewBox="0 0 50 35" fill="none"><rect width="50" height="35" rx="4" fill="#252525"/><circle cx="20" cy="17.5" r="10" fill="#EB001B"/><circle cx="30" cy="17.5" r="10" fill="#F79E1B" opacity="0.8"/></svg>
+                    </span>
+                    <span class="dev-payment-badge">
+                        <svg width="40" height="25" viewBox="0 0 50 35" fill="none"><rect width="50" height="35" rx="4" fill="#003087"/><text x="25" y="22" fill="white" font-size="10" font-weight="bold" text-anchor="middle" font-family="Arial">PayPal</text></svg>
+                    </span>
+                    <span class="dev-payment-badge">
+                        <svg width="40" height="25" viewBox="0 0 50 35" fill="none"><rect width="50" height="35" rx="4" fill="#F3F3F3" stroke="#ddd"/><text x="25" y="15" fill="#6772E5" font-size="8" font-weight="bold" text-anchor="middle" font-family="Arial">stripe</text><text x="25" y="26" fill="#333" font-size="7" text-anchor="middle" font-family="Arial">Payments</text></svg>
+                    </span>
+                    <span class="dev-payment-badge">
+                        <svg width="40" height="25" viewBox="0 0 50 35" fill="none"><rect width="50" height="35" rx="4" fill="#0E4C92"/><text x="25" y="22" fill="white" font-size="10" font-weight="bold" text-anchor="middle" font-family="Arial">JCB</text></svg>
+                    </span>
+                    <span class="dev-payment-badge">
+                        <svg width="40" height="25" viewBox="0 0 50 35" fill="none"><rect width="50" height="35" rx="4" fill="#4CAF50"/><text x="25" y="15" fill="white" font-size="7" font-weight="bold" text-anchor="middle" font-family="Arial">COD</text><text x="25" y="25" fill="white" font-size="5.5" text-anchor="middle" font-family="Arial">Nhận hàng</text></svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright Bar -->
+        <div class="dev-footer-copyright">
+            <div class="dev-footer-copyright-inner">
+                <span>Copyright <?php echo date('Y'); ?> HKT Fashion. All rights reserved.</span>
+                <div class="dev-footer-copyright-links">
+                    <a href="/chinh-sach-bao-mat/">CHÍNH SÁCH BẢO MẬT</a>
+                    <a href="/cookies/">COOKIES</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+}
 

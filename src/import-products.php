@@ -1,12 +1,13 @@
 <?php
 /**
- * Script import và đồng bộ sản phẩm, danh mục mẫu giống ThoiTrang19
- * Không chứa sản phẩm đồ lót, nội y hay đồ ngủ.
+ * Script import và đồng bộ sản phẩm từ file CSV
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+define( 'CSV_FILE_PATH', __DIR__ . '/woocommerce-dummy-products-2026-06-07.csv' );
 
 echo "🧹 Đang dọn dẹp các sản phẩm cũ...\n";
 $existing_products = wc_get_products( array( 'limit' => -1 ) );
@@ -46,231 +47,198 @@ function sideload_image_from_url( $url, $post_id = 0 ) {
     return $id;
 }
 
-// 1. Tạo/đồng bộ danh mục sản phẩm
-$categories_data = array(
-    'ao' => array(
-        'name' => 'Áo',
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg'
-    ),
-    'balo-tui' => array(
-        'name' => 'Balo - Túi',
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/304b2fcb-7241-0400-fff2-0017fd550a27.jpg'
-    ),
-    'giay' => array(
-        'name' => 'Giày',
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f53d7c7e-a5e7-6100-1aa2-00176e5a5977.jpg'
-    ),
-    'non' => array(
-        'name' => 'Nón',
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/ea158967-c428-2900-80fa-001770b476d1.jpg'
-    ),
-    'quan' => array(
-        'name' => 'Quần',
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f0567450-4362-5400-588a-001794113da6.jpg'
-    ),
-    'sandal-dep' => array(
-        'name' => 'Sandal - Dép',
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/23431488-c80c-6700-c540-00179f9fc1ea-e1626332448674.jpg'
-    ),
-    'phu-kien' => array(
-        'name' => 'Phụ kiện',
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/1f3ca095-e259-0c00-04d8-0017f18cfb8f.jpg'
-    )
+// Helper lấy hoặc tạo term
+function get_or_create_term( $name, $taxonomy ) {
+    $name = trim( $name );
+    if ( empty( $name ) ) {
+        return 0;
+    }
+    $term = get_term_by( 'name', $name, $taxonomy );
+    if ( ! $term ) {
+        $term = get_term_by( 'slug', sanitize_title( $name ), $taxonomy );
+    }
+    if ( ! $term ) {
+        $result = wp_insert_term( $name, $taxonomy, array( 'slug' => sanitize_title( $name ) ) );
+        if ( is_wp_error( $result ) ) {
+            return 0;
+        }
+        return $result['term_id'];
+    }
+    return $term->term_id;
+}
+
+// 1. Khởi tạo danh mục gốc tiếng Việt
+$default_categories = array(
+    'ao' => 'Áo',
+    'quan' => 'Quần',
+    'balo-tui' => 'Balo - Túi',
+    'giay' => 'Giày',
+    'non' => 'Nón',
+    'sandal-dep' => 'Sandal - Dép',
+    'phu-kien' => 'Phụ kiện'
 );
 
 $cat_ids = array();
-echo "📁 Đang tạo danh mục...\n";
-foreach ( $categories_data as $slug => $data ) {
+foreach ( $default_categories as $slug => $name ) {
     $term = get_term_by( 'slug', $slug, 'product_cat' );
     if ( ! $term ) {
-        $result = wp_insert_term( $data['name'], 'product_cat', array( 'slug' => $slug ) );
-        if ( is_wp_error( $result ) ) {
-            echo "  ❌ Không thể tạo danh mục $slug: " . $result->get_error_message() . "\n";
-            continue;
+        $result = wp_insert_term( $name, 'product_cat', array( 'slug' => $slug ) );
+        if ( ! is_wp_error( $result ) ) {
+            $cat_ids[$slug] = $result['term_id'];
         }
-        $term_id = $result['term_id'];
     } else {
-        $term_id = $term->term_id;
+        $cat_ids[$slug] = $term->term_id;
     }
-    $cat_ids[$slug] = $term_id;
-    
-    // Tải và gán ảnh đại diện danh mục
-    $attachment_id = sideload_image_from_url( $data['img'] );
-    if ( $attachment_id ) {
-        update_term_meta( $term_id, 'thumbnail_id', $attachment_id );
-    }
-    echo "✓ Danh mục: {$data['name']} (ID: $term_id)\n";
 }
 
-// 2. Định nghĩa các sản phẩm để tạo mới
-$products_data = array(
-    // Section 1: ĐANG GIẢM GIÁ (onsale: true)
-    array(
-        'name' => 'Balo Eva Nguyễn Bản',
-        'categories' => array( 'balo-tui' ),
-        'price' => '399000',
-        'sale_price' => '390000',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/banner-sidebar.jpg'
-    ),
-    array(
-        'name' => 'Áo sơ mi nam tay lỡ ZT12-84',
-        'categories' => array( 'ao' ),
-        'price' => '560000',
-        'sale_price' => '450000',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg'
-    ),
-    array(
-        'name' => 'Túi xách tay thời trang cao cấp',
-        'categories' => array( 'balo-tui' ),
-        'price' => '250000',
-        'sale_price' => '200000',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/304b2fcb-7241-0400-fff2-0017fd550a27.jpg'
-    ),
-    array(
-        'name' => 'Nón thời trang classic nam nữ',
-        'categories' => array( 'non' ),
-        'price' => '150000',
-        'sale_price' => '120000',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/ea158967-c428-2900-80fa-001770b476d1.jpg'
-    ),
-    
-    // Section 2: SẢN PHẨM BÁN CHẠY (featured: true)
-    array(
-        'name' => 'Áo thun Polo HKT năng động',
-        'categories' => array( 'ao' ),
-        'price' => '185000',
-        'sale_price' => '',
-        'featured' => true,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg'
-    ),
-    array(
-        'name' => 'Giày Sneaker HKT Classic trắng',
-        'categories' => array( 'giay' ),
-        'price' => '250000',
-        'sale_price' => '',
-        'featured' => true,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f53d7c7e-a5e7-6100-1aa2-00176e5a5977.jpg'
-    ),
-    array(
-        'name' => 'Áo khoác Classic nam tính Anubis',
-        'categories' => array( 'ao' ),
-        'price' => '300000',
-        'sale_price' => '280000',
-        'featured' => true,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/1f3ca095-e259-0c00-04d8-0017f18cfb8f.jpg'
-    ),
-    array(
-        'name' => 'Quần Short kaki nam thô cao cấp',
-        'categories' => array( 'quan' ),
-        'price' => '250000',
-        'sale_price' => '',
-        'featured' => true,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f0567450-4362-5400-588a-001794113da6.jpg'
-    ),
-    
-    // Section 3: HÀNG MỚI VỀ (date: latest)
-    array(
-        'name' => 'Áo sơ mi nam tay lỡ ZT12-4',
-        'categories' => array( 'ao' ),
-        'price' => '150000',
-        'sale_price' => '',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg'
-    ),
-    array(
-        'name' => 'Quần kaki dài Hàn Quốc ZP43-9',
-        'categories' => array( 'quan' ),
-        'price' => '560000',
-        'sale_price' => '450000',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f0567450-4362-5400-588a-001794113da6.jpg'
-    ),
-    array(
-        'name' => 'Áo sơ mi không tay HKT ZT10-14',
-        'categories' => array( 'ao' ),
-        'price' => '125000',
-        'sale_price' => '',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg'
-    ),
-    array(
-        'name' => 'Đầm tay lỡ thu đông dáng điệu ZD32-75',
-        'categories' => array( 'ao' ),
-        'price' => '100000',
-        'sale_price' => '',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/ea158967-c428-2900-80fa-001770b476d1.jpg'
-    ),
-    array(
-        'name' => 'Chân váy dáng dài qua gối ZS52-36',
-        'categories' => array( 'quan' ),
-        'price' => '356000',
-        'sale_price' => '285000',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/ea158967-c428-2900-80fa-001770b476d1.jpg'
-    ),
-    array(
-        'name' => 'Quần ngố lỡ ZP43-33 chất đũi mát',
-        'categories' => array( 'quan' ),
-        'price' => '150000',
-        'sale_price' => '',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f0567450-4362-5400-588a-001794113da6.jpg'
-    ),
-    array(
-        'name' => 'Áo khoác Classic ấm áp HKT',
-        'categories' => array( 'ao' ),
-        'price' => '380000',
-        'sale_price' => '',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg'
-    ),
-    array(
-        'name' => 'Túi đeo chéo thời trang nam nữ',
-        'categories' => array( 'balo-tui' ),
-        'price' => '249000',
-        'sale_price' => '',
-        'featured' => false,
-        'img' => 'https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/304b2fcb-7241-0400-fff2-0017fd550a27.jpg'
-    )
+// Ánh xạ danh mục con tiếng Anh sang danh mục chính tiếng Việt
+$category_mapping = array(
+    'Shirts' => 'ao',
+    'Knitwear' => 'ao',
+    'Outerwear' => 'ao',
+    'Trench Coats' => 'ao',
+    'Wool Overcoats' => 'ao',
+    'Puffer Jackets' => 'ao',
+    'Denim Jackets' => 'ao',
+    'Leather Jackets' => 'ao',
+    'Sports Tops' => 'ao',
+    'Trousers' => 'quan',
+    'Leggings' => 'quan'
 );
 
-echo "📦 Đang tạo các sản phẩm mới...\n";
-foreach ( $products_data as $p_data ) {
-    $product = new WC_Product_Simple();
-    $product->set_name( $p_data['name'] );
-    $product->set_status( 'publish' );
-    $product->set_regular_price( $p_data['price'] );
-    if ( ! empty( $p_data['sale_price'] ) ) {
-        $product->set_sale_price( $p_data['sale_price'] );
-    }
-    
-    // Gán danh mục
-    $category_ids = array();
-    foreach ( $p_data['categories'] as $cat_slug ) {
-        if ( isset( $cat_ids[$cat_slug] ) ) {
-            $category_ids[] = $cat_ids[$cat_slug];
-        }
-    }
-    $product->set_category_ids( $category_ids );
-    
-    // Sideload ảnh sản phẩm
-    $attachment_id = sideload_image_from_url( $p_data['img'] );
-    if ( $attachment_id ) {
-        $product->set_image_id( $attachment_id );
-    }
-    
-    // Đặt trạng thái featured
-    if ( $p_data['featured'] ) {
-        $product->set_featured( true );
-    }
-    
-    $product_id = $product->save();
-    echo "✓ Đã tạo sản phẩm: {$p_data['name']} (ID: $product_id)\n";
+// 2. Mở file CSV và import
+if ( ! file_exists( CSV_FILE_PATH ) ) {
+    echo "❌ Không tìm thấy file CSV tại: " . CSV_FILE_PATH . "\n";
+    exit;
 }
 
-echo "🎉 ĐỒNG BỘ SẢN PHẨM HOÀN TẤT!\n";
+$file = fopen( CSV_FILE_PATH, 'r' );
+if ( ! $file ) {
+    echo "❌ Không thể mở file CSV.\n";
+    exit;
+}
+
+// Đọc dòng đầu tiên (Header)
+$header = fgetcsv( $file );
+if ( ! $header ) {
+    echo "❌ File CSV rỗng.\n";
+    fclose( $file );
+    exit;
+}
+
+$header_map = array_flip( $header );
+
+echo "📦 Đang import sản phẩm từ file CSV...\n";
+$count = 0;
+
+while ( ( $row = fgetcsv( $file ) ) !== false ) {
+    // Bỏ qua nếu dòng rỗng hoặc không có đủ dữ liệu
+    if ( count( $row ) < count( $header_map ) ) {
+        continue;
+    }
+
+    $type = isset( $header_map['Type'] ) ? $row[$header_map['Type']] : 'simple';
+    $sku = isset( $header_map['SKU'] ) ? $row[$header_map['SKU']] : '';
+    $name = isset( $header_map['Name'] ) ? $row[$header_map['Name']] : '';
+    $published = isset( $header_map['Published'] ) ? $row[$header_map['Published']] : '1';
+    $featured = isset( $header_map['Is featured?'] ) ? $row[$header_map['Is featured?']] : '0';
+    $visibility = isset( $header_map['Visibility in catalog'] ) ? $row[$header_map['Visibility in catalog']] : 'visible';
+    $short_desc = isset( $header_map['Short description'] ) ? $row[$header_map['Short description']] : '';
+    $description = isset( $header_map['Description'] ) ? $row[$header_map['Description']] : '';
+    $in_stock = isset( $header_map['In stock?'] ) ? $row[$header_map['In stock?']] : '1';
+    $stock = isset( $header_map['Stock'] ) ? $row[$header_map['Stock']] : '';
+    $sale_price = isset( $header_map['Sale price'] ) ? $row[$header_map['Sale price']] : '';
+    $regular_price = isset( $header_map['Regular price'] ) ? $row[$header_map['Regular price']] : '';
+    $categories_raw = isset( $header_map['Categories'] ) ? $row[$header_map['Categories']] : '';
+    $tags_raw = isset( $header_map['Tags'] ) ? $row[$header_map['Tags']] : '';
+    $images_raw = isset( $header_map['Images'] ) ? $row[$header_map['Images']] : '';
+
+    if ( empty( $name ) ) {
+        continue;
+    }
+
+    echo "👉 Đang tạo sản phẩm: $name...\n";
+
+    $product = new WC_Product_Simple();
+    $product->set_name( $name );
+    $product->set_sku( $sku );
+    $product->set_status( $published == '1' ? 'publish' : 'draft' );
+    $product->set_catalog_visibility( $visibility );
+    
+    // Đặt giá
+    $product->set_regular_price( $regular_price );
+    if ( $sale_price !== '' ) {
+        $product->set_sale_price( $sale_price );
+    }
+
+    // Đặt kho hàng
+    if ( $stock !== '' ) {
+        $product->set_manage_stock( true );
+        $product->set_stock_quantity( intval( $stock ) );
+    } else {
+        $product->set_manage_stock( false );
+        $product->set_stock_status( $in_stock == '1' ? 'instock' : 'outofstock' );
+    }
+
+    // Mô tả
+    $product->set_short_description( $short_desc );
+    $product->set_description( $description );
+
+    // Gắn nhãn featured
+    if ( $featured == '1' ) {
+        $product->set_featured( true );
+    }
+
+    // Xử lý danh mục
+    $product_cat_ids = array();
+    if ( ! empty( $categories_raw ) ) {
+        $csv_categories = array_map( 'trim', explode( ',', $categories_raw ) );
+        foreach ( $csv_categories as $cat_name ) {
+            $cat_id = get_or_create_term( $cat_name, 'product_cat' );
+            if ( $cat_id ) {
+                $product_cat_ids[] = $cat_id;
+            }
+
+            // Ánh xạ sang danh mục gốc tiếng Việt nếu có trong cấu hình
+            if ( isset( $category_mapping[$cat_name] ) ) {
+                $vietnamese_slug = $category_mapping[$cat_name];
+                if ( isset( $cat_ids[$vietnamese_slug] ) ) {
+                    $product_cat_ids[] = $cat_ids[$vietnamese_slug];
+                }
+            }
+        }
+    }
+    // Loại bỏ các ID trùng lặp và gắn vào sản phẩm
+    $product->set_category_ids( array_unique( $product_cat_ids ) );
+
+    // Xử lý Tags
+    if ( ! empty( $tags_raw ) ) {
+        $csv_tags = array_map( 'trim', explode( ',', $tags_raw ) );
+        $product_tag_ids = array();
+        foreach ( $csv_tags as $tag_name ) {
+            $tag_id = get_or_create_term( $tag_name, 'product_tag' );
+            if ( $tag_id ) {
+                $product_tag_ids[] = $tag_id;
+            }
+        }
+        $product->set_tag_ids( $product_tag_ids );
+    }
+
+    // Tải và gắn ảnh
+    if ( ! empty( $images_raw ) ) {
+        // Lấy ảnh đầu tiên nếu có nhiều ảnh phân tách bằng dấu phẩy
+        $img_urls = array_map( 'trim', explode( ',', $images_raw ) );
+        $first_img_url = $img_urls[0];
+        $attachment_id = sideload_image_from_url( $first_img_url );
+        if ( $attachment_id ) {
+            $product->set_image_id( $attachment_id );
+        }
+    }
+
+    $product_id = $product->save();
+    $count++;
+    echo "   ✓ Đã lưu sản phẩm ID: $product_id (SKU: $sku)\n";
+}
+
+fclose( $file );
+echo "🎉 ĐỒNG BỘ SẢN PHẨM HOÀN TẤT! Đã nhập thành công $count sản phẩm.\n";

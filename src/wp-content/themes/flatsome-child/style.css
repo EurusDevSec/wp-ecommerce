@@ -751,6 +751,190 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
     display: none !important;
 }
 
+/* ==========================================================================
+   PROFESSIONAL FOOTER (ThoiTrang19 Reference)
+   ========================================================================== */
+.dev-custom-footer {
+    background-color: #ffffff;
+    margin-top: 0;
+    border-top: 1px solid #eaeaea;
+}
 
+.dev-footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 30px 40px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 40px;
+}
+
+.dev-footer-logo {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.dev-logo-text {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+}
+
+.dev-logo-sub {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.dev-footer-desc {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.dev-footer-social {
+    display: flex;
+    gap: 10px;
+}
+
+.dev-social-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+}
+
+.dev-social-fb { background-color: #1877f2; }
+.dev-social-ig { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); }
+.dev-social-pin { background-color: #e60023; }
+
+.dev-social-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.dev-footer-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 20px;
+    text-transform: none;
+    position: relative;
+}
+
+.dev-footer-links {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.dev-footer-links li {
+    margin-bottom: 12px;
+}
+
+.dev-footer-links a {
+    color: #666 !important;
+    font-size: 13.5px;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.dev-footer-links a:hover {
+    color: var(--primary-color) !important;
+    transform: translateX(4px);
+}
+
+.dev-payment-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.dev-payment-badge {
+    display: inline-flex;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.08));
+    transition: transform 0.2s ease;
+}
+
+.dev-payment-badge:hover {
+    transform: translateY(-2px);
+}
+
+/* Copyright bar */
+.dev-footer-copyright {
+    background-color: #555;
+    padding: 15px 30px;
+}
+
+.dev-footer-copyright-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dev-footer-copyright span {
+    color: #ccc;
+    font-size: 12.5px;
+}
+
+.dev-footer-copyright-links {
+    display: flex;
+    gap: 25px;
+}
+
+.dev-footer-copyright-links a {
+    color: #ddd !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none !important;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.dev-footer-copyright-links a:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Footer Responsive */
+@media (max-width: 768px) {
+    .dev-footer-inner {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 30px 20px;
+    }
+    
+    .dev-footer-copyright-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 991px) and (min-width: 769px) {
+    .dev-footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+}
+
+/* Hide default Flatsome absolute footer if overlapping */
+.absolute-footer {
+    display: none !important;
+}
 
 
