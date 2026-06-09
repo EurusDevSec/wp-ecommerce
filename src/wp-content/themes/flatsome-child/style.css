@@ -663,8 +663,7 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
 /* ==========================================================================
    HOMEPAGE CUSTOM CONTAINER SECTIONS (ThoiTrang19 Banners)
    ========================================================================== */
-.home-hero-section,
-.home-category-cards-section {
+.home-hero-section {
     background-color: #ffffff !important;
     border: 1px solid #eaeaea !important;
     border-radius: 25px !important;
@@ -673,6 +672,16 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
     margin-top: 25px !important;
     margin-bottom: 25px !important;
     overflow: hidden;
+}
+
+.home-category-cards-section {
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
 }
 
 /* Category cards 1:1 ratio square styling */

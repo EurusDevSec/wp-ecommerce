@@ -29,7 +29,7 @@ get_header();
 [/row]
 [/section]
 
-[section padding="20px" background="rgb(255, 255, 255)" class="home-category-cards-section"]
+[section padding="20px 0" background="rgba(0,0,0,0)" class="home-category-cards-section"]
 [ux_slider slide_width="19%" slide_width__md="31%" slide_width__sm="48%" timer="4000" arrows="true" bullets="false" auto_slide="false" infinitive="true" slide_align="left" class="slider-nav-circle slider-nav-light"]
     [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/ao/"]
         [text_box position_x="50" position_y="50" width="100" text_align="center"]
@@ -71,21 +71,21 @@ get_header();
 [row style="max-width:1300px" class="home-section-row"]
     [col span="12" bg_color="rgb(255, 255, 255)" padding="20px" class="home-section-col"]
         [title style="normal" text="ĐANG GIẢM GIÁ" size="115"]
-        [ux_products type="slider" columns="4" show="onsale" limit="8" orderby="sales"]
+        [ux_products type="slider" columns="4" show="onsale" products="8"]
     [/col]
 [/row]
 
 [row style="max-width:1300px" class="home-section-row"]
     [col span="12" bg_color="rgb(255, 255, 255)" padding="20px" class="home-section-col"]
         [title style="normal" text="SẢN PHẨM BÁN CHẠY" size="115"]
-        [ux_products columns="4" show="featured" limit="8" orderby="sales"]
+        [ux_products type="slider" columns="5" show="featured" products="10"]
     [/col]
 [/row]
 
 [row style="max-width:1300px" class="home-section-row"]
     [col span="12" bg_color="rgb(255, 255, 255)" padding="20px" class="home-section-col"]
         [title style="normal" text="HÀNG MỚI VỀ" size="115"]
-        [ux_products columns="4" limit="8" orderby="date"]
+        [ux_products type="row" columns="5" products="15" orderby="date"]
     [/col]
 [/row]
 
