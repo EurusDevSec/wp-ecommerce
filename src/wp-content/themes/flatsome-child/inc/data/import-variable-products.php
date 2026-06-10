@@ -19,6 +19,85 @@ foreach ( $existing_products as $prod ) {
 }
 echo "✓ Đã xóa tất cả sản phẩm cũ thành công.\n";
 
+/**
+ * Chuẩn hóa tên kích thước thành các chuẩn S, M, L, XL...
+ */
+function dev_normalize_size_name( $size ) {
+    $size_trimmed = trim( $size );
+    $size_lower = mb_strtolower( $size_trimmed, 'UTF-8' );
+    
+    $normalization_map = array(
+        's' => 'S',
+        'small' => 'S',
+        'm' => 'M',
+        'medium' => 'M',
+        'l' => 'L',
+        'large' => 'L',
+        'xl' => 'XL',
+        'extra large' => 'XL',
+        'xxl' => 'XXL',
+        '2xl' => 'XXL',
+        'xxxl' => 'XXXL',
+        '3xl' => 'XXXL'
+    );
+    
+    return isset( $normalization_map[$size_lower] ) ? $normalization_map[$size_lower] : $size_trimmed;
+}
+
+/**
+ * Chuẩn hóa tên màu sắc thành màu cốt lõi tiêu chuẩn (Đen, Trắng, Xám, Be...)
+ */
+function dev_normalize_color_name( $color ) {
+    $color_trimmed = trim( $color );
+    
+    // Loại bỏ hậu tố mã số nếu có dạng "Đen-0023" hoặc "Be-0212"
+    if ( strpos( $color_trimmed, '-' ) !== false ) {
+        $parts = explode( '-', $color_trimmed );
+        $suffix = trim( end( $parts ) );
+        if ( is_numeric( $suffix ) || strlen( $suffix ) <= 4 ) {
+            array_pop( $parts );
+            $color_trimmed = implode( '-', $parts );
+        }
+    }
+    
+    $color_clean = trim( $color_trimmed );
+    $color_lower_clean = mb_strtolower( $color_clean, 'UTF-8' );
+    
+    $mapping = array(
+        'đen' => 'Đen', 'black' => 'Đen', 'dark' => 'Đen',
+        'trắng' => 'Trắng', 'trang' => 'Trắng', 'white' => 'Trắng',
+        'xám' => 'Xám', 'xam' => 'Xám', 'gray' => 'Xám', 'grey' => 'Xám',
+        'đỏ' => 'Đỏ', 'do' => 'Đỏ', 'red' => 'Đỏ',
+        'vàng' => 'Vàng', 'vang' => 'Vàng', 'yellow' => 'Vàng',
+        'cam' => 'Cam', 'orange' => 'Cam',
+        'hồng' => 'Hồng', 'hong' => 'Hồng', 'pink' => 'Hồng',
+        'nâu' => 'Nâu', 'nau' => 'Nâu', 'brown' => 'Nâu',
+        'tím' => 'Tím', 'tim' => 'Tím', 'purple' => 'Tím',
+        
+        // Nhóm xanh dương / navy
+        'navy' => 'Xanh dương', 'xanh đen' => 'Xanh dương', 'xanh den' => 'Xanh dương',
+        'xanh dương' => 'Xanh dương', 'xanh duong' => 'Xanh dương', 'blue' => 'Xanh dương',
+        'xanh biển' => 'Xanh dương', 'xanh bien' => 'Xanh dương', 'xanh chàm' => 'Xanh dương', 'xanh nhạt' => 'Xanh dương', 'xanh đậm' => 'Xanh dương',
+        
+        // Nhóm xanh lá / rêu
+        'rêu' => 'Xanh lá', 'reu' => 'Xanh lá', 'olive' => 'Xanh lá', 'xanh lá' => 'Xanh lá',
+        'xanh la' => 'Xanh lá', 'xanh rêu' => 'Xanh lá', 'green' => 'Xanh lá',
+        
+        // Nhóm be / kem
+        'kem' => 'Kem/Be', 'cream' => 'Kem/Be', 'be' => 'Kem/Be', 'beige' => 'Kem/Be',
+        'cát' => 'Kem/Be', 'khaki' => 'Kem/Be'
+    );
+    
+    foreach ( $mapping as $key => $target ) {
+        if ( strpos( $color_lower_clean, $key ) !== false ) {
+            return $target;
+        }
+    }
+    
+    return $color_clean;
+}
+
+
 // Caching ảnh đã tải để tránh tải lại trùng lặp
 global $sideloaded_images_cache;
 $sideloaded_images_cache = array();
@@ -378,16 +457,20 @@ foreach ( $collections as $slug_key => $col_info ) {
         
         if ( $color_option_index !== -1 ) {
             foreach ( $shopify_prod['options'][$color_option_index]['values'] as $val ) {
-                get_or_create_term( $val, $color_taxonomy );
-                $product_colors[] = $val;
+                $normalized_val = dev_normalize_color_name( $val );
+                get_or_create_term( $normalized_val, $color_taxonomy );
+                $product_colors[] = $normalized_val;
             }
+            $product_colors = array_unique( $product_colors );
         }
         
         if ( $size_option_index !== -1 ) {
             foreach ( $shopify_prod['options'][$size_option_index]['values'] as $val ) {
-                get_or_create_term( $val, $size_taxonomy );
-                $product_sizes[] = $val;
+                $normalized_val = dev_normalize_size_name( $val );
+                get_or_create_term( $normalized_val, $size_taxonomy );
+                $product_sizes[] = $normalized_val;
             }
+            $product_sizes = array_unique( $product_sizes );
         }
         
         // 3. Khởi tạo sản phẩm biến thể WC_Product_Variable
@@ -395,6 +478,9 @@ foreach ( $collections as $slug_key => $col_info ) {
         $product->set_name( $title );
         $product->set_status( 'publish' );
         $product->set_description( $shopify_prod['body_html'] );
+        if ( $col_info['cat'] === 'best-seller' ) {
+            $product->set_featured( true );
+        }
         
         // Gắn danh mục
         $product_cat_ids = array();
@@ -451,6 +537,7 @@ foreach ( $collections as $slug_key => $col_info ) {
         
         // 4. Tạo các biến thể WooCommerce (Variations) tương ứng
         if ( isset( $shopify_prod['variants'] ) && ! empty( $shopify_prod['variants'] ) ) {
+            $created_combinations = array();
             foreach ( $shopify_prod['variants'] as $shopify_var ) {
                 $variant_color = '';
                 $variant_size = '';
@@ -458,11 +545,18 @@ foreach ( $collections as $slug_key => $col_info ) {
                 $opt_values = array( $shopify_var['option1'], $shopify_var['option2'], $shopify_var['option3'] );
                 
                 if ( $color_option_index !== -1 ) {
-                    $variant_color = $opt_values[$color_option_index];
+                    $variant_color = dev_normalize_color_name( $opt_values[$color_option_index] );
                 }
                 if ( $size_option_index !== -1 ) {
-                    $variant_size = $opt_values[$size_option_index];
+                    $variant_size = dev_normalize_size_name( $opt_values[$size_option_index] );
                 }
+                
+                // Tránh tạo trùng lặp tổ hợp kích thước & màu sắc trong cùng một sản phẩm
+                $combo_key = sanitize_title( $variant_color ) . '_' . sanitize_title( $variant_size );
+                if ( in_array( $combo_key, $created_combinations ) ) {
+                    continue; // Bỏ qua biến thể trùng lặp
+                }
+                $created_combinations[] = $combo_key;
                 
                 $variation = new WC_Product_Variation();
                 $variation->set_parent_id( $product_id );

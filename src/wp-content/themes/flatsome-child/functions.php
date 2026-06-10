@@ -346,3 +346,17 @@ function dev_render_custom_footer() {
     <?php
 }
 
+/**
+ * Tự động tắt sidebar và các banner demo mặc định trên trang Cửa hàng (Shop)
+ * Giúp hiển thị trang Shop với layout 12 cột rộng rãi và bộ lọc AJAX ở trên cùng.
+ */
+add_filter( 'theme_mod_category_sidebar', 'dev_override_shop_sidebar' );
+function dev_override_shop_sidebar( $value ) {
+    return 'none';
+}
+
+add_filter( 'theme_mod_html_shop_page_content', 'dev_override_shop_page_content' );
+function dev_override_shop_page_content( $value ) {
+    return '';
+}
+

@@ -34,32 +34,68 @@ function dev_render_ajax_filter_bar() {
     // 1.2. Lấy thông tin Màu sắc tự động
     $colors = get_terms( array(
         'taxonomy'   => 'pa_color',
-        'hide_empty' => false,
+        'hide_empty' => true,
     ) );
 
     // 1.3. Lấy thông tin Kích thước tự động (AC-FE-03)
     $sizes = get_terms( array(
         'taxonomy'   => 'pa_size',
-        'hide_empty' => false,
+        'hide_empty' => true,
     ) );
 
-    // Hàm phụ trợ để lấy mã màu HEX từ tên tiếng Anh của màu sắc để hiển thị vòng tròn màu sắc đẹp mắt
+    // Hàm phụ trợ để lấy mã màu HEX từ tên màu để hiển thị vòng tròn màu sắc đẹp mắt (hỗ trợ cả tiếng Việt)
     function dev_map_color_name_to_hex( $name ) {
-        $name_lower = strtolower( trim( $name ) );
+        $name_lower = mb_strtolower( trim( $name ), 'UTF-8' );
+        
         $color_map = array(
-            'black'  => '#000000',
-            'blue'   => '#3182ce',
-            'green'  => '#38a169',
-            'red'    => '#e53e3e',
-            'yellow' => '#ecc94b',
-            'gray'   => '#718096',
-            'white'  => '#ffffff',
-            'pink'   => '#ed64a6',
-            'orange' => '#ed8936',
-            'purple' => '#9f7aea',
-            'brown'  => '#744210'
+            'đen'        => '#1a1a1a', // Tone đen nhám tinh tế
+            'black'      => '#1a1a1a',
+            'trắng'      => '#ffffff',
+            'trang'      => '#ffffff',
+            'white'      => '#ffffff',
+            'xám'        => '#8e8e93',
+            'xam'        => '#8e8e93',
+            'gray'       => '#8e8e93',
+            'grey'       => '#8e8e93',
+            'be'         => '#e5d3b3',
+            'beige'      => '#e5d3b3',
+            'kem'        => '#f5f5dc',
+            'cream'      => '#f5f5dc',
+            'xanh dương' => '#1b4f72',
+            'xanh duong' => '#1b4f72',
+            'blue'       => '#1b4f72',
+            'navy'       => '#1b4f72',
+            'xanh lá'    => '#2e7d32',
+            'xanh la'    => '#2e7d32',
+            'green'      => '#2e7d32',
+            'rêu'        => '#4e5d4c',
+            'reu'        => '#4e5d4c',
+            'đỏ'         => '#c0392b',
+            'do'         => '#c0392b',
+            'red'        => '#c0392b',
+            'vàng'       => '#f1c40f',
+            'vang'       => '#f1c40f',
+            'yellow'     => '#f1c40f',
+            'cam'        => '#d35400',
+            'orange'     => '#d35400',
+            'hồng'       => '#e91e63',
+            'hong'       => '#e91e63',
+            'pink'       => '#e91e63',
+            'nâu'        => '#5c4033',
+            'nau'        => '#5c4033',
+            'brown'      => '#5c4033',
+            'tím'        => '#8e44ad',
+            'tim'        => '#8e44ad',
+            'purple'     => '#8e44ad'
         );
-        return isset( $color_map[$name_lower] ) ? $color_map[$name_lower] : '#cbd5e0';
+        
+        foreach ( $color_map as $key => $hex ) {
+            if ( strpos( $name_lower, $key ) !== false ) {
+                return $hex;
+            }
+        }
+        
+        return '#cbd5e0';
     }
 
     // Lấy các tham số filter hiện tại từ URL để đánh dấu trạng thái "đang chọn" (active)
@@ -166,7 +202,7 @@ function dev_render_ajax_filter_bar() {
         .dev-filter-bar {
             background-color: #ffffff;
             border: 1px solid #eaeaea;
-            border-radius: 8px;
+            border-radius: 4px;
             padding: 20px;
             margin-bottom: 30px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.02);
@@ -176,7 +212,7 @@ function dev_render_ajax_filter_bar() {
             font-weight: 700;
             color: #333;
             margin-bottom: 15px;
-            border-bottom: 2px solid #1e3a8a;
+            border-bottom: 2px solid #1a1a1a;
             padding-bottom: 8px;
             display: inline-block;
         }
@@ -208,7 +244,7 @@ function dev_render_ajax_filter_bar() {
             padding: 6px 14px;
             border: 1px solid #e2e8f0;
             background-color: #f7fafc;
-            border-radius: 20px;
+            border-radius: 4px;
             font-size: 13px;
             color: #4a5568 !important;
             text-decoration: none !important;
@@ -216,9 +252,9 @@ function dev_render_ajax_filter_bar() {
         }
         .dev-filter-link:hover, 
         .dev-filter-link.active {
-            background-color: #1e3a8a;
+            background-color: #1a1a1a;
             color: #ffffff !important;
-            border-color: #1e3a8a;
+            border-color: #1a1a1a;
         }
         .dev-color-options {
             gap: 12px;
@@ -234,9 +270,9 @@ function dev_render_ajax_filter_bar() {
             border: 2px solid transparent;
         }
         .dev-color-circle.active {
-            border-color: #1e3a8a;
+            border-color: #1a1a1a;
             transform: scale(1.15);
-            box-shadow: 0 0 8px rgba(30,58,138,0.4);
+            box-shadow: 0 0 8px rgba(26,26,26,0.4);
         }
         .dev-color-circle:hover {
             transform: scale(1.1);
