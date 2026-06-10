@@ -938,3 +938,741 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
 }
 
 
+/* ==========================================================================
+   HOMEPAGE REDESIGN 2026 — BENTO GRID HERO
+   ========================================================================== */
+
+/* --- Bento Grid Container --- */
+.hkt-hero-bento {
+    max-width: 1300px;
+    margin: 20px auto 0;
+    padding: 0 15px;
+}
+
+.hkt-bento-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 14px;
+}
+
+/* Ô 1: Slider chính (spans 1 row full height) */
+.hkt-bento-main {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hkt-bento-main .banner {
+    height: 100% !important;
+}
+
+.hkt-bento-main .slider,
+.hkt-bento-main .flickity-viewport {
+    height: 100% !important;
+    min-height: 480px;
+}
+
+/* Ô 2: Banner Hàng Mới Về */
+.hkt-bento-new {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    min-height: 240px;
+}
+
+/* Ô 3 & 4: Bottom cells */
+.hkt-bento-voucher,
+.hkt-bento-exclusive {
+    grid-row: 2 / 3;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    min-height: 230px;
+}
+
+.hkt-bento-voucher {
+    grid-column: 2 / 3;
+}
+
+/* Ô 3 sub-layout: split bottom row when 4 cells needed */
+/* Override: Place voucher + exclusive in bottom-right column */
+.hkt-bento-new {
+    min-height: 0;
+}
+
+/* Nested inner grid for right column */
+.hkt-bento-grid {
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: 1fr auto;
+}
+
+.hkt-bento-main  { grid-area: 1 / 1 / 3 / 2; }
+.hkt-bento-new   { grid-area: 1 / 2 / 2 / 3; }
+.hkt-bento-voucher  { grid-area: 2 / 2 / 3 / 3; }
+
+/* Hide 4th cell on homepage — only 3 bento blocks needed */
+.hkt-bento-exclusive { display: none; }
+
+/* --- Bento image + overlay helpers --- */
+.hkt-bento-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.hkt-bento-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hkt-bento-link:hover .hkt-bento-img {
+    transform: scale(1.06);
+}
+
+/* Glassmorphism overlay */
+.hkt-bento-glass-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 80%, transparent 100%);
+    backdrop-filter: blur(0);
+    color: #fff;
+    transition: backdrop-filter 0.3s ease;
+}
+
+.hkt-bento-link:hover .hkt-bento-glass-overlay {
+    backdrop-filter: blur(2px);
+}
+
+/* Dark text-overlay for exclusive cell */
+.hkt-bento-dark-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 80%);
+    color: #fff;
+}
+
+.hkt-bento-tag {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.hkt-tag-dark {
+    background-color: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    backdrop-filter: blur(4px);
+}
+
+.hkt-bento-heading {
+    color: #ffffff !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+}
+
+.hkt-bento-heading-dark {
+    color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    margin: 4px 0 8px !important;
+}
+
+.hkt-bento-p {
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    margin: 6px 0 0;
+}
+
+.hkt-bento-arrow {
+    display: inline-block;
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    transition: color 0.2s;
+}
+
+.hkt-bento-link:hover .hkt-bento-arrow {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Slider Hero Overlay Text */
+.hkt-hero-badge {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.hkt-badge-sale {
+    background-color: #c0392b;
+    animation: hkt-pulse-badge 2s infinite;
+}
+
+@keyframes hkt-pulse-badge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.hkt-hero-title {
+    color: #ffffff !important;
+    font-size: 36px !important;
+    font-weight: 900 !important;
+    line-height: 1.15 !important;
+    margin: 0 0 10px !important;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+
+.hkt-hero-sub {
+    color: rgba(255,255,255,0.88) !important;
+    font-size: 15px !important;
+    margin: 0 0 20px !important;
+    font-weight: 400;
+}
+
+.hkt-hero-cta {
+    display: inline-block !important;
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    padding: 12px 28px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(247,116,38,0.4) !important;
+}
+
+.hkt-hero-cta:hover {
+    background-color: #c44f0a !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(247,116,38,0.5) !important;
+    color: #ffffff !important;
+}
+
+/* --- Voucher Bento Block --- */
+.hkt-bento-voucher {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.hkt-bento-voucher-inner {
+    padding: 25px;
+    text-align: center;
+    width: 100%;
+}
+
+.hkt-bento-voucher-label {
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.hkt-bento-voucher-value {
+    color: var(--primary-color);
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.hkt-bento-voucher-desc {
+    color: rgba(255,255,255,0.55);
+    font-size: 11.5px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.hkt-bento-voucher-code-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.07);
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+}
+
+.hkt-bento-voucher-code {
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.hkt-bento-copy-btn {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+}
+
+.hkt-bento-copy-btn:hover,
+.hkt-bento-copy-btn.copied {
+    background-color: #27ae60;
+}
+
+.hkt-bento-voucher-cta {
+    display: inline-block;
+    color: rgba(255,255,255,0.75) !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    transition: color 0.2s;
+}
+
+.hkt-bento-voucher-cta:hover {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color);
+}
+
+/* Bento Responsive */
+@media (max-width: 768px) {
+    .hkt-bento-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .hkt-bento-main  { grid-area: unset; }
+    .hkt-bento-new   { grid-area: unset; min-height: 200px; }
+    .hkt-bento-voucher { grid-area: unset; min-height: 200px; }
+
+    .hkt-bento-main .slider,
+    .hkt-bento-main .flickity-viewport {
+        min-height: 320px !important;
+    }
+
+    .hkt-hero-title { font-size: 24px !important; }
+}
+
+@media (max-width: 480px) {
+    .hkt-hero-bento { padding: 0 10px; }
+    .hkt-hero-title { font-size: 20px !important; }
+    .hkt-bento-voucher-value { font-size: 22px; }
+}
+
+
+/* ==========================================================================
+   TRUST BAR — Social Proof Strip
+   ========================================================================== */
+.hkt-trust-bar {
+    background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 100%);
+    margin: 14px 0;
+    padding: 0;
+}
+
+.hkt-trust-bar-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.hkt-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    flex: 1;
+    min-width: 200px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.2s;
+}
+
+.hkt-trust-item:last-child { border-right: none; }
+
+.hkt-trust-item:hover {
+    background: rgba(247,116,38,0.06);
+}
+
+.hkt-trust-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.hkt-trust-item > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.hkt-trust-item strong {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    display: block;
+}
+
+.hkt-trust-item span {
+    color: rgba(255,255,255,0.55);
+    font-size: 11.5px;
+    margin-top: 2px;
+}
+
+@media (max-width: 767px) {
+    .hkt-trust-bar-inner { flex-wrap: wrap; }
+    .hkt-trust-item {
+        flex: 1 1 50%;
+        min-width: 150px;
+        padding: 12px 15px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+}
+
+@media (max-width: 480px) {
+    .hkt-trust-item { flex: 1 1 100%; }
+}
+
+
+/* ==========================================================================
+   HOME SECTION WRAPPERS — Generic Sections
+   ========================================================================== */
+.hkt-home-section {
+    padding: 15px 0;
+}
+
+.hkt-section-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 25px 20px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+}
+
+.hkt-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 22px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.hkt-section-title {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #1a1a1a !important;
+    margin: 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.hkt-section-sub {
+    color: #888;
+    font-size: 12.5px;
+    margin: 4px 0 0;
+}
+
+.hkt-section-viewall {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--primary-color) !important;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: gap 0.2s;
+}
+
+.hkt-section-viewall:hover {
+    gap: 9px;
+}
+
+/* Categories section inherits same wrapper but different padding */
+.hkt-section-categories .hkt-section-inner {
+    padding-bottom: 10px;
+}
+
+
+/* ==========================================================================
+   PRODUCT HOVER — Image Swap (Secondary Image)
+   ========================================================================== */
+.product-small .box-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-small .box-image .secondary-image {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 2;
+}
+
+.product-small:hover .box-image .secondary-image {
+    opacity: 1;
+}
+
+.product-small .box-image img:first-child {
+    transition: opacity 0.5s ease;
+}
+
+.product-small:hover .box-image img:first-child {
+    opacity: 0;
+}
+
+
+/* ==========================================================================
+   PRODUCT CARD — Enhanced Hover Glow & Micro-interactions
+   ========================================================================== */
+div.product-small {
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+div.product-small:hover {
+    transform: translateY(-5px);
+}
+
+div.product-small .product-info {
+    transition: box-shadow 0.3s ease;
+}
+
+div.product-small:hover {
+    box-shadow: 0 12px 28px rgba(247,116,38,0.12) !important;
+}
+
+/* CTA Buttons — Improved Contrast (WCAG AA: 4.5:1) */
+div.product-small .add-to-cart-button a.primary,
+.products .product .button.add_to_cart_button,
+.wc-block-grid__product-add-to-cart a {
+    background-color: #d35400 !important; /* Contrast 4.6:1 vs white */
+    color: #ffffff !important;
+    border-color: #d35400 !important;
+    border-radius: 6px !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.2s ease !important;
+}
+
+div.product-small:hover .add-to-cart-button a.primary,
+.products .product:hover .button.add_to_cart_button {
+    background-color: #b34600 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(179,70,0,0.35) !important;
+}
+
+
+/* ==========================================================================
+   CATEGORY LABEL — Overlaid on Category Slider Banners
+   ========================================================================== */
+.hkt-cat-label {
+    color: #ffffff !important;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* Banner hover zoom for category items */
+.hkt-cat-slider .banner-inner {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+.hkt-cat-slider .banner:hover .banner-inner {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(247,116,38,0.2) !important;
+}
+
+
+/* ==========================================================================
+   STICKY HEADER — Shrink on Scroll
+   ========================================================================== */
+#header.header-shrunk .header-main {
+    transition: padding 0.35s ease, box-shadow 0.35s ease;
+}
+
+.header-shrunk #logo img {
+    max-height: 35px !important;
+    transition: max-height 0.35s ease;
+}
+
+.header-shrunk #header {
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1) !important;
+}
+
+.header-shrunk .header-bottom,
+.header-shrunk #wide-nav {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    transition: padding 0.3s ease;
+}
+
+
+/* ==========================================================================
+   AJAX LIVE SEARCH DROPDOWN
+   ========================================================================== */
+.hkt-search-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    z-index: 9999;
+    overflow: hidden;
+    display: none;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.hkt-search-dropdown.open {
+    display: block;
+    animation: hkt-dropdown-in 0.2s ease;
+}
+
+@keyframes hkt-dropdown-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.hkt-search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    text-decoration: none !important;
+    color: #1a1a1a !important;
+    transition: background 0.15s ease;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.hkt-search-result-item:last-child { border-bottom: none; }
+
+.hkt-search-result-item:hover {
+    background-color: #fff8f4;
+    color: var(--primary-color) !important;
+}
+
+.hkt-search-result-img {
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    border: 1px solid #f0f0f0;
+}
+
+.hkt-search-result-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.hkt-search-result-name {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #1a1a1a;
+}
+
+.hkt-search-result-price {
+    font-size: 12px;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-top: 3px;
+}
+
+.hkt-search-empty {
+    padding: 16px;
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+}
+
+.hkt-search-loading {
+    padding: 16px;
+    text-align: center;
+    color: #bbb;
+    font-size: 12px;
+}
+
+/* Wrapper for search + dropdown positioning */
+.hkt-search-wrapper {
+    position: relative;
+}
+
+.header-bottom .searchform-wrapper {
+    position: relative;
+}
+
+/* ==========================================================================
+   SECTION-SPECIFIC ACCENT COLORS
+   ========================================================================== */
+.hkt-section-sale .hkt-section-title   { color: #d35400 !important; }
+.hkt-section-bestseller .hkt-section-title { color: #c0392b !important; }
+
+
+
+

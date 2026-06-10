@@ -4,106 +4,242 @@
 get_header();
 ?>
 
-<main id="main" class="">
+<main id="main" class="" role="main">
     <div id="content" role="main" class="content-area">
-        <?php
-        // WordPress sẽ thực thi đoạn shortcode của Flatsome thông qua hàm này
-        echo do_shortcode('
-<!-- wp:flatsome/uxbuilder -->
-[section padding="20px" background="rgb(255, 255, 255)" class="home-hero-section"]
-[row style="max-width:1300px" col_spacing="normal" v_align="equal" h_align="center"]
-    [col span="9" span__sm="12"]
-        [ux_slider timer="4000" arrows="true" bullets="true" auto_slide="true"]
-            [ux_banner height="460px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/9f44f8b1-7919-0500-e2b6-0017deb04863.jpg" bg_overlay="rgba(0,0,0,0)" image_radius="15"]
-            [/ux_banner]
-            [ux_banner height="460px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/c2a09fac-900e-4652-850b-caf496ed2c45-tuan4-thang5.jpg" bg_overlay="rgba(0,0,0,0)" image_radius="15"]
-            [/ux_banner]
-            [ux_banner height="460px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0,0,0,0)" image_radius="15"]
-            [/ux_banner]
-        [/ux_slider]
-    [/col]
-    [col span="3" span__sm="12"]
-        [ux_banner height="460px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/banner-sidebar.jpg" bg_overlay="rgba(0,0,0,0)" image_radius="15" class="phongvt-hieu-ung-toa-hinh"]
-        [/ux_banner]
-    [/col]
-[/row]
-[/section]
 
-[section padding="20px 0" background="rgba(0,0,0,0)" class="home-category-cards-section"]
-[row style="max-width:1300px" class="home-section-row"]
-    [col span="12"]
-        [ux_slider slide_width="19%" slide_width__md="31%" slide_width__sm="48%" timer="4000" arrows="true" bullets="false" auto_slide="false" infinitive="true" slide_align="left" class="slider-nav-circle slider-nav-light"]
-            [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/ao/"]
-                [text_box position_x="50" position_y="50" width="100" text_align="center"]
-                    <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; text-transform: uppercase;">ÁO</h4>
-                [/text_box]
-            [/ux_banner]
-            [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/304b2fcb-7241-0400-fff2-0017fd550a27.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/balo-tui/"]
-                [text_box position_x="50" position_y="50" width="100" text_align="center"]
-                    <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; text-transform: uppercase;">BALO - TÚI</h4>
-                [/text_box]
-            [/ux_banner]
-            [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f53d7c7e-a5e7-6100-1aa2-00176e5a5977.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/giay/"]
-                [text_box position_x="50" position_y="50" width="100" text_align="center"]
-                    <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; text-transform: uppercase;">GIÀY</h4>
-                [/text_box]
-            [/ux_banner]
-            [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/ea158967-c428-2900-80fa-001770b476d1.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/non/"]
-                [text_box position_x="50" position_y="50" width="100" text_align="center"]
-                    <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; text-transform: uppercase;">NÓN</h4>
-                [/text_box]
-            [/ux_banner]
-            [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f0567450-4362-5400-588a-001794113da6.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/quan/"]
-                [text_box position_x="50" position_y="50" width="100" text_align="center"]
-                    <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; text-transform: uppercase;">QUẦN</h4>
-                [/text_box]
-            [/ux_banner]
-            [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/23431488-c80c-6700-c540-00179f9fc1ea-e1626332448674.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/sandal-dep/"]
-                [text_box position_x="50" position_y="50" width="100" text_align="center"]
-                    <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; text-transform: uppercase;">SANDAL - DÉP</h4>
-                [/text_box]
-            [/ux_banner]
-            [ux_banner height="220px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/1f3ca095-e259-0c00-04d8-0017f18cfb8f.jpg" bg_overlay="rgba(0, 0, 0, 0.2)" image_radius="15" link="/product-category/phu-kien/"]
-                [text_box position_x="50" position_y="50" width="100" text_align="center"]
-                    <h4 style="color: #ffffff; font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; text-transform: uppercase;">PHỤ KIỆN</h4>
-                [/text_box]
-            [/ux_banner]
-        [/ux_slider]
-    [/col]
-[/row]
-[/section]
-[row style="max-width:1300px" class="home-section-row"]
-    [col span="12" bg_color="rgb(255, 255, 255)" padding="20px" class="home-section-col"]
-        [title style="normal" text="ĐANG GIẢM GIÁ" size="115"]
-        [ux_products type="slider" columns="4" show="onsale" products="8"]
-    [/col]
-[/row]
+        <?php /* ============================================================
+         *  HERO SECTION — Bento Grid Bất đối xứng
+         * ============================================================ */ ?>
+        <section class="hkt-hero-bento" aria-label="Banner trang chủ HKT Fashion">
+            <div class="hkt-bento-grid">
 
-[row style="max-width:1300px" class="home-section-row"]
-    [col span="12" bg_color="rgb(255, 255, 255)" padding="20px" class="home-section-col"]
-        [title style="normal" text="SẢN PHẨM BÁN CHẠY" size="115"]
-        [ux_products type="slider" columns="5" show="featured" products="10"]
-    [/col]
-[/row]
+                <?php /* --- Ô 1: Slider chính (lớn nhất) --- */ ?>
+                <div class="hkt-bento-cell hkt-bento-main" aria-label="Bộ sưu tập thời trang 2026">
+                    <?php echo do_shortcode('
+                        [ux_slider timer="4500" arrows="true" bullets="true" auto_slide="true" nav_size="normal" nav_color="light"]
+                            [ux_banner height="520px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/9f44f8b1-7919-0500-e2b6-0017deb04863.jpg" bg_overlay="rgba(0,0,0,0.25)" image_radius="0"]
+                                [text_box position_x="10" position_y="80" width="70" animate="fadeInUp"]
+                                    <div class="hkt-hero-badge">Bộ Sưu Tập 2026</div>
+                                    <h2 class="hkt-hero-title">Phong Cách<br>Định Nghĩa Bạn</h2>
+                                    <p class="hkt-hero-sub">Hàng trăm mẫu thời trang mới nhất</p>
+                                    <a href="/shop/" class="hkt-hero-cta" aria-label="Khám phá bộ sưu tập mới nhất">Khám Phá Ngay →</a>
+                                [/text_box]
+                            [/ux_banner]
+                            [ux_banner height="520px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/c2a09fac-900e-4652-850b-caf496ed2c45-tuan4-thang5.jpg" bg_overlay="rgba(0,0,0,0.2)" image_radius="0"]
+                                [text_box position_x="10" position_y="75" width="70" animate="fadeInUp"]
+                                    <div class="hkt-hero-badge hkt-badge-sale">Sale 50%</div>
+                                    <h2 class="hkt-hero-title">Áo Sơ Mi<br>Cao Cấp</h2>
+                                    <p class="hkt-hero-sub">Vải Kate Ấn Độ siêu mềm mại</p>
+                                    <a href="/product-category/ao/" class="hkt-hero-cta" aria-label="Xem bộ sưu tập áo sơ mi">Mua Ngay →</a>
+                                [/text_box]
+                            [/ux_banner]
+                            [ux_banner height="520px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0,0,0,0.2)" image_radius="0"]
+                                [text_box position_x="10" position_y="75" width="70" animate="fadeInUp"]
+                                    <div class="hkt-hero-badge">Mới Về Hôm Nay</div>
+                                    <h2 class="hkt-hero-title">Thời Trang<br>Năng Động</h2>
+                                    <p class="hkt-hero-sub">Cập nhật xu hướng mới nhất mỗi ngày</p>
+                                    <a href="/product-category/ao/" class="hkt-hero-cta" aria-label="Xem hàng mới về hôm nay">Xem Hàng Mới →</a>
+                                [/text_box]
+                            [/ux_banner]
+                        [/ux_slider]
+                    '); ?>
+                </div>
 
-[row style="max-width:1300px" class="home-section-row"]
-    [col span="12" bg_color="rgb(255, 255, 255)" padding="20px" class="home-section-col"]
-        [title style="normal" text="HÀNG MỚI VỀ" size="115"]
-        [ux_products type="row" columns="5" products="15" orderby="date"]
-    [/col]
-[/row]
+                <?php /* --- Ô 2: Banner Hàng Mới Về (Glassmorphism) --- */ ?>
+                <div class="hkt-bento-cell hkt-bento-new">
+                    <a href="/product-category/ao/" class="hkt-bento-link" aria-label="Xem áo thời trang mới nhất về cửa hàng">
+                        <img src="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/banner-sidebar.jpg"
+                             alt="Hàng mới về - HKT Fashion"
+                             loading="lazy"
+                             class="hkt-bento-img">
+                        <div class="hkt-bento-glass-overlay">
+                            <span class="hkt-bento-tag">✨ Hàng Mới Về</span>
+                            <h3 class="hkt-bento-heading">BST Mùa Hè<br>2026</h3>
+                            <p class="hkt-bento-p">Cập nhật mỗi ngày</p>
+                        </div>
+                    </a>
+                </div>
 
-[section padding="40px 0px" background="rgba(0,0,0,0)"]
-    [row style="max-width:1300px"]
-        [col span="12"]
-            [title style="normal" text="TIN TỨC MỚI NHẤT" size="115"]
-            [blog_posts type="row" columns="3" posts="3" image_height="60%" image_hover="zoom" class="home_blog"]
-        [/col]
-    [/row]
-[/section]
-<!-- /wp:flatsome/uxbuilder -->
-        ');
-        ?>
+                <?php /* --- Ô 3: Voucher Flash Sale --- */ ?>
+                <div class="hkt-bento-cell hkt-bento-voucher">
+                    <div class="hkt-bento-voucher-inner">
+                        <div class="hkt-bento-voucher-label">⏰ Ưu đãi có thời hạn</div>
+                        <div class="hkt-bento-voucher-value">GIẢM 15%</div>
+                        <p class="hkt-bento-voucher-desc">Áp dụng đơn từ 500K. Nhập mã khi thanh toán.</p>
+                        <div class="hkt-bento-voucher-code-row">
+                            <span class="hkt-bento-voucher-code" id="home-voucher-code">HKT15OFF</span>
+                            <button class="hkt-bento-copy-btn" data-code="HKT15OFF" aria-label="Sao chép mã giảm giá HKT15OFF">SAO CHÉP</button>
+                        </div>
+                        <a href="/shop/" class="hkt-bento-voucher-cta" aria-label="Mua sắm ngay để dùng ưu đãi">Mua Sắm Ngay →</a>
+                    </div>
+                </div>
+
+                <?php /* --- Ô 4: Độc quyền HKT --- */ ?>
+                <div class="hkt-bento-cell hkt-bento-exclusive">
+                    <a href="/product-category/balo-tui/" class="hkt-bento-link" aria-label="Xem bộ sưu tập túi xách và balo độc quyền">
+                        <img src="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/304b2fcb-7241-0400-fff2-0017fd550a27.jpg"
+                             alt="Balo & Túi Xách - HKT Fashion"
+                             loading="lazy"
+                             class="hkt-bento-img">
+                        <div class="hkt-bento-dark-overlay">
+                            <span class="hkt-bento-tag hkt-tag-dark">🔥 Độc Quyền HKT</span>
+                            <h3 class="hkt-bento-heading-dark">Balo &amp;<br>Túi Xách</h3>
+                            <span class="hkt-bento-arrow">Xem ngay →</span>
+                        </div>
+                    </a>
+                </div>
+
+            </div><!-- .hkt-bento-grid -->
+        </section>
+
+        <?php /* ============================================================
+         *  SECTION: Trust Bar (Bằng chứng xã hội / USPs)
+         * ============================================================ */ ?>
+        <section class="hkt-trust-bar" aria-label="Cam kết của HKT Fashion">
+            <div class="hkt-trust-bar-inner">
+                <div class="hkt-trust-item">
+                    <span class="hkt-trust-icon">🚚</span>
+                    <div>
+                        <strong>Miễn phí vận chuyển</strong>
+                        <span>Đơn từ 499K</span>
+                    </div>
+                </div>
+                <div class="hkt-trust-item">
+                    <span class="hkt-trust-icon">🔄</span>
+                    <div>
+                        <strong>Đổi trả dễ dàng</strong>
+                        <span>Trong 7 ngày</span>
+                    </div>
+                </div>
+                <div class="hkt-trust-item">
+                    <span class="hkt-trust-icon">✅</span>
+                    <div>
+                        <strong>Cam kết chính hãng</strong>
+                        <span>100% authentic</span>
+                    </div>
+                </div>
+                <div class="hkt-trust-item">
+                    <span class="hkt-trust-icon">💬</span>
+                    <div>
+                        <strong>Hỗ trợ 24/7</strong>
+                        <span>Tư vấn miễn phí</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <?php /* ============================================================
+         *  SECTION: Danh mục sản phẩm (Category Slider)
+         * ============================================================ */ ?>
+        <section class="hkt-home-section hkt-section-categories" aria-label="Danh mục sản phẩm HKT Fashion">
+            <div class="hkt-section-inner">
+                <h2 class="hkt-section-title">Danh Mục Nổi Bật</h2>
+                <?php echo do_shortcode('
+                    [ux_slider slide_width="18%" slide_width__md="30%" slide_width__sm="46%" timer="3500" arrows="true" bullets="false" auto_slide="true" infinitive="true" slide_align="left" class="slider-nav-circle slider-nav-light hkt-cat-slider"]
+                        [ux_banner height="230px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0,0,0,0.28)" image_radius="15" link="/product-category/ao/"]
+                            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                                <h3 class="hkt-cat-label">Áo</h3>
+                            [/text_box]
+                        [/ux_banner]
+                        [ux_banner height="230px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/304b2fcb-7241-0400-fff2-0017fd550a27.jpg" bg_overlay="rgba(0,0,0,0.28)" image_radius="15" link="/product-category/balo-tui/"]
+                            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                                <h3 class="hkt-cat-label">Balo - Túi</h3>
+                            [/text_box]
+                        [/ux_banner]
+                        [ux_banner height="230px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f53d7c7e-a5e7-6100-1aa2-00176e5a5977.jpg" bg_overlay="rgba(0,0,0,0.28)" image_radius="15" link="/product-category/giay/"]
+                            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                                <h3 class="hkt-cat-label">Giày</h3>
+                            [/text_box]
+                        [/ux_banner]
+                        [ux_banner height="230px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/ea158967-c428-2900-80fa-001770b476d1.jpg" bg_overlay="rgba(0,0,0,0.28)" image_radius="15" link="/product-category/non/"]
+                            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                                <h3 class="hkt-cat-label">Nón</h3>
+                            [/text_box]
+                        [/ux_banner]
+                        [ux_banner height="230px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/f0567450-4362-5400-588a-001794113da6.jpg" bg_overlay="rgba(0,0,0,0.28)" image_radius="15" link="/product-category/quan/"]
+                            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                                <h3 class="hkt-cat-label">Quần</h3>
+                            [/text_box]
+                        [/ux_banner]
+                        [ux_banner height="230px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/23431488-c80c-6700-c540-00179f9fc1ea-e1626332448674.jpg" bg_overlay="rgba(0,0,0,0.28)" image_radius="15" link="/product-category/sandal-dep/"]
+                            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                                <h3 class="hkt-cat-label">Sandal - Dép</h3>
+                            [/text_box]
+                        [/ux_banner]
+                        [ux_banner height="230px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2021/07/1f3ca095-e259-0c00-04d8-0017f18cfb8f.jpg" bg_overlay="rgba(0,0,0,0.28)" image_radius="15" link="/product-category/phu-kien/"]
+                            [text_box position_x="50" position_y="85" width="100" text_align="center"]
+                                <h3 class="hkt-cat-label">Phụ Kiện</h3>
+                            [/text_box]
+                        [/ux_banner]
+                    [/ux_slider]
+                '); ?>
+            </div>
+        </section>
+
+        <?php /* ============================================================
+         *  SECTION: Đang giảm giá (Sale Products)
+         * ============================================================ */ ?>
+        <section class="hkt-home-section hkt-section-sale" aria-label="Sản phẩm đang giảm giá">
+            <div class="hkt-section-inner">
+                <div class="hkt-section-head">
+                    <div>
+                        <h2 class="hkt-section-title">⚡ Đang Giảm Giá</h2>
+                        <p class="hkt-section-sub">Ưu đãi có thời hạn — Đừng bỏ lỡ!</p>
+                    </div>
+                    <a href="/shop/?orderby=popularity&on_sale=1" class="hkt-section-viewall" aria-label="Xem tất cả sản phẩm đang giảm giá">Xem tất cả →</a>
+                </div>
+                <?php echo do_shortcode('[ux_products type="slider" columns="4" show="onsale" products="8" class="hkt-product-slider"]'); ?>
+            </div>
+        </section>
+
+        <?php /* ============================================================
+         *  SECTION: Sản phẩm bán chạy (Featured / Best Sellers)
+         * ============================================================ */ ?>
+        <section class="hkt-home-section hkt-section-bestseller" aria-label="Sản phẩm bán chạy nhất">
+            <div class="hkt-section-inner">
+                <div class="hkt-section-head">
+                    <div>
+                        <h2 class="hkt-section-title">🔥 Sản Phẩm Bán Chạy</h2>
+                        <p class="hkt-section-sub">Được hàng nghìn khách hàng tin chọn</p>
+                    </div>
+                    <a href="/shop/?orderby=popularity" class="hkt-section-viewall" aria-label="Xem tất cả sản phẩm bán chạy">Xem tất cả →</a>
+                </div>
+                <?php echo do_shortcode('[ux_products type="slider" columns="5" show="featured" products="10" class="hkt-product-slider"]'); ?>
+            </div>
+        </section>
+
+        <?php /* ============================================================
+         *  SECTION: Hàng mới về (New Arrivals)
+         * ============================================================ */ ?>
+        <section class="hkt-home-section hkt-section-newarrivals" aria-label="Hàng mới về HKT Fashion">
+            <div class="hkt-section-inner">
+                <div class="hkt-section-head">
+                    <div>
+                        <h2 class="hkt-section-title">✨ Hàng Mới Về</h2>
+                        <p class="hkt-section-sub">Cập nhật xu hướng mới nhất mỗi ngày</p>
+                    </div>
+                    <a href="/shop/?orderby=date" class="hkt-section-viewall" aria-label="Xem tất cả hàng mới về">Xem tất cả →</a>
+                </div>
+                <?php echo do_shortcode('[ux_products type="row" columns="5" products="15" orderby="date" class="hkt-product-grid"]'); ?>
+            </div>
+        </section>
+
+        <?php /* ============================================================
+         *  SECTION: Tin tức mới nhất (Blog)
+         * ============================================================ */ ?>
+        <section class="hkt-home-section hkt-section-blog" aria-label="Tin tức thời trang mới nhất">
+            <div class="hkt-section-inner">
+                <div class="hkt-section-head">
+                    <div>
+                        <h2 class="hkt-section-title">📰 Tin Tức Thời Trang</h2>
+                        <p class="hkt-section-sub">Xu hướng & phong cách mới nhất</p>
+                    </div>
+                    <a href="/tin-tuc/" class="hkt-section-viewall" aria-label="Đọc thêm tin tức thời trang">Đọc thêm →</a>
+                </div>
+                <?php echo do_shortcode('[blog_posts type="row" columns="3" posts="3" image_height="60%" image_hover="zoom" class="home_blog"]'); ?>
+            </div>
+        </section>
+
     </div>
 </main>
 

@@ -4,6 +4,19 @@ add_action( 'wp_enqueue_scripts', 'dev_enqueue_google_fonts' );
 function dev_enqueue_google_fonts() {
     wp_enqueue_style( 'flatsome-child-google-fonts', 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap', array(), null );
 }
+
+// Cache-bust child style.css by appending file modification timestamp as version
+add_action( 'wp_enqueue_scripts', 'hkt_cache_bust_child_style', 999 );
+function hkt_cache_bust_child_style() {
+    wp_dequeue_style( 'flatsome-style' );
+    wp_deregister_style( 'flatsome-style' );
+    wp_enqueue_style(
+        'flatsome-style',
+        get_stylesheet_uri(),
+        array( 'flatsome-main' ),
+        filemtime( get_stylesheet_directory() . '/style.css' )
+    );
+}
 add_action( 'woocommerce_after_add_to_cart_form', 'dev_add_guarantee_text' );
 function dev_add_guarantee_text() {
     echo '<p class="trust-text" style="color: green; font-weight: bold;">✔ Cam kết hàng chính hãng 100%</p>';
@@ -30,7 +43,8 @@ $custom_inc_files = array(
     'product-swatches.php',     // Biến thể swatches màu/size & Size Guide & Trust Badges
     'mobile-navigation.php',     // Thanh Bottom Navigation Bar trên mobile
     'sepay-integration.php',    // Tích hợp thanh toán tự động SePay Webhook
-    'dashboard-helper.php'      // Các hàm hỗ trợ Dashboard & Mua lại nhanh AJAX
+    'dashboard-helper.php',      // Các hàm hỗ trợ Dashboard & Mua lại nhanh AJAX
+    'homepage-enhancements.php'  // Ajax Live Search, Sticky Header JS, Secondary Image Swap
 );
 
 foreach ( $custom_inc_files as $file ) {
