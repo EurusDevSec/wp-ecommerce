@@ -86,12 +86,53 @@ Khi duyệt PR và đưa web lên Staging:
 1. Merge PR của Khoa/BE trên GitHub vào `main`.
 2. SSH vào VPS (`ssh root@167.172.91.249`), di chuyển tới `/var/www/wp-ecommerce/` và chạy:
    ```bash
-   git pull origin main
-   ./db-import.sh
-   ```
-   *(Khi import hỏi đổi URL, chọn **`y`**, URL cũ nhấn Enter, URL mới nhập **`http://167.172.91.249`**)*.
+    git pull origin main
+    ./db-import.sh
+    ```
+    *(Khi import hỏi đổi URL, chọn **`y`**, URL cũ nhấn Enter, URL mới nhập **`http://167.172.91.249`**)*.
 3. Nếu trang chủ Staging bị lỗi vỡ ảnh (thiếu ảnh thu nhỏ), chạy lệnh media-regenerate trên VPS:
-   ```bash
-   docker-compose run --rm --user 33 cli media regenerate --yes --allow-root
-   ```
+    ```bash
+    docker-compose run --rm --user 33 cli media regenerate --yes --allow-root
+    ```
 
+---
+
+## ⚙️ HƯỚNG DẪN GIẢ LẬP THANH TOÁN SEPAY WEBHOOK (DEMO)
+
+Để chạy thử nghiệm tính năng xác nhận thanh toán tự động qua SePay mà không cần liên kết ngân hàng thật và mất phí, nhóm có thể giả lập phản hồi Webhook bằng lệnh `curl` như sau:
+
+### Bước 1: Chuẩn bị thông tin đơn hàng
+1. Tiến hành đặt một đơn hàng trên trang web bằng phương thức **Quét mã QR Code** (VietQR).
+2. Khi tới trang cảm ơn (Thank You page), hệ thống sẽ hiển thị banner: `⏳ Đang chờ quét mã thanh toán...`.
+3. Ghi lại **Mã đơn hàng** (ví dụ: `255`) và **Số tiền** (ví dụ: `685150`).
+
+### Bước 2: Chạy lệnh giả lập chuyển khoản (SePay Webhook)
+Mở terminal (Git Bash, Command Prompt hoặc PowerShell) và chạy lệnh `curl` tương ứng để báo cho website biết giao dịch đã thành công:
+
+#### ⚡ Kiểm thử trên môi trường VPS Staging:
+```bash
+curl -X POST http://167.172.91.249/wp-json/sepay/v1/webhook \
+  -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
+  -H "Content-Type: application/json" \
+  -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":<SỐ_TIỀN>,"content":"HKTFASHION<MÃ_ĐƠN_HÀNG>","code":"FTVPSNEW123"}'
+```
+*Ví dụ thực tế cho đơn hàng #255 với số tiền 685.150đ:*
+```bash
+curl -X POST http://167.172.91.249/wp-json/sepay/v1/webhook \
+  -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
+  -H "Content-Type: application/json" \
+  -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":685150,"content":"HKTFASHION255","code":"FTVPSNEW123"}'
+```
+
+#### 💻 Kiểm thử trên môi trường Localhost:
+```bash
+curl -X POST http://localhost:8000/wp-json/sepay/v1/webhook \
+  -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
+  -H "Content-Type: application/json" \
+  -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":<SỐ_TIỀN>,"content":"HKTFASHION<MÃ_ĐƠN_HÀNG>","code":"FTLOCAL123"}'
+```
+
+### Bước 3: Xem kết quả
+Ngay khi lệnh `curl` chạy thành công (trả về `{"success":true,...}`):
+- Đơn hàng sẽ tự động đổi trạng thái sang `Processing` (Đang xử lý) trên trang quản trị.
+- Màn hình trang cảm ơn của khách hàng sẽ **tự động biến mất banner chờ, bắn pháo hoa giấy rực rỡ và hiển thị popup thông báo đặt hàng thành công** ngay lập tức mà không cần tải lại trang.
