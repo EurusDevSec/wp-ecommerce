@@ -56,7 +56,7 @@ function hkt_get_product_marketing_tag( $product ) {
     }
 
     // Scarcity if low stock
-    if ( $product->is_managing_stock() ) {
+    if ( $product->managing_stock() ) {
         $stock = $product->get_stock_quantity();
         if ( $stock > 0 && $stock <= 3 ) {
             return "⚡ CHỈ CÒN {$stock} SẢN PHẨM";
