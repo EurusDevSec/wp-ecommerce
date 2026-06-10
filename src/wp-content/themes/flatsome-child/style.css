@@ -83,42 +83,49 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
 }
 
 /* ==========================================================================
-   HEADER STYLE OVERRIDES (ThoiTrang19)
+   HEADER STYLE OVERRIDES (ICONDENIM Style - Clean White)
    ========================================================================== */
 .header-top, 
 #top-bar {
-    background-color: var(--primary-color) !important;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #eaeaea !important;
 }
 
 .header-top .nav > li > a, 
 .header-top .nav > li > a > span {
-    color: #ffffff !important;
+    color: #444444 !important;
     font-size: 12px;
 }
 
-.header-top .nav > li > a:hover {
-    color: #e6e4e4 !important;
+.header-top .nav > li > a:hover,
+.header-top .nav > li > a:hover > span {
+    color: var(--primary-color) !important;
 }
 
 .header-bottom, 
 #wide-nav {
-    background-color: var(--primary-color) !important;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #eaeaea !important;
 }
 
 .header-bottom-nav > li > a {
-    color: #ffffff !important;
-    font-size: 14px !important;
+    color: #1a1a1a !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    padding: 10px 16px !important;
 }
 
 .header-bottom-nav > li > a:hover {
-    color: #e6e4e4 !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--primary-color) !important;
+    background-color: transparent !important;
 }
 
 .stuck .header-bottom, 
 .stuck #wide-nav {
-    background-color: var(--primary-color) !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    border-bottom: 1px solid #eaeaea !important;
 }
 
 /* ==========================================================================
@@ -631,9 +638,10 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
 
 .header-bottom .search-field {
     background-color: #ffffff !important;
-    color: #000000 !important;
-    border-radius: 4px 0 0 4px !important;
-    border: 1px solid #ffffff !important;
+    color: #1a1a1a !important;
+    border-radius: 6px 0 0 6px !important;
+    border: 1px solid #eaeaea !important;
+    border-right: none !important;
     height: 36px !important;
     margin-bottom: 0 !important;
     padding: 0 12px !important;
@@ -642,12 +650,12 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
 }
 
 .header-bottom .ux-search-submit {
-    background-color: #e0651b !important; /* Darker accent orange button */
-    border: 1px solid #e0651b !important;
+    background-color: #ffffff !important;
+    border: 1px solid #eaeaea !important;
     border-left: none !important;
-    border-radius: 0 4px 4px 0 !important;
+    border-radius: 0 6px 6px 0 !important;
     height: 36px !important;
-    color: #ffffff !important;
+    color: #1a1a1a !important;
     padding: 0 15px !important;
     min-width: 40px !important;
     display: flex;
@@ -1320,11 +1328,10 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font, .nav-top-link, button, .butto
    TRUST BAR — Social Proof Strip
    ========================================================================== */
 .hkt-trust-bar {
-    background: #fbfbfa !important;
-    border-top: 1px solid #ededeb;
-    border-bottom: 1px solid #ededeb;
-    margin: 14px 0;
-    padding: 0;
+    background: #ffffff !important;
+    border: none !important;
+    margin: 20px 0;
+    padding: 15px 0;
 }
 
 .hkt-trust-bar-inner {
@@ -1333,30 +1340,54 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font, .nav-top-link, button, .butto
     padding: 0 15px;
     display: flex;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     flex-wrap: wrap;
 }
 
 .hkt-trust-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
+    gap: 15px;
+    padding: 12px 20px;
     flex: 1;
-    min-width: 200px;
-    border-right: 1px solid #ededeb;
-    transition: background 0.2s;
+    min-width: 220px;
+    border-right: none !important;
+    background: transparent !important;
+    transition: all 0.3s ease;
 }
-
-.hkt-trust-item:last-child { border-right: none; }
 
 .hkt-trust-item:hover {
-    background: #f5f5f3;
+    background: transparent !important;
 }
 
-.hkt-trust-icon {
-    font-size: 22px;
+/* SVG outline icon styling */
+.hkt-trust-icon-svg-wrapper {
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+}
+
+.hkt-trust-item:hover .hkt-trust-icon-svg-wrapper {
+    transform: scale(1.08);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.hkt-trust-icon-svg-wrapper svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .hkt-trust-item > div {
@@ -1365,10 +1396,11 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font, .nav-top-link, button, .butto
 }
 
 .hkt-trust-item strong {
-    color: #1a1a19;
-    font-size: 13px;
+    color: #1a1a1a;
+    font-size: 13.5px;
     font-weight: 700;
     display: block;
+    line-height: 1.3;
 }
 
 .hkt-trust-item span {
@@ -1381,15 +1413,23 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font, .nav-top-link, button, .butto
     .hkt-trust-bar-inner { flex-wrap: wrap; }
     .hkt-trust-item {
         flex: 1 1 50%;
-        min-width: 150px;
-        padding: 12px 15px;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        min-width: 180px;
+        padding: 10px 12px;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .hkt-trust-item:nth-last-child(-n+2) {
+        border-bottom: none;
     }
 }
 
 @media (max-width: 480px) {
-    .hkt-trust-item { flex: 1 1 100%; }
+    .hkt-trust-item { 
+        flex: 1 1 100%; 
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .hkt-trust-item:last-child {
+        border-bottom: none;
+    }
 }
 
 

@@ -98,31 +98,52 @@ get_header();
         <section class="hkt-trust-bar" aria-label="Cam kết của HKT Fashion">
             <div class="hkt-trust-bar-inner">
                 <div class="hkt-trust-item">
-                    <span class="hkt-trust-icon">🚚</span>
+                    <div class="hkt-trust-icon-svg-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                    </div>
                     <div>
                         <strong>Miễn phí vận chuyển</strong>
                         <span>Đơn từ 499K</span>
                     </div>
                 </div>
                 <div class="hkt-trust-item">
-                    <span class="hkt-trust-icon">🔄</span>
+                    <div class="hkt-trust-icon-svg-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                    </div>
                     <div>
-                        <strong>Đổi trả dễ dàng</strong>
+                        <strong>Đổi hàng tận nhà</strong>
                         <span>Trong 7 ngày</span>
                     </div>
                 </div>
                 <div class="hkt-trust-item">
-                    <span class="hkt-trust-icon">✅</span>
+                    <div class="hkt-trust-icon-svg-wrapper">
+                        <svg viewBox="0 0 24 24" style="stroke-width: 0;">
+                            <text x="50%" y="62%" dominant-baseline="middle" text-anchor="middle" font-family="'Montserrat', sans-serif" font-weight="900" font-size="8.5" fill="currentColor">COD</text>
+                        </svg>
+                    </div>
                     <div>
-                        <strong>Cam kết chính hãng</strong>
-                        <span>100% authentic</span>
+                        <strong>Thanh toán COD</strong>
+                        <span>Yên tâm mua sắm</span>
                     </div>
                 </div>
                 <div class="hkt-trust-item">
-                    <span class="hkt-trust-icon">💬</span>
+                    <div class="hkt-trust-icon-svg-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                    </div>
                     <div>
-                        <strong>Hỗ trợ 24/7</strong>
-                        <span>Tư vấn miễn phí</span>
+                        <strong>Hotline: 0999999999</strong>
+                        <span>Hỗ trợ từ 8h30 - 24h00</span>
                     </div>
                 </div>
             </div>
