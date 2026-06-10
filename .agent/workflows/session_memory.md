@@ -1,11 +1,16 @@
 # SESSION MEMORY — HKT Fashion
-> Session: 2026-06-10 | Status: Premium Homepage Redesign & Cache-Busting completed
+> Session: 2026-06-10 | Status: Visual Enhancements & Typography Redesign Completed
 
 ---
 
 ## ⚡ Active Task (Just Completed)
-**Premium Homepage Redesign & Optimization**
-Overhauled the storefront layout using CSS Grid Bento hero slider, social proof Trust Bar, category sliders, and product carousels. Implemented interactive Ajax live search dropdown, sticky header scroll scaling, pure CSS product secondary image hover swap (with PHP sibling fallback), and dynamic stylesheet cache-busting.
+**Homepage Aesthetics & Visual Bug Fixes**
+- Overhauled typography by enqueuing and enforcing `Inter` (body) and `Montserrat` (headings/navigation/buttons).
+- Redesigned the blocky, bracket-style `[ Sale! ]` badges into premium rounded-pill style with soft-orange tint.
+- Replaced the dark Trust Bar with a clean, light-beige strip that matches the minimalist theme.
+- Fixed the Bento Grid alignment to remove blank spaces beneath the main slider.
+- Cleaned up product card hover swaps by disabling Flatsome's default hook and adding a pure CSS `:has` selector.
+- Transformed the coupon box from a heavy dark container to a warm, light-cream voucher card.
 
 ---
 
@@ -13,21 +18,21 @@ Overhauled the storefront layout using CSS Grid Bento hero slider, social proof 
 
 | File | Key Change |
 |---|---|
-| `template-custom-home.php` | Coded responsive Bento Grid hero, USP trust bar, and product sliders. |
-| `style.css` | Appended bento grid properties, WCAG contrast fixes, sticky shrink styles, and search dropdown CSS. |
-| `inc/homepage-enhancements.php` | Built Ajax search handler and hooked secondary image tags into parent loops. |
-| `assets/js/homepage-effects.js` | Handled scroll-shrink trigger, copy voucher clipboard logic, and AJAX live search. |
-| `functions.php` | Autoloaded enhancements and added unconditional flatsome-style cache-buster using filemtime. |
+| `style.css` | Styled site-wide fonts, light Trust Bar, rounded Sale Badge, and light-themed bento voucher. |
+| `template-custom-home.php` | Set slider timer to 3000ms and banner heights to 600px to match bento rows. |
+| `functions.php` | Changed enqueued Google Fonts to Inter & Montserrat. |
+| `inc/homepage-enhancements.php` | Disabled default parent hover thumbnail hook to avoid duplicate gallery displays. |
+| `.agent/rules/PLAN.md` | Marked Google Fonts checklist item as completed. |
 
 ---
 
 ## 🔜 Next Steps (3 immediate technical actions)
 
-### Step 1 — Verify Mobile Navigation
-- Test mobile bottom navbar overlaying floating contact buttons under viewport < 768px on staging.
+### Step 1 — Staging Verification
+- Check responsive behavior of the new light-themed bento layout on tablets and mobile viewports.
 
-### Step 2 — Implement Remaining Product Catalog Features
-- Add Quick View popup and Wishlist buttons on catalog cards.
+### Step 2 — Product Catalog Enhancements
+- Implement Quick View popups and Wishlist buttons on catalog product cards.
 
-### Step 3 — Checkout Optimization
-- Streamline checkout layout to 2 columns and hide unnecessary form fields.
+### Step 3 — Single Product Layouts
+- Add trust badges and size guide modals to single product pages.
