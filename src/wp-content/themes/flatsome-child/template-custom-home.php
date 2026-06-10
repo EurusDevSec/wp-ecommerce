@@ -16,8 +16,8 @@ get_header();
                 <?php /* --- Ô 1: Slider chính (lớn nhất) --- */ ?>
                 <div class="hkt-bento-cell hkt-bento-main" aria-label="Bộ sưu tập thời trang 2026">
                     <?php echo do_shortcode('
-                        [ux_slider timer="4500" arrows="true" bullets="true" auto_slide="true" nav_size="normal" nav_color="light"]
-                            [ux_banner height="520px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/9f44f8b1-7919-0500-e2b6-0017deb04863.jpg" bg_overlay="rgba(0,0,0,0.25)" image_radius="0"]
+                        [ux_slider timer="3000" arrows="true" bullets="true" auto_slide="true" nav_size="normal" nav_color="light"]
+                            [ux_banner height="600px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/9f44f8b1-7919-0500-e2b6-0017deb04863.jpg" bg_overlay="rgba(0,0,0,0.25)" image_radius="0"]
                                 [text_box position_x="10" position_y="80" width="70" animate="fadeInUp"]
                                     <div class="hkt-hero-badge">Bộ Sưu Tập 2026</div>
                                     <h2 class="hkt-hero-title">Phong Cách<br>Định Nghĩa Bạn</h2>
@@ -25,7 +25,7 @@ get_header();
                                     <a href="/shop/" class="hkt-hero-cta" aria-label="Khám phá bộ sưu tập mới nhất">Khám Phá Ngay →</a>
                                 [/text_box]
                             [/ux_banner]
-                            [ux_banner height="520px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/c2a09fac-900e-4652-850b-caf496ed2c45-tuan4-thang5.jpg" bg_overlay="rgba(0,0,0,0.2)" image_radius="0"]
+                            [ux_banner height="600px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/c2a09fac-900e-4652-850b-caf496ed2c45-tuan4-thang5.jpg" bg_overlay="rgba(0,0,0,0.2)" image_radius="0"]
                                 [text_box position_x="10" position_y="75" width="70" animate="fadeInUp"]
                                     <div class="hkt-hero-badge hkt-badge-sale">Sale 50%</div>
                                     <h2 class="hkt-hero-title">Áo Sơ Mi<br>Cao Cấp</h2>
@@ -33,7 +33,7 @@ get_header();
                                     <a href="/product-category/ao/" class="hkt-hero-cta" aria-label="Xem bộ sưu tập áo sơ mi">Mua Ngay →</a>
                                 [/text_box]
                             [/ux_banner]
-                            [ux_banner height="520px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0,0,0,0.2)" image_radius="0"]
+                            [ux_banner height="600px" bg="https://thoitrang19.mauthemewp.com/wp-content/uploads/2025/04/0c8f79e5-dcbb-442c-b6d3-359ecd822d75-THUMBMOBANSOMI.jpg" bg_overlay="rgba(0,0,0,0.2)" image_radius="0"]
                                 [text_box position_x="10" position_y="75" width="70" animate="fadeInUp"]
                                     <div class="hkt-hero-badge">Mới Về Hôm Nay</div>
                                     <h2 class="hkt-hero-title">Thời Trang<br>Năng Động</h2>

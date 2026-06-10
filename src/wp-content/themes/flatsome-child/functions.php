@@ -2,7 +2,7 @@
 // Add custom Theme Functions here
 add_action( 'wp_enqueue_scripts', 'dev_enqueue_google_fonts' );
 function dev_enqueue_google_fonts() {
-    wp_enqueue_style( 'flatsome-child-google-fonts', 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap', array(), null );
+    wp_enqueue_style( 'flatsome-child-google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap', array(), null );
 }
 
 // Cache-bust child style.css by appending file modification timestamp as version

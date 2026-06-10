@@ -119,29 +119,11 @@ function hkt_output_secondary_image_in_card() {
     }
 
     $gallery_ids = $product->get_gallery_image_ids();
-    $secondary_id = 0;
-
-    if ( ! empty( $gallery_ids ) ) {
-        $secondary_id = $gallery_ids[0];
-    } else {
-        // Fallback for demo: use an attachment ID that is close to the thumbnail ID, or any other attachment
-        $thumbnail_id = $product->get_image_id();
-        if ( $thumbnail_id ) {
-            $possible_ids = array( $thumbnail_id + 1, $thumbnail_id - 1, 35, 36, 38, 39, 40 );
-            foreach ( $possible_ids as $pid ) {
-                if ( $pid != $thumbnail_id && wp_attachment_is_image( $pid ) ) {
-                    $secondary_id = $pid;
-                    break;
-                }
-            }
-        }
-    }
-
-    if ( ! $secondary_id ) {
+    if ( empty( $gallery_ids ) ) {
         return;
     }
 
-    $secondary_data = wp_get_attachment_image_src( $secondary_id, 'woocommerce_thumbnail' );
+    $secondary_data = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_thumbnail' );
     if ( ! $secondary_data ) {
         return;
     }
@@ -152,3 +134,7 @@ function hkt_output_secondary_image_in_card() {
        . 'loading="lazy" '
        . 'aria-hidden="true">';
 }
+
+// Remove Flatsome's default hover image hook to prevent duplicate output and conflicts
+remove_action( 'flatsome_woocommerce_shop_loop_images', 'flatsome_woocommerce_get_alt_product_thumbnail', 11 );
+
