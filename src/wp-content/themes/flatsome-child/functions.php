@@ -118,39 +118,40 @@ function dev_hardcode_hkt_menu( $items, $menu, $args ) {
         // Cấu hình menu dạng mảng tĩnh
         $raw_menu = array(
             array( 'id' => 1001, 'title' => 'TRANG CHỦ', 'url' => '/', 'parent' => 0 ),
-            array( 'id' => 1002, 'title' => 'GIỚI THIỆU', 'url' => '/gioi-thieu/', 'parent' => 0 ),
+            array( 'id' => 2000, 'title' => 'SẢN PHẨM', 'url' => '/shop/', 'parent' => 0, 'classes' => array( 'megamenu', 'menu-item-has-children' ) ),
             
-            array( 'id' => 1003, 'title' => 'ÁO', 'url' => '/product-category/ao/', 'parent' => 0 ),
+            // Cột 1: ÁO
+            array( 'id' => 1003, 'title' => 'ÁO', 'url' => '/product-category/ao/', 'parent' => 2000 ),
             array( 'id' => 1031, 'title' => 'Áo thun', 'url' => '/product-category/ao-thun/', 'parent' => 1003 ),
+            array( 'id' => 1034, 'title' => 'Áo polo', 'url' => '/product-category/ao-polo/', 'parent' => 1003 ),
             array( 'id' => 1032, 'title' => 'Áo sơ mi', 'url' => '/product-category/ao-so-mi/', 'parent' => 1003 ),
             array( 'id' => 1033, 'title' => 'Áo khoác', 'url' => '/product-category/ao-khoac/', 'parent' => 1003 ),
             
-            array( 'id' => 1004, 'title' => 'BALO – TÚI', 'url' => '/product-category/balo-tui/', 'parent' => 0 ),
-            array( 'id' => 1041, 'title' => 'Balo', 'url' => '/product-category/balo/', 'parent' => 1004 ),
-            array( 'id' => 1042, 'title' => 'Túi', 'url' => '/product-category/tui/', 'parent' => 1004 ),
-            
-            array( 'id' => 1005, 'title' => 'QUẦN', 'url' => '/product-category/quan/', 'parent' => 0 ),
+            // Cột 2: QUẦN
+            array( 'id' => 1005, 'title' => 'QUẦN', 'url' => '/product-category/quan/', 'parent' => 2000 ),
             array( 'id' => 1051, 'title' => 'Quần jean', 'url' => '/product-category/quan-jean/', 'parent' => 1005 ),
+            array( 'id' => 1053, 'title' => 'Quần tây', 'url' => '/product-category/quan-tay/', 'parent' => 1005 ),
             array( 'id' => 1052, 'title' => 'Quần short', 'url' => '/product-category/quan-short/', 'parent' => 1005 ),
             
-            array( 'id' => 1006, 'title' => 'NÓN', 'url' => '/product-category/non/', 'parent' => 0 ),
-            
-            array( 'id' => 1007, 'title' => 'GIÀY', 'url' => '/product-category/giay/', 'parent' => 0 ),
+            // Cột 3: GIÀY DÉP
+            array( 'id' => 1007, 'title' => 'GIÀY DÉP', 'url' => '/product-category/giay/', 'parent' => 2000 ),
             array( 'id' => 1071, 'title' => 'Giày nam', 'url' => '/product-category/giay-nam/', 'parent' => 1007 ),
             array( 'id' => 1072, 'title' => 'Giày nữ', 'url' => '/product-category/giay-nu/', 'parent' => 1007 ),
+            array( 'id' => 1101, 'title' => 'Sandal', 'url' => '/product-category/sandal-nam/', 'parent' => 1007 ),
+            array( 'id' => 1103, 'title' => 'Dép', 'url' => '/product-category/dep-nam/', 'parent' => 1007 ),
             
-            array( 'id' => 1008, 'title' => 'TÚI', 'url' => '/product-category/tui/', 'parent' => 0 ),
+            // Cột 4: BALO - TÚI - VÍ
+            array( 'id' => 1004, 'title' => 'BALO – TÚI', 'url' => '/product-category/balo-tui/', 'parent' => 2000 ),
+            array( 'id' => 1041, 'title' => 'Balo', 'url' => '/product-category/balo/', 'parent' => 1004 ),
+            array( 'id' => 1042, 'title' => 'Túi xách', 'url' => '/product-category/tui/', 'parent' => 1004 ),
+            array( 'id' => 1093, 'title' => 'Ví da', 'url' => '/product-category/vi-da/', 'parent' => 1004 ),
             
-            array( 'id' => 1009, 'title' => 'PHỤ KIỆN', 'url' => '/product-category/phu-kien/', 'parent' => 0 ),
-            array( 'id' => 1091, 'title' => 'Dây nịt da', 'url' => '/product-category/day-nit-da/', 'parent' => 1009 ),
+            // Cột 5: PHỤ KIỆN
+            array( 'id' => 1009, 'title' => 'PHỤ KIỆN', 'url' => '/product-category/phu-kien/', 'parent' => 2000 ),
+            array( 'id' => 1006, 'title' => 'Nón', 'url' => '/product-category/non/', 'parent' => 1009 ),
+            array( 'id' => 1091, 'title' => 'Thắt lưng', 'url' => '/product-category/day-nit-da/', 'parent' => 1009 ),
             array( 'id' => 1092, 'title' => 'Tất – Vớ', 'url' => '/product-category/tat-vo/', 'parent' => 1009 ),
-            array( 'id' => 1093, 'title' => 'Ví da', 'url' => '/product-category/vi-da/', 'parent' => 1009 ),
-            
-            array( 'id' => 1010, 'title' => 'SANDAL – DÉP', 'url' => '/product-category/sandal-dep/', 'parent' => 0 ),
-            array( 'id' => 1101, 'title' => 'Sandal nam', 'url' => '/product-category/sandal-nam/', 'parent' => 1010 ),
-            array( 'id' => 1102, 'title' => 'Sandal nữ', 'url' => '/product-category/sandal-nu/', 'parent' => 1010 ),
-            array( 'id' => 1103, 'title' => 'Dép nam', 'url' => '/product-category/dep-nam/', 'parent' => 1010 ),
-            array( 'id' => 1104, 'title' => 'Dép nữ', 'url' => '/product-category/dep-nu/', 'parent' => 1010 ),
+            array( 'id' => 1094, 'title' => 'Mắt kính', 'url' => '/product-category/mat-kinh/', 'parent' => 1009 ),
             
             array( 'id' => 1011, 'title' => 'TIN TỨC', 'url' => '/tin-tuc/', 'parent' => 0 ),
             array( 'id' => 1012, 'title' => 'LIÊN HỆ', 'url' => '/lien-he/', 'parent' => 0 )
@@ -168,7 +169,7 @@ function dev_hardcode_hkt_menu( $items, $menu, $args ) {
             $item->type = 'custom';
             $item->object = 'custom';
             $item->type_label = 'Custom Link';
-            $item->classes = array();
+            $item->classes = isset( $menu_data['classes'] ) ? $menu_data['classes'] : array();
             $item->target = '';
             $item->attr_title = '';
             $item->description = '';

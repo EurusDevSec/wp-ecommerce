@@ -210,4 +210,20 @@
     initImageSwap();
     $(document).on('flatsome:after_ajax', initImageSwap);
 
+
+    /* ----------------------------------------------------------------
+     * 5. FORCE AUTOPLAY on Bento Hero Slider (Flickity fallback)
+     * Flatsome's ux_slider sometimes doesn't auto-start when rendered
+     * via do_shortcode in PHP templates. This ensures playback.
+     * ---------------------------------------------------------------- */
+    setTimeout(function () {
+        var $slider = $('.hkt-bento-main .flickity-enabled');
+        if ($slider.length && $slider.data('flickity')) {
+            var flkty = $slider.data('flickity');
+            if (!flkty.player.state || flkty.player.state === 'stopped') {
+                $slider.flickity('playPlayer');
+            }
+        }
+    }, 2000);
+
 }(jQuery));

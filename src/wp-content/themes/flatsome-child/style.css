@@ -129,6 +129,50 @@ h1, h2, h3, h4, h5, h6, .uppercase, .heading-font {
 }
 
 /* ==========================================================================
+   MEGA MENU CUSTOM STYLING (ICONDENIM Style)
+   ========================================================================== */
+.header-nav .megamenu > .nav-dropdown {
+    background-color: #ffffff !important;
+    border: 1px solid #eaeaea !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    border-radius: var(--border-radius-minimal) !important;
+    padding: 25px 30px !important;
+    min-width: 960px !important;
+}
+
+/* Mega menu column headers (Level 1 items) */
+.header-nav .megamenu > .nav-dropdown > .row > .col > .col-inner > a,
+.header-nav .megamenu > .nav-dropdown > .row > .col > a,
+.header-nav .megamenu .nav-dropdown .nav-column-header > a {
+    color: #1a1a1a !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    border-bottom: 1px solid #1a1a1a !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 12px !important;
+    display: block !important;
+}
+
+/* Mega menu column sub-items (Level 2 items) */
+.header-nav .megamenu .nav-dropdown ul li a {
+    color: #444444 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    padding: 5px 0 !important;
+    text-transform: none !important;
+    transition: all 0.2s ease !important;
+    display: block !important;
+}
+
+.header-nav .megamenu .nav-dropdown ul li a:hover {
+    color: var(--primary-color) !important;
+    padding-left: 5px !important;
+    background-color: transparent !important;
+}
+
+/* ==========================================================================
    PRIMARY CTAs & BUTTON OVERRIDES (AC-FE-01)
    ========================================================================== */
 .button.checkout,
