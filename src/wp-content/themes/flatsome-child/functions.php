@@ -29,7 +29,8 @@ $custom_inc_files = array(
     'smtp-settings.php',         // Cấu hình SMTP gửi mail hóa đơn tin cậy
     'product-swatches.php',     // Biến thể swatches màu/size & Size Guide & Trust Badges
     'mobile-navigation.php',     // Thanh Bottom Navigation Bar trên mobile
-    'sepay-integration.php'     // Tích hợp thanh toán tự động SePay Webhook
+    'sepay-integration.php',    // Tích hợp thanh toán tự động SePay Webhook
+    'dashboard-helper.php'      // Các hàm hỗ trợ Dashboard & Mua lại nhanh AJAX
 );
 
 foreach ( $custom_inc_files as $file ) {

@@ -97,42 +97,84 @@ Khi duyệt PR và đưa web lên Staging:
 
 ---
 
-## ⚙️ HƯỚNG DẪN GIẢ LẬP THANH TOÁN SEPAY WEBHOOK (DEMO)
+## ⚙️ HƯỚNG DẪN GIẢ LẬP THANH TOÁN SEPAY WEBHOOK (DEMO PROJECT)
 
-Để chạy thử nghiệm tính năng xác nhận thanh toán tự động qua SePay mà không cần liên kết ngân hàng thật và mất phí, nhóm có thể giả lập phản hồi Webhook bằng lệnh `curl` như sau:
+> [!NOTE]
+> **Tại sao phải giả lập (Mocking)?**
+> Đối với các dự án môn học hoặc demo nhóm (không có giấy phép kinh doanh, không có tài khoản doanh nghiệp đã ký kết với ngân hàng hoặc cổng thanh toán lớn và không muốn phát sinh chi phí), việc kết nối SePay API/Webhook thực tế là không khả thi. Do đó, hệ thống đã được thiết kế sẵn một cơ chế **Webhook Simulator**.
+> Phương pháp này giúp giả lập dữ liệu y hệt như SePay gửi về khi có tiền chuyển khoản thực tế, giúp demo toàn bộ luồng hoạt động tự động 100% (Real-time Confetti & Popup) một cách mượt mà và an toàn.
 
-### Bước 1: Chuẩn bị thông tin đơn hàng
-1. Tiến hành đặt một đơn hàng trên trang web bằng phương thức **Quét mã QR Code** (VietQR).
-2. Khi tới trang cảm ơn (Thank You page), hệ thống sẽ hiển thị banner: `⏳ Đang chờ quét mã thanh toán...`.
-3. Ghi lại **Mã đơn hàng** (ví dụ: `255`) và **Số tiền** (ví dụ: `685150`).
+### 📋 Quy trình 3 bước thực hiện Demo
 
-### Bước 2: Chạy lệnh giả lập chuyển khoản (SePay Webhook)
-Mở terminal (Git Bash, Command Prompt hoặc PowerShell) và chạy lệnh `curl` tương ứng để báo cho website biết giao dịch đã thành công:
+#### Bước 1: Đặt hàng trên website
+1. Truy cập website, chọn sản phẩm và tiến hành Thanh toán.
+2. Chọn phương thức thanh toán **Chuyển khoản ngân hàng qua VietQR** và click đặt hàng.
+3. Website sẽ chuyển hướng sang trang cảm ơn (Thank You page). Tại đây:
+   - Một mã QR Code tự động được sinh ra chứa đúng số tiền và nội dung chuyển khoản (Ví dụ: `HKTFASHION120` với số tiền `685150`).
+   - Xuất hiện banner thông báo: `⏳ Đang chờ quét mã thanh toán...`.
+   - **Ghi lại: Mã đơn hàng (ví dụ: `120`) và Số tiền đơn hàng (ví dụ: `685150`).**
 
-#### ⚡ Kiểm thử trên môi trường VPS Staging:
-```bash
-curl -X POST http://167.172.91.249/wp-json/sepay/v1/webhook \
-  -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
-  -H "Content-Type: application/json" \
-  -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":<SỐ_TIỀN>,"content":"HKTFASHION<MÃ_ĐƠN_HÀNG>","code":"FTVPSNEW123"}'
-```
-*Ví dụ thực tế cho đơn hàng #255 với số tiền 685.150đ:*
-```bash
-curl -X POST http://167.172.91.249/wp-json/sepay/v1/webhook \
-  -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
-  -H "Content-Type: application/json" \
-  -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":685150,"content":"HKTFASHION255","code":"FTVPSNEW123"}'
-```
+#### Bước 2: Chạy lệnh giả lập chuyển khoản (Simulator)
+Do hệ thống Windows có nhiều loại terminal (Git Bash, Command Prompt, PowerShell) với cách xử lý dấu nháy kép `"` và nháy đơn `'` khác nhau, vui lòng chọn đúng lệnh phù hợp bên dưới để tránh lỗi `Invalid JSON`:
 
-#### 💻 Kiểm thử trên môi trường Localhost:
-```bash
-curl -X POST http://localhost:8000/wp-json/sepay/v1/webhook \
-  -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
-  -H "Content-Type: application/json" \
-  -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":<SỐ_TIỀN>,"content":"HKTFASHION<MÃ_ĐƠN_HÀNG>","code":"FTLOCAL123"}'
-```
+##### A. Dành cho Git Bash (Khuyên dùng)
+Nếu bạn dùng Git Bash trên Windows hoặc Terminal trên macOS / Linux:
 
-### Bước 3: Xem kết quả
-Ngay khi lệnh `curl` chạy thành công (trả về `{"success":true,...}`):
-- Đơn hàng sẽ tự động đổi trạng thái sang `Processing` (Đang xử lý) trên trang quản trị.
-- Màn hình trang cảm ơn của khách hàng sẽ **tự động biến mất banner chờ, bắn pháo hoa giấy rực rỡ và hiển thị popup thông báo đặt hàng thành công** ngay lập tức mà không cần tải lại trang.
+*   **⚡ Giả lập trên VPS Staging (Domain `167.172.91.249`):**
+    ```bash
+    curl -X POST http://167.172.91.249/wp-json/sepay/v1/webhook \
+      -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
+      -H "Content-Type: application/json" \
+      -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":<SỐ_TIỀN>,"content":"HKTFASHION<MÃ_ĐƠN_HÀNG>","code":"FTVPSNEW123"}'
+    ```
+    *Ví dụ thực tế cho đơn hàng #120 với số tiền 685.150đ:*
+    ```bash
+    curl -X POST http://167.172.91.249/wp-json/sepay/v1/webhook \
+      -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
+      -H "Content-Type: application/json" \
+      -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":685150,"content":"HKTFASHION120","code":"FTVPSNEW123"}'
+    ```
+
+*   **💻 Giả lập dưới Localhost (Port `8000`):**
+    ```bash
+    curl -X POST http://localhost:8000/wp-json/sepay/v1/webhook \
+      -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" \
+      -H "Content-Type: application/json" \
+      -d '{"gateway":"Vietcombank","transferType":"in","transferAmount":<SỐ_TIỀN>,"content":"HKTFASHION<MÃ_ĐƠN_HÀNG>","code":"FTLOCAL123"}'
+    ```
+
+##### B. Dành cho Windows Command Prompt (CMD)
+Nếu bạn dùng cmd.exe truyền thống, các tham số JSON dạng nháy kép bắt buộc phải được escape bằng dấu gạch chéo ngược `\"` và bọc toàn bộ body bằng dấu nháy kép `" `:
+
+*   **⚡ Giả lập trên VPS Staging:**
+    ```cmd
+    curl -X POST http://167.172.91.249/wp-json/sepay/v1/webhook -H "Authorization: Bearer HKTFASHION_SEPAY_KEY_2026" -H "Content-Type: application/json" -d "{\"gateway\":\"Vietcombank\",\"transferType\":\"in\",\"transferAmount\":<SỐ_TIỀN>,\"content\":\"HKTFASHION<MÃ_ĐƠN_HÀNG>\",\"code\":\"FTVPSNEW123\"}"
+    ```
+
+##### C. Dành cho Windows PowerShell (Khuyên dùng nếu dùng PowerShell)
+Tránh việc escape dấu nháy phức tạp bằng cách chạy lệnh khai báo biến JSON cực kỳ trực quan này:
+
+*   **⚡ Giả lập trên VPS Staging:**
+    ```powershell
+    $body = @{
+        gateway = "Vietcombank"
+        transferType = "in"
+        transferAmount = <SỐ_TIỀN>
+        content = "HKTFASHION<MÃ_ĐƠN_HÀNG>"
+        code = "FTVPSNEW123"
+    } | ConvertTo-Json -Compress
+
+    Invoke-RestMethod -Uri "http://167.172.91.249/wp-json/sepay/v1/webhook" `
+      -Method Post `
+      -Headers @{ "Authorization" = "Bearer HKTFASHION_SEPAY_KEY_2026" } `
+      -ContentType "application/json; charset=utf-8" `
+      -Body $body
+    ```
+
+#### Bước 3: Theo dõi phản hồi thời gian thực
+Khi lệnh trên chạy thành công, phản hồi từ server sẽ trả về `{"success":true,...}`.
+*   **Trang cảm ơn ở trình duyệt của khách hàng** sẽ lập tức nhận biết trạng thái đơn hàng đã được thanh toán hoàn tất (thông qua cơ chế AJAX polling ngầm mỗi 3 giây).
+*   Banner `Đang chờ quét mã` biến mất.
+*   Hiệu ứng pháo hoa giấy chúc mừng rơi rực rỡ khắp màn hình.
+*   Popup Modal "Đặt hàng thành công!" tự động nhảy ra thông báo chuyên nghiệp.
+*   Trong trang Quản trị WordPress Admin, đơn hàng chuyển từ trạng thái `Tạm giữ` (On-hold) sang `Đang xử lý` (Processing).
