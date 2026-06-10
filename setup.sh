@@ -82,20 +82,24 @@ fi
 echo "📦 Đang kiểm tra và cài đặt WooCommerce..."
 docker compose run --rm --user root cli wp plugin install woocommerce --activate --allow-root
 
-# 6. Tự động bỏ qua Setup Wizard của WooCommerce
-echo "⚡ Tối ưu hóa cấu hình WooCommerce (Bỏ qua Setup Wizard)..."
+# 6. Tự động bỏ qua Setup Wizard của WooCommerce và cấu hình Quốc gia/Tiền tệ VN
+echo "⚡ Tối ưu hóa cấu hình WooCommerce (Bỏ qua Setup Wizard & Cài đặt Việt Nam)..."
 docker compose run --rm --user root cli wp option update woocommerce_onboarding_profile '{"skip_tracker":true,"completed":true}' --allow-root
 docker compose run --rm --user root cli wp option update woocommerce_onboarding_opt_in 'no' --allow-root
+docker compose run --rm --user root cli wp option update woocommerce_default_country 'VN' --allow-root
+docker compose run --rm --user root cli wp option update woocommerce_currency 'VND' --allow-root
+docker compose run --rm --user root cli wp option update woocommerce_price_num_decimals '0' --allow-root
 
-# 7. Tự động Import dữ liệu mẫu của WooCommerce (Mock Products)
+# 7. Tự động Import sản phẩm biến thể thực tế từ icondenim.com
 if ! docker compose run --rm --user root cli wp post list --post_type=product --format=count --user=admin --allow-root | grep -q '[1-9]'; then
-    echo "📦 Đang import dữ liệu sản phẩm mẫu của WooCommerce..."
-    docker compose run --rm --user root cli wp plugin install wordpress-importer --activate --allow-root
-    docker compose run --rm --user root cli wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip --user=admin --allow-root
-    docker compose run --rm --user root cli wp plugin deactivate wordpress-importer --allow-root
-    echo "✅ Import sản phẩm mẫu thành công!"
+    echo "📦 Đang tải sản phẩm biến thể thực tế từ icondenim.com..."
+    echo "⚠️  Lưu ý: Quá trình này sẽ tải hình ảnh từ CDN về máy local, có thể mất từ 3-5 phút tùy tốc độ mạng của bạn. Vui lòng chờ..."
+    docker compose run --rm --user root cli wp eval-file wp-content/themes/flatsome-child/inc/data/import-variable-products.php --allow-root
+    echo "🧹 Đang dọn dẹp các tệp ảnh không sử dụng..."
+    docker compose run --rm --user root cli wp eval-file wp-content/themes/flatsome-child/inc/data/cleanup-unused-media.php --allow-root
+    echo "✅ Import sản phẩm thực tế thành công!"
 else
-    echo "ℹ️ Đã có sẵn sản phẩm trong cửa hàng, bỏ qua import mẫu."
+    echo "ℹ️ Đã có sẵn sản phẩm trong cửa hàng, bỏ qua import."
 fi
 
 # 8. Tự động giải nén Flatsome parent theme từ file zip nếu chưa tồn tại
@@ -124,9 +128,28 @@ docker compose run --rm --user root cli wp rewrite structure '/%postname%/' --ha
 docker compose run --rm --user root cli wp rewrite flush --hard --allow-root
 echo "✅ Cấu hình đường dẫn tĩnh thành công!"
 
-# 11. Tự động cấu hình Trang chủ (Front Page) mặc định là trang Cửa hàng (Shop)
-echo "🏠 Cấu hình Trang chủ mặc định hiển thị trang Cửa hàng (Shop)..."
-docker compose run --rm --user root cli wp eval "update_option('show_on_front', 'page'); \$shop = get_page_by_path('shop'); if (\$shop) { update_option('page_on_front', \$shop->ID); }" --user=admin --allow-root
+# 11. Tự động cấu hình Trang chủ (Front Page) mặc định là Custom Homepage
+echo "🏠 Cấu hình Trang chủ mặc định hiển thị trang Custom Homepage..."
+docker compose run --rm --user root cli wp eval "
+\$home = get_page_by_path('trang-chu');
+if (!\$home) {
+    \$home_id = wp_insert_post(array(
+        'post_title' => 'Trang chủ',
+        'post_name' => 'trang-chu',
+        'post_status' => 'publish',
+        'post_type' => 'page',
+    ));
+    if (\$home_id) {
+        update_post_meta(\$home_id, '_wp_page_template', 'template-custom-home.php');
+        update_option('show_on_front', 'page');
+        update_option('page_on_front', \$home_id);
+    }
+} else {
+    update_post_meta(\$home->ID, '_wp_page_template', 'template-custom-home.php');
+    update_option('show_on_front', 'page');
+    update_option('page_on_front', \$home->ID);
+}
+" --user=admin --allow-root
 echo "✅ Cấu hình Trang chủ thành công!"
 
 # 12. Khôi phục quyền sở hữu thư mục wp-content cho www-data để webserver có quyền ghi
