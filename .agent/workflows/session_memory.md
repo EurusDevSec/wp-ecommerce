@@ -1,11 +1,11 @@
 # SESSION MEMORY — HKT Fashion
-> Session: 2026-06-10 | Status: SePay Webhook Integration & Dynamic QR Flow completed
+> Session: 2026-06-10 | Status: Premium Homepage Redesign & Cache-Busting completed
 
 ---
 
 ## ⚡ Active Task (Just Completed)
-**SePay Webhook Integration & Dynamic QR Payment Flow**
-Integrated SePay API webhook for automated payment verification. Replaced immediate thank-you modal with a loading banner and AJAX polling system that dynamically triggers confetti and success popup only after payment is confirmed.
+**Premium Homepage Redesign & Optimization**
+Overhauled the storefront layout using CSS Grid Bento hero slider, social proof Trust Bar, category sliders, and product carousels. Implemented interactive Ajax live search dropdown, sticky header scroll scaling, pure CSS product secondary image hover swap (with PHP sibling fallback), and dynamic stylesheet cache-busting.
 
 ---
 
@@ -13,21 +13,21 @@ Integrated SePay API webhook for automated payment verification. Replaced immedi
 
 | File | Key Change |
 |---|---|
-| `src/wp-content/themes/flatsome-child/inc/sepay-integration.php` | Created webhook & order status API endpoints. |
-| `src/wp-content/themes/flatsome-child/functions.php` | Registered new integration file in autoload array. |
-| `src/wp-content/themes/flatsome-child/inc/payment-gateways.php` | Added SePay API Key configuration field to admin settings. |
-| `src/wp-content/themes/flatsome-child/inc/order-notifications.php` | Redesigned checkout thank-you page to poll status and fire dynamically. |
-| `README.md` | Added instructions for simulating SePay webhook for project demo. |
+| `template-custom-home.php` | Coded responsive Bento Grid hero, USP trust bar, and product sliders. |
+| `style.css` | Appended bento grid properties, WCAG contrast fixes, sticky shrink styles, and search dropdown CSS. |
+| `inc/homepage-enhancements.php` | Built Ajax search handler and hooked secondary image tags into parent loops. |
+| `assets/js/homepage-effects.js` | Handled scroll-shrink trigger, copy voucher clipboard logic, and AJAX live search. |
+| `functions.php` | Autoloaded enhancements and added unconditional flatsome-style cache-buster using filemtime. |
 
 ---
 
 ## 🔜 Next Steps (3 immediate technical actions)
 
-### Step 1 — Verify SePay webhook and AJAX polling flow on Staging (COMPLETED)
-- Synchronized code on VPS Staging and verified webhook endpoints on order #115.
+### Step 1 — Verify Mobile Navigation
+- Test mobile bottom navbar overlaying floating contact buttons under viewport < 768px on staging.
 
-### Step 2 — Verify dynamic checkout pages
-- Test cart and checkout flows natively on `http://167.172.91.249`.
+### Step 2 — Implement Remaining Product Catalog Features
+- Add Quick View popup and Wishlist buttons on catalog cards.
 
-### Step 3 — Complete remaining frontend roadmap
-- Implement sticky header, Ajax search suggestions, and wishlist button on product card.
+### Step 3 — Checkout Optimization
+- Streamline checkout layout to 2 columns and hide unnecessary form fields.
