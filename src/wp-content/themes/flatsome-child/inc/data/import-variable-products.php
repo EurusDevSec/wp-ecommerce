@@ -19,6 +19,31 @@ foreach ( $existing_products as $prod ) {
 }
 echo "✓ Đã xóa tất cả sản phẩm cũ thành công.\n";
 
+echo "🧹 Đang dọn dẹp các thuộc tính cũ (Màu sắc & Kích thước)...\n";
+$color_terms = get_terms( array( 'taxonomy' => 'pa_color', 'hide_empty' => false ) );
+if ( ! is_wp_error( $color_terms ) ) {
+    foreach ( $color_terms as $term ) {
+        wp_delete_term( $term->term_id, 'pa_color' );
+    }
+}
+$size_terms = get_terms( array( 'taxonomy' => 'pa_size', 'hide_empty' => false ) );
+if ( ! is_wp_error( $size_terms ) ) {
+    foreach ( $size_terms as $term ) {
+        wp_delete_term( $term->term_id, 'pa_size' );
+    }
+}
+echo "✓ Đã dọn dẹp thuộc tính cũ thành công.\n";
+
+echo "🧹 Đang dọn dẹp nội dung Gutenberg demo của trang Cửa hàng (Shop)...\n";
+$shop_page_id = get_option('woocommerce_shop_page_id');
+if ( $shop_page_id ) {
+    wp_update_post( array(
+        'ID'           => $shop_page_id,
+        'post_content' => '',
+    ) );
+    echo "✓ Đã dọn dẹp nội dung demo trang Cửa hàng thành công.\n";
+}
+
 /**
  * Chuẩn hóa tên kích thước thành các chuẩn S, M, L, XL...
  */
@@ -411,6 +436,18 @@ foreach ( $collections as $slug_key => $col_info ) {
         
         // Tránh trùng lặp tiêu đề sản phẩm
         if ( isset( $seen_titles[$title] ) ) {
+            // Nếu sản phẩm trùng nhưng nằm trong bộ sưu tập bán chạy (best-seller), hãy gán thuộc tính Featured (Nổi bật)
+            if ( $col_info['cat'] === 'best-seller' ) {
+                $existing_id = $seen_titles[$title];
+                if ( $existing_id && is_numeric( $existing_id ) ) {
+                    $existing_prod = wc_get_product( $existing_id );
+                    if ( $existing_prod ) {
+                        $existing_prod->set_featured( true );
+                        $existing_prod->save();
+                        echo "  ★ Đã gán Featured (Bán chạy) cho sản phẩm trùng: {$title}\n";
+                    }
+                }
+            }
             continue;
         }
         $seen_titles[$title] = true;
@@ -534,6 +571,7 @@ foreach ( $collections as $slug_key => $col_info ) {
         
         $product->set_attributes( $attributes );
         $product_id = $product->save();
+        $seen_titles[$title] = $product_id;
         
         // 4. Tạo các biến thể WooCommerce (Variations) tương ứng
         if ( isset( $shopify_prod['variants'] ) && ! empty( $shopify_prod['variants'] ) ) {
