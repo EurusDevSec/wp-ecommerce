@@ -2,6 +2,7 @@
 /**
  * Chức năng Thông báo và Hiệu ứng Pháo hoa Confetti sau khi đặt hàng thành công
  * Chú thích tiếng Việt dễ hiểu. Sử dụng thư viện canvas-confetti qua CDN.
+ * Đã tích hợp luồng chờ thanh toán và tự động thăm dò (AJAX Polling) khi quét VietQR.
  */
 
 // Ngăn chặn truy cập trực tiếp vào file
@@ -36,14 +37,19 @@ function dev_order_success_notification() {
     $order_number = $order->get_order_number();
     $total_formatted = $order->get_formatted_order_total();
     $payment_method_title = $order->get_payment_method_title();
+    $payment_method = $order->get_payment_method();
+    $order_status = $order->get_status();
+
+    // Kiểm tra xem đơn hàng có thuộc hình thức chuyển khoản/QR và đang chờ thanh toán hay không
+    $is_unpaid_bank_payment = in_array( $payment_method, array( 'bacs', 'dev_banking', 'dev_qr' ), true ) && in_array( $order_status, array( 'on-hold', 'pending' ), true );
     ?>
 
     <!-- Nhúng thư viện bắn pháo hoa giấy Canvas-Confetti siêu nhẹ từ CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-    <!-- Khung giao diện Popup thông báo đặt hàng thành công -->
-    <div id="dev-order-success-modal-overlay" class="dev-modal-overlay"></div>
-    <div id="dev-order-success-modal" class="dev-modal-box">
+    <!-- Khung giao diện Popup thông báo đặt hàng thành công (ẩn đi ban đầu nếu chưa thanh toán chuyển khoản) -->
+    <div id="dev-order-success-modal-overlay" class="dev-modal-overlay" <?php if ( $is_unpaid_bank_payment ) echo 'style="display: none; opacity: 0; animation: none;"'; ?>></div>
+    <div id="dev-order-success-modal" class="dev-modal-box" <?php if ( $is_unpaid_bank_payment ) echo 'style="display: none; opacity: 0; animation: none; transform: translate(-50%, -50%) scale(0.8);\""'; ?>>
         <!-- Vòng tròn Checkmark hoạt họa -->
         <div class="dev-success-checkmark">
             <div class="dev-check-icon">
@@ -75,6 +81,23 @@ function dev_order_success_notification() {
 
         <button id="dev-close-success-modal" class="dev-modal-btn">Tuyệt vời, mua sắm tiếp thôi!</button>
     </div>
+
+    <?php if ( $is_unpaid_bank_payment ) : ?>
+        <!-- Banner thông báo đang chờ quét mã chuyển khoản chuyển khoản -->
+        <div id="dev-payment-pending-banner" class="dev-payment-pending-banner" style="background-color: #fffbeb; border: 1px solid #feebc8; padding: 20px; border-radius: 8px; margin: 25px 0; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); text-align: left; font-family: sans-serif;">
+            <div class="dev-spinner" style="border: 4px solid #fbd38d; border-top: 4px solid #dd6b20; border-radius: 50%; width: 28px; height: 28px; animation: dev-spin 1s linear infinite; flex-shrink: 0;"></div>
+            <div>
+                <h4 style="color: #dd6b20; margin: 0 0 5px 0; font-weight: 700; font-size: 15px;">⏳ Đang chờ quét mã thanh toán...</h4>
+                <p style="color: #7b341e; margin: 0; font-size: 13px; line-height: 1.4;">Hệ thống đang tự động đối soát tài khoản ngân hàng từ SePay. Vui lòng quét mã QR chuyển khoản ở phía dưới. Sau khi hệ thống nhận được tiền, màn hình sẽ tự động bắn pháo hoa và xác nhận đơn hàng thành công!</p>
+            </div>
+        </div>
+        <style>
+            @keyframes dev-spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    <?php endif; ?>
 
     <!-- Nhúng CSS tạo giao diện và hoạt ảnh Modal -->
     <style>
@@ -244,53 +267,112 @@ function dev_order_success_notification() {
     <!-- Kịch bản bắn pháo hoa giấy và đóng Modal -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. Kích hoạt hiệu ứng bắn pháo hoa giấy Confetti (Multi-burst)
-            if (typeof confetti === 'function') {
-                var duration = 4 * 1000;
-                var animationEnd = Date.now() + duration;
-                var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000000 };
+            var isUnpaidBankPayment = <?php echo $is_unpaid_bank_payment ? 'true' : 'false'; ?>;
+            var orderId = <?php echo intval( $order_id ); ?>;
+            var orderKey = "<?php echo esc_js( $order->get_order_key() ); ?>";
 
-                function randomInRange(min, max) {
-                    return Math.random() * (max - min) + min;
-                }
-
-                // Thực hiện bắn pháo hoa liên tục từ 2 góc màn hình trong 4 giây
-                var interval = setInterval(function() {
-                    var timeLeft = animationEnd - Date.now();
-
-                    if (timeLeft <= 0) {
-                        return clearInterval(interval);
-                    }
-
-                    var particleCount = 50 * (timeLeft / duration);
-                    
-                    // Pháo hoa góc trái dưới
-                    confetti(Object.assign({}, defaults, { 
-                        particleCount: particleCount, 
-                        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
-                    }));
-                    
-                    // Pháo hoa góc phải dưới
-                    confetti(Object.assign({}, defaults, { 
-                        particleCount: particleCount, 
-                        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } 
-                    }));
-                }, 250);
-
-                // Bắn thêm một phát cực đại chính giữa màn hình làm điểm nhấn ngay khi trang load xong
-                confetti({
-                    particleCount: 150,
-                    spread: 80,
-                    origin: { y: 0.6 },
-                    zIndex: 10000000
-                });
-            }
-
-            // 2. Logic đóng Popup khi click vào nút hoặc click ra ngoài lớp phủ
             var modal = document.getElementById('dev-order-success-modal');
             var overlay = document.getElementById('dev-order-success-modal-overlay');
             var closeBtn = document.getElementById('dev-close-success-modal');
+            var pendingBanner = document.getElementById('dev-payment-pending-banner');
 
+            // Di chuyển banner thông báo chờ thanh toán lên đầu trang cảm ơn
+            if (isUnpaidBankPayment && pendingBanner) {
+                var entryContent = document.querySelector('.woocommerce-order') || document.querySelector('.entry-content');
+                if (entryContent) {
+                    entryContent.insertBefore(pendingBanner, entryContent.firstChild);
+                }
+            }
+
+            function triggerSuccessEffects() {
+                // 1. Kích hoạt hiệu ứng bắn pháo hoa giấy Confetti (Multi-burst)
+                if (typeof confetti === 'function') {
+                    var duration = 4 * 1000;
+                    var animationEnd = Date.now() + duration;
+                    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000000 };
+
+                    function randomInRange(min, max) {
+                        return Math.random() * (max - min) + min;
+                    }
+
+                    // Thực hiện bắn pháo hoa liên tục từ 2 góc màn hình trong 4 giây
+                    var interval = setInterval(function() {
+                        var timeLeft = animationEnd - Date.now();
+
+                        if (timeLeft <= 0) {
+                            return clearInterval(interval);
+                        }
+
+                        var particleCount = 50 * (timeLeft / duration);
+                        
+                        // Pháo hoa góc trái dưới
+                        confetti(Object.assign({}, defaults, { 
+                            particleCount: particleCount, 
+                            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
+                        }));
+                        
+                        // Pháo hoa góc phải dưới
+                        confetti(Object.assign({}, defaults, { 
+                            particleCount: particleCount, 
+                            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } 
+                        }));
+                    }, 250);
+
+                    // Bắn thêm một phát cực đại chính giữa màn hình làm điểm nhấn ngay khi trang load xong hoặc khi vừa thanh toán
+                    confetti({
+                        particleCount: 150,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        zIndex: 10000000
+                    });
+                }
+
+                // 2. Hiển thị Popup và overlay mượt mà
+                if (modal && overlay) {
+                    modal.style.display = 'block';
+                    overlay.style.display = 'block';
+                    
+                    // Thêm thuộc tính CSS transition để chuyển cảnh động mượt mà
+                    setTimeout(function() {
+                        modal.style.opacity = '1';
+                        modal.style.transform = 'translate(-50%, -50%) scale(1)';
+                        modal.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        overlay.style.opacity = '1';
+                        overlay.style.transition = 'opacity 0.3s ease';
+                    }, 50);
+                }
+            }
+
+            // Nếu đơn hàng thanh toán qua ngân hàng/QR và chưa được duyệt
+            if (isUnpaidBankPayment) {
+                // Thiết lập AJAX Polling thăm dò trạng thái đơn hàng mỗi 3 giây
+                var pollInterval = setInterval(function() {
+                    fetch('/wp-json/hkt/v1/order-status?order_id=' + orderId + '&order_key=' + orderKey)
+                        .then(function(response) {
+                            if (!response.ok) {
+                                throw new Error('API response error');
+                            }
+                            return response.json();
+                        })
+                        .then(function(data) {
+                            if (data && data.success && (data.order_status === 'processing' || data.order_status === 'completed')) {
+                                clearInterval(pollInterval);
+                                if (pendingBanner) {
+                                    pendingBanner.style.display = 'none';
+                                }
+                                triggerSuccessEffects();
+                            }
+                        })
+                        .catch(function(err) {
+                            console.error('Lỗi khi thăm dò trạng thái đơn hàng:', err);
+                        });
+                }, 3000);
+            } else {
+                // Đơn hàng đã thanh toán sẵn hoặc thanh toán COD, chạy hiệu ứng ngay lập tức
+                triggerSuccessEffects();
+            }
+
+            // Logic đóng Popup khi click vào nút hoặc click ra ngoài lớp phủ
             function closeModal() {
                 if (modal) modal.style.display = 'none';
                 if (overlay) overlay.style.display = 'none';

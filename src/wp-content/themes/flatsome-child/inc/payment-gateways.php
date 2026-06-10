@@ -270,6 +270,12 @@ function dev_init_custom_gateways() {
                     'type'        => 'textarea',
                     'default'     => 'Vui lòng mở ứng dụng ngân hàng và sử dụng chức năng quét mã QR để thanh toán.',
                 ),
+                'sepay_webhook_key' => array(
+                    'title'       => 'SePay Webhook Token (API Key)',
+                    'type'        => 'text',
+                    'description' => 'Mã xác thực API Key / Webhook Token do SePay cấp để bảo mật đường truyền. (Mặc định dự phòng nếu để trống: HKTFASHION_SEPAY_KEY_2026)',
+                    'default'     => 'HKTFASHION_SEPAY_KEY_2026',
+                ),
             );
         }
 

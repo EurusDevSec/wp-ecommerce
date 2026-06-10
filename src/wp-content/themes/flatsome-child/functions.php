@@ -28,7 +28,8 @@ $custom_inc_files = array(
     'vietqr-bacs.php',          // Tích hợp cổng VietQR động cho đơn hàng BACS
     'smtp-settings.php',         // Cấu hình SMTP gửi mail hóa đơn tin cậy
     'product-swatches.php',     // Biến thể swatches màu/size & Size Guide & Trust Badges
-    'mobile-navigation.php'     // Thanh Bottom Navigation Bar trên mobile
+    'mobile-navigation.php',     // Thanh Bottom Navigation Bar trên mobile
+    'sepay-integration.php'     // Tích hợp thanh toán tự động SePay Webhook
 );
 
 foreach ( $custom_inc_files as $file ) {
