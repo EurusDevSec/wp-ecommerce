@@ -14,42 +14,28 @@ if ( ! defined( 'ABSPATH' ) ) {
  * File dữ liệu được lưu cache tĩnh tại thư mục child theme inc/data/vietnam-divisions.json
  */
 function dev_get_vietnam_divisions_data() {
-    $data_dir = dirname( __FILE__ ) . '/data';
+    $file_path = dirname( __FILE__ ) . '/data/vietnam-divisions.json';
     
-    // Tạo thư mục lưu data nếu chưa tồn tại
-    if ( ! file_exists( $data_dir ) ) {
-        wp_mkdir_p( $data_dir );
-    }
-
-    $file_path = $data_dir . '/vietnam-divisions.json';
-
-    // Nếu chưa có file cache tại local, tải từ Github
     if ( ! file_exists( $file_path ) ) {
-        // Link raw dữ liệu địa giới hành chính VN gồm Tỉnh -> Huyện -> Xã
-        $url = 'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json';
-        
-        // Gửi request lấy dữ liệu từ máy chủ Github
-        $response = wp_remote_get( $url, array( 'timeout' => 45 ) );
-
-        if ( is_wp_error( $response ) ) {
-            // Trường hợp lỗi mạng, trả về dữ liệu mẫu rỗng để tránh làm sập web
-            return array();
-        }
-
-        $body = wp_remote_retrieve_body( $response );
-        
-        if ( empty( $body ) ) {
-            return array();
-        }
-
-        // Lưu cache lại file local để các lần gọi sau chạy nhanh tức thì, không cần tải lại
-        file_put_contents( $file_path, $body );
-    } else {
-        // Nếu đã có file local, đọc trực tiếp từ ổ đĩa
-        $body = file_get_contents( $file_path );
+        return array();
     }
 
-    return json_decode( $body, true );
+    $mtime = filemtime( $file_path );
+    $cache_key = 'hkt_vn_divisions_v3_' . $mtime;
+
+    $cached_data = get_transient( $cache_key );
+    if ( is_array( $cached_data ) && ! empty( $cached_data ) ) {
+        return $cached_data;
+    }
+
+    $body = file_get_contents( $file_path );
+    $data = json_decode( $body, true );
+
+    if ( is_array( $data ) && ! empty( $data ) ) {
+        set_transient( $cache_key, $data, DAY_IN_SECONDS * 30 ); // Cache for 30 days
+    }
+
+    return is_array( $data ) ? $data : array();
 }
 
 /**
