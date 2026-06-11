@@ -423,4 +423,189 @@ function hkt_auto_create_static_pages() {
     update_option( 'hkt_static_pages_created_v1', true );
 }
 
+/**
+ * Dịch các chuỗi ở Header (Đăng nhập / Đăng ký, Giỏ hàng) sang tiếng Việt
+ */
+add_filter( 'gettext', 'hkt_translate_header_strings', 20, 3 );
+function hkt_translate_header_strings( $translated_text, $text, $domain ) {
+    if ( is_admin() ) {
+        return $translated_text;
+    }
+    
+    $translations = array(
+        'Login' => 'Đăng nhập',
+        'Register' => 'Đăng kí',
+        'Cart' => 'Giỏ hàng',
+        'Username or email address' => 'Tên đăng nhập hoặc địa chỉ email',
+        'Password' => 'Mật khẩu',
+        'Remember me' => 'Duy trì đăng nhập',
+        'Log in' => 'Đăng nhập',
+        'Lost your password?' => 'Quên mật khẩu?',
+        'Search...' => 'Tìm kiếm...',
+        'Search' => 'Tìm kiếm',
+        'All' => 'Tất cả',
+        'Description' => 'Mô tả',
+        'Additional information' => 'Thông tin bổ sung',
+        'Reviews' => 'Đánh giá',
+        'Reviews (%d)' => 'Đánh giá (%d)',
+        'Reviews (%s)' => 'Đánh giá (%s)',
+        'There are no reviews yet.' => 'Chưa có đánh giá nào.',
+        'Your rating' => 'Đánh giá của bạn',
+        'Your review' => 'Nhận xét của bạn',
+        'Submit' => 'Gửi đi',
+        'Name' => 'Tên',
+        'Email' => 'Email',
+        'Default sorting' => 'Thứ tự mặc định',
+        'Sort by popularity' => 'Mức độ phổ biến',
+        'Sort by average rating' => 'Điểm đánh giá',
+        'Sort by latest' => 'Mới nhất',
+        'Sort by price: low to high' => 'Giá: Thấp đến Cao',
+        'Sort by price: high to low' => 'Giá: Cao đến Thấp',
+        'Select options' => 'Xem chi tiết',
+        'Return to shop' => 'Quay lại cửa hàng',
+        'No products in the cart.' => 'Không có sản phẩm nào trong giỏ hàng.',
+        'Add to cart' => 'Thêm vào giỏ',
+        'Out of stock' => 'Hết hàng',
+        'In stock' => 'Còn hàng',
+        'Save my name, email, and website in this browser for the next time I comment.' => 'Lưu tên, email và trang web của tôi trong trình duyệt này cho lần bình luận tiếp theo.',
+        'Search products…' => 'Tìm kiếm sản phẩm...',
+        'Search products...' => 'Tìm kiếm sản phẩm...',
+        'Product Description' => 'Mô tả sản phẩm',
+        'View cart' => 'Xem giỏ hàng',
+        'Checkout' => 'Thanh toán',
+        'Related products' => 'Sản phẩm tương tự',
+        'Category:' => 'Danh mục:',
+        'Categories:' => 'Danh mục:',
+        'Tag:' => 'Từ khóa:',
+        'Tags:' => 'Từ khóa:',
+        'Sale!' => 'Giảm giá!',
+        'Filter by' => 'Lọc theo',
+        'Filter' => 'Lọc',
+        'Price' => 'Giá',
+        'Color' => 'Màu sắc',
+        'Size' => 'Kích thước',
+        'Clear' => 'Xóa bộ lọc',
+        'Reset' => 'Thiết lập lại',
+        'Sign in' => 'Đăng nhập',
+        'Create an account' => 'Tạo tài khoản',
+        'Add to Wishlist' => 'Thêm vào yêu thích',
+        'Browse Wishlist' => 'Xem yêu thích',
+        'Product added to wishlist.' => 'Đã thêm sản phẩm vào danh sách yêu thích.',
+        'Close' => 'Đóng',
+        'Next' => 'Tiếp theo',
+        'Prev' => 'Trước đó',
+        'Previous' => 'Trước',
+        'Search results for:' => 'Kết quả tìm kiếm cho:',
+        'No products found matching your selection.' => 'Không tìm thấy sản phẩm nào phù hợp với lựa chọn của bạn.',
+        'Apply coupon' => 'Áp dụng',
+        'Coupon code' => 'Mã giảm giá',
+        'Update cart' => 'Cập nhật giỏ hàng',
+        'Cart totals' => 'Cộng giỏ hàng',
+        'Subtotal' => 'Tạm tính',
+        'Total' => 'Tổng cộng',
+        'Shipping' => 'Giao hàng',
+        'Flat rate' => 'Phí đồng giá',
+        'Proceed to checkout' => 'Tiến hành thanh toán',
+        'Place order' => 'Đặt hàng',
+        'Billing details' => 'Thông tin thanh toán',
+        'Your order' => 'Đơn hàng của bạn',
+        'Product' => 'Sản phẩm',
+        'Quantity' => 'Số lượng',
+        'Thank you. Your order has been received.' => 'Cảm ơn bạn. Đơn hàng của bạn đã được tiếp nhận.',
+        'Order number:' => 'Mã đơn hàng:',
+        'Date:' => 'Ngày đặt:',
+        'Email:' => 'Email:',
+        'Total:' => 'Tổng cộng:',
+        'Payment method:' => 'Phương thức thanh toán:',
+        'Order details' => 'Chi tiết đơn hàng',
+        'Customer details' => 'Thông tin khách hàng',
+        'Billing address' => 'Địa chỉ thanh toán',
+        'Shipping address' => 'Địa chỉ giao hàng',
+        'My Account' => 'Tài khoản của tôi',
+        'Dashboard' => 'Bảng điều khiển',
+        'Orders' => 'Đơn hàng',
+        'Downloads' => 'Tải về',
+        'Addresses' => 'Địa chỉ',
+        'Account details' => 'Thông tin tài khoản',
+        'Logout' => 'Đăng xuất',
+        'Hello' => 'Xin chào'
+    );
+
+    // So khớp chính xác
+    if ( isset( $translations[$text] ) ) {
+        return $translations[$text];
+    }
+
+    // So khớp tương đối / chuỗi động
+    if ( strpos( $text, 'Be the first to review' ) !== false ) {
+        return str_replace( 'Be the first to review', 'Hãy là người đầu tiên đánh giá', $translated_text );
+    }
+
+    if ( strpos( $text, 'Showing %1$d' ) !== false && strpos( $text, 'of %3$d' ) !== false ) {
+        return 'Hiển thị %1$d&ndash;%2$d trong %3$d kết quả';
+    }
+
+    if ( strpos( $text, 'Showing all %d results' ) !== false ) {
+        return 'Hiển thị tất cả %d kết quả';
+    }
+
+    if ( strpos( $text, 'Showing the single result' ) !== false ) {
+        return 'Hiển thị kết quả duy nhất';
+    }
+
+    return $translated_text;
+}
+
+/**
+ * Hỗ trợ dịch gettext_with_context (ví dụ _x)
+ */
+add_filter( 'gettext_with_context', 'hkt_translate_header_strings_context', 20, 4 );
+function hkt_translate_header_strings_context( $translated, $text, $context, $domain ) {
+    return hkt_translate_header_strings( $translated, $text, $domain );
+}
+
+/**
+ * Hỗ trợ dịch ngettext (ví dụ _n)
+ */
+add_filter( 'ngettext', 'hkt_translate_header_strings_n', 20, 5 );
+function hkt_translate_header_strings_n( $translations, $single, $plural, $number, $domain ) {
+    if ( is_admin() ) {
+        return $translations;
+    }
+    
+    if ( strpos( $single, 'Showing %1$d' ) !== false || strpos( $plural, 'Showing %1$d' ) !== false ) {
+        return 'Hiển thị %1$d&ndash;%2$d trong %3$d kết quả';
+    }
+    if ( strpos( $single, 'Showing all %d' ) !== false || strpos( $plural, 'Showing all %d' ) !== false ) {
+        return 'Hiển thị tất cả %d kết quả';
+    }
+    if ( strpos( $single, 'Showing the single result' ) !== false || strpos( $plural, 'Showing the single result' ) !== false ) {
+        return 'Hiển thị kết quả duy nhất';
+    }
+
+    return $translations;
+}
+
+/**
+ * Hỗ trợ dịch ngettext_with_context (ví dụ _nx)
+ */
+add_filter( 'ngettext_with_context', 'hkt_translate_header_strings_nx', 20, 6 );
+function hkt_translate_header_strings_nx( $translations, $single, $plural, $number, $context, $domain ) {
+    if ( is_admin() ) {
+        return $translations;
+    }
+    
+    if ( strpos( $single, 'Showing %1$d' ) !== false || strpos( $plural, 'Showing %1$d' ) !== false ) {
+        return 'Hiển thị %1$d&ndash;%2$d trong %3$d kết quả';
+    }
+    if ( strpos( $single, 'Showing all %d' ) !== false || strpos( $plural, 'Showing all %d' ) !== false ) {
+        return 'Hiển thị tất cả %d kết quả';
+    }
+    if ( strpos( $single, 'Showing the single result' ) !== false || strpos( $plural, 'Showing the single result' ) !== false ) {
+        return 'Hiển thị kết quả duy nhất';
+    }
+
+    return $translations;
+}
+
 
