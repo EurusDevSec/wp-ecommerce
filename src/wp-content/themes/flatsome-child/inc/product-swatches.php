@@ -185,7 +185,6 @@ function dev_product_swatches_script() {
 
                     // Sự kiện click chọn Swatch
                     swatchItem.on('click', function() {
-                        if ($(this).hasClass('disabled')) return; // Không cho click nếu hết hàng
 
                         if ($(this).hasClass('active')) {
                             // Click lại nút đang chọn -> Reset hủy chọn
@@ -208,16 +207,50 @@ function dev_product_swatches_script() {
                 }
             });
 
+            // Hàm đồng bộ trạng thái active của các swatch dựa trên giá trị select thực tế
+            function syncActiveSwatches() {
+                form.find('.variations select').each(function() {
+                    var select = $(this);
+                    var val = select.val();
+                    var container = form.find('.dev-swatches-container[data-attribute="' + select.attr('name') + '"]');
+                    container.find('.dev-swatch-item').removeClass('active');
+                    if (val) {
+                        container.find('.dev-swatch-item').each(function() {
+                            if (slugify($(this).attr('data-value')) === slugify(val)) {
+                                $(this).addClass('active');
+                            }
+                        });
+                    }
+                });
+            }
+
             // 3.3. Xử lý đồng bộ class hoạt động (active) khi WooCommerce reset form
             form.on('reset_data', function() {
-                form.find('.dev-swatches-container .dev-swatch-item').removeClass('active disabled');
+                syncActiveSwatches();
+                updateSwatchStates();
+                $('.hkt-buy-now-button').addClass('disabled wc-variation-selection-needed');
             });
 
             // 3.4. Logic quản lý trạng thái HẾT HÀNG (Out Of Stock) theo tiêu chí AC-FE-04
             // WooCommerce lưu trữ thông tin tồn kho của các biến thể trong data-product_variations
             form.on('change', 'select', function() {
+                syncActiveSwatches();
                 updateSwatchStates();
             });
+
+            // Hàm chuyển chuỗi tiếng Việt/tiếng Anh về dạng slug để so sánh không phân biệt hoa thường và dấu tiếng Việt
+            function slugify(text) {
+                if (text === undefined || text === null) return '';
+                return text.toString().toLowerCase()
+                    .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a')
+                    .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e')
+                    .replace(/í|ì|ỉ|ĩ|ị/g, 'i')
+                    .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o')
+                    .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u')
+                    .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y')
+                    .replace(/đ/g, 'd')
+                    .replace(/[^a-z0-9]/g, '');
+            }
 
             function updateSwatchStates() {
                 var variations = form.data('product_variations');
@@ -251,8 +284,8 @@ function dev_product_swatches_script() {
                             var selectedVal = simulatedSelections[attrKey];
                             
                             // Nếu biến thể có gán cụ thể cho thuộc tính này và selectedVal cũng có chọn cụ thể
-                            if (attrVal !== '' && selectedVal !== '' && selectedVal !== undefined) {
-                                if (attrVal !== selectedVal) {
+                            if (attrVal !== '' && attrVal !== null && attrVal !== undefined && selectedVal !== '' && selectedVal !== undefined) {
+                                if (slugify(attrVal) !== slugify(selectedVal)) {
                                     match = false;
                                     return false; // Break
                                 }
@@ -261,9 +294,9 @@ function dev_product_swatches_script() {
 
                         // Nếu khớp thuộc tính, kiểm tra xem biến thể này có còn hàng không
                         if (match) {
+                            // variation.variation_is_active cho biết biến thể đang hoạt động
                             // variation.is_in_stock cho biết trạng thái kho hàng
-                            // variation.max_qty > 0 hoặc variation.is_purchasable để bảo đảm mua được
-                            if (variation.is_in_stock && variation.is_purchasable) {
+                            if (variation.variation_is_active && variation.is_in_stock) {
                                 isAvailableAndInStock = true;
                                 return false; // Break loop
                             }
@@ -279,18 +312,32 @@ function dev_product_swatches_script() {
                 });
             }
 
-            // Đồng bộ class active lúc trang load lên (nếu đã có giá trị chọn trước)
-            form.find('.variations select').each(function() {
-                var select = $(this);
-                var val = select.val();
-                if (val) {
-                    form.find('.dev-swatches-container[data-attribute="' + select.attr('name') + '"]')
-                        .find('.dev-swatch-item[data-value="' + val + '"]').addClass('active');
-                }
+            // Đồng bộ class active và chạy kiểm tra tồn kho lần đầu tiên lúc load trang
+            syncActiveSwatches();
+            updateSwatchStates();
+
+            // Đồng bộ trạng thái disabled của nút MUA NGAY
+            form.on('show_variation', function(event, variation) {
+                $('.hkt-buy-now-button').removeClass('disabled wc-variation-selection-needed');
+            });
+            form.on('hide_variation', function() {
+                $('.hkt-buy-now-button').addClass('disabled wc-variation-selection-needed');
             });
 
-            // Chạy kiểm tra tồn kho lần đầu tiên lúc load trang
-            updateSwatchStates();
+            // Xử lý click nút MUA NGAY: gửi form và chuyển sang checkout
+            $(document).on('click', '.hkt-buy-now-button', function(e) {
+                e.preventDefault();
+                if ($(this).hasClass('disabled') || $(this).hasClass('wc-variation-selection-needed')) {
+                    return;
+                }
+                var buttonForm = $(this).closest('form');
+                // Xóa input cũ nếu có
+                buttonForm.find('input[name="buy_now"]').remove();
+                // Gắn input buy_now = 1 để redirect ở backend
+                buttonForm.append('<input type="hidden" name="buy_now" value="1">');
+                // Submit form native
+                buttonForm[0].submit();
+            });
 
             // 3.5. Xử lý đóng/mở Size Guide Modal
             $(document).on('click', '#dev-open-size-guide-btn', function(e) {

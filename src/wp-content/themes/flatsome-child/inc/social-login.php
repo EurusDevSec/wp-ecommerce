@@ -20,7 +20,7 @@ function dev_add_social_login_buttons() {
     ?>
     <div class="dev-social-login-container">
         <div class="dev-social-separator">
-            <span>or</span>
+            <span>hoặc</span>
         </div>
         
         <!-- Nút Đăng nhập bằng Google -->
@@ -31,7 +31,7 @@ function dev_add_social_login_buttons() {
                 <path fill="#FBBC05" d="M5.32 14.57c-.24-.7-.38-1.46-.38-2.25s.14-1.55.38-2.25L1.92 7.44C1.07 9.15.6 11.02.6 13s.47 3.85 1.32 5.56l3.4-2.63z"/>
                 <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.93 1.19 15.24 0 12 0 8.11 0 4.81 3.7 2.92 7.44l3.4 2.63c.94-2.85 3.57-4.96 6.68-4.96z"/>
             </svg>
-            <span>Sign in with Google</span>
+            <span>Đăng nhập bằng Google</span>
         </a>
 
         <!-- Nút Đăng nhập bằng Facebook -->
@@ -39,7 +39,7 @@ function dev_add_social_login_buttons() {
             <svg class="dev-social-icon" viewBox="0 0 24 24" width="20" height="20" fill="#ffffff">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
-            <span>Sign in with Facebook</span>
+            <span>Đăng nhập bằng Facebook</span>
         </a>
     </div>
     <?php
