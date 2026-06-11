@@ -452,7 +452,7 @@ function dev_checkout_address_dropdown_script() {
                         wardSelect.empty().append($('<option>', { value: '', text: 'Chọn Xã / Phường / Thị trấn' }));
                         
                         $.each(data, function(i, ward) {
-                            var optionText = ward.ward_name + ' (' + ward.district_name + ')';
+                            var optionText = ward.ward_name;
                             var option = $('<option>', {
                                 value: ward.ward_name,
                                 text:  optionText,
