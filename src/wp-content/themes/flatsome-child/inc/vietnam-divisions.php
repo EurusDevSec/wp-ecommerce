@@ -208,13 +208,14 @@ function dev_api_get_hkt_districts_callback( $request ) {
 }
 
 /**
- * 3.5. Trả về các Xã/Phường dựa trên mã Quận/Huyện truyền vào với định dạng hkt/v1 (ward_id, ward_name)
+ * 3.5. Trả về các Xã/Phường dựa trên mã Quận/Huyện hoặc Tỉnh/Thành truyền vào với định dạng hkt/v1
  */
 function dev_api_get_hkt_wards_callback( $request ) {
     $district_id = sanitize_text_field( $request->get_param( 'district_id' ) );
+    $province_id = sanitize_text_field( $request->get_param( 'province_id' ) );
 
-    if ( empty( $district_id ) ) {
-        return new WP_Error( 'missing_parameter', 'Vui lòng cung cấp tham số district_id', array( 'status' => 400 ) );
+    if ( empty( $district_id ) && empty( $province_id ) ) {
+        return new WP_Error( 'missing_parameter', 'Vui lòng cung cấp tham số district_id hoặc province_id', array( 'status' => 400 ) );
     }
 
     $data = dev_get_vietnam_divisions_data();
@@ -222,18 +223,42 @@ function dev_api_get_hkt_wards_callback( $request ) {
 
     if ( is_array( $data ) ) {
         foreach ( $data as $province ) {
-            if ( isset( $province['Districts'] ) && is_array( $province['Districts'] ) ) {
-                foreach ( $province['Districts'] as $district ) {
-                    if ( $district['Id'] === $district_id ) {
-                        if ( isset( $district['Wards'] ) && is_array( $district['Wards'] ) ) {
-                            foreach ( $district['Wards'] as $ward ) {
-                                $wards[] = array(
-                                    'ward_id'   => $ward['Id'],
-                                    'ward_name' => $ward['Name']
-                                );
+            // Nếu có province_id, lấy toàn bộ xã phường thuộc tỉnh/thành đó
+            if ( ! empty( $province_id ) ) {
+                if ( $province['Id'] === $province_id ) {
+                    if ( isset( $province['Districts'] ) && is_array( $province['Districts'] ) ) {
+                        foreach ( $province['Districts'] as $district ) {
+                            if ( isset( $district['Wards'] ) && is_array( $district['Wards'] ) ) {
+                                foreach ( $district['Wards'] as $ward ) {
+                                    $wards[] = array(
+                                        'ward_id'       => $ward['Id'],
+                                        'ward_name'     => $ward['Name'],
+                                        'district_id'   => $district['Id'],
+                                        'district_name' => $district['Name']
+                                    );
+                                }
                             }
                         }
-                        break 2;
+                    }
+                    break; // Tìm thấy tỉnh rồi
+                }
+            } else {
+                // Nếu chỉ có district_id, lấy xã phường của huyện đó
+                if ( isset( $province['Districts'] ) && is_array( $province['Districts'] ) ) {
+                    foreach ( $province['Districts'] as $district ) {
+                        if ( $district['Id'] === $district_id ) {
+                            if ( isset( $district['Wards'] ) && is_array( $district['Wards'] ) ) {
+                                foreach ( $district['Wards'] as $ward ) {
+                                    $wards[] = array(
+                                        'ward_id'       => $ward['Id'],
+                                        'ward_name'     => $ward['Name'],
+                                        'district_id'   => $district['Id'],
+                                        'district_name' => $district['Name']
+                                    );
+                                }
+                            }
+                            break 2;
+                        }
                     }
                 }
             }
@@ -242,4 +267,5 @@ function dev_api_get_hkt_wards_callback( $request ) {
 
     return rest_ensure_response( $wards );
 }
+
 

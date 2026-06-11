@@ -2743,3 +2743,8 @@ form.woocommerce-checkout #order_review {
     border-radius: var(--border-radius-minimal) !important;
     background-color: #ffffff !important;
 }
+
+/* Hide custom district field visually */
+.woocommerce-checkout .hkt-hidden-field {
+    display: none !important;
+}

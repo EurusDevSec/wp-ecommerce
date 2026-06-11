@@ -45,12 +45,12 @@ function dev_optimize_checkout_fields( $fields ) {
     $fields['shipping']['shipping_state']['required']    = true;
     $fields['shipping']['shipping_state']['priority']    = 50;
 
-    // 1.4. Đổi trường Quận/Huyện (City) thành thẻ select động (AC-BE-05)
+    // 1.4. Đổi trường Quận/Huyện (City) thành thẻ select động (AC-BE-05) - ẩn khỏi giao diện
     $fields['billing']['billing_city']['type']        = 'select';
     $fields['billing']['billing_city']['label']       = 'Quận / Huyện';
     $fields['billing']['billing_city']['placeholder'] = 'Chọn Quận / Huyện';
     $fields['billing']['billing_city']['options']     = array( '' => 'Chọn Quận / Huyện' );
-    $fields['billing']['billing_city']['class']       = array( 'form-row-wide' );
+    $fields['billing']['billing_city']['class']       = array( 'form-row-wide', 'hkt-hidden-field' );
     $fields['billing']['billing_city']['required']    = true;
     $fields['billing']['billing_city']['priority']    = 60; // Sau Province
 
@@ -58,7 +58,7 @@ function dev_optimize_checkout_fields( $fields ) {
     $fields['shipping']['shipping_city']['label']       = 'Quận / Huyện';
     $fields['shipping']['shipping_city']['placeholder'] = 'Chọn Quận / Huyện';
     $fields['shipping']['shipping_city']['options']     = array( '' => 'Chọn Quận / Huyện' );
-    $fields['shipping']['shipping_city']['class']       = array( 'form-row-wide' );
+    $fields['shipping']['shipping_city']['class']       = array( 'form-row-wide', 'hkt-hidden-field' );
     $fields['shipping']['shipping_city']['required']    = true;
     $fields['shipping']['shipping_city']['priority']    = 60;
 
@@ -214,7 +214,7 @@ function dev_custom_vietnam_country_locale( $locale ) {
         'hidden'   => false,
         'label'    => 'Quận / Huyện',
         'priority' => 60,
-        'class'    => array( 'form-row-wide' ),
+        'class'    => array( 'form-row-wide', 'hkt-hidden-field' ),
     );
     
     $locale['VN']['address_2'] = array(
@@ -251,7 +251,7 @@ function dev_custom_default_address_fields( $fields ) {
     $fields['state']['class']        = array( 'form-row-wide' );
     
     $fields['city']['priority']      = 60;
-    $fields['city']['class']         = array( 'form-row-wide' );
+    $fields['city']['class']         = array( 'form-row-wide', 'hkt-hidden-field' );
     
     $fields['address_2']['priority'] = 70;
     $fields['address_2']['class']    = array( 'form-row-wide' );
@@ -298,7 +298,7 @@ function dev_patch_wc_country_locale_vn() {
                     "required": true,
                     "hidden": false,
                     "priority": 60,
-                    "class": ["form-row-wide"]
+                    "class": ["form-row-wide", "hkt-hidden-field"]
                 },
                 "address_2": {
                     "label": "X\u00e3 \/ Ph\u01b0\u1eddng \/ Th\u1ecb tr\u1ea5n",
@@ -418,99 +418,47 @@ function dev_checkout_address_dropdown_script() {
 
             // Gỡ event cũ trước để tránh gắn trùng khi re-init
             provinceSelect.off('change.devVN select2:select.devVN');
-            districtSelect.off('change.devVN');
+            wardSelect.off('change.devVN');
 
-            // Lắng nghe cả sự kiện native change VÀ select2:select (khi Select2 đang active)
+            // Lắng nghe sự kiện chọn Tỉnh/Thành -> load thẳng Xã/Phường của cả Tỉnh đó
             provinceSelect.on('change.devVN select2:select.devVN', function() {
                 var provinceId = $(this).val();
 
                 // Reset các dropdown phụ
-                districtSelect.empty().append($('<option>', { value: '', text: 'Chọn Quận / Huyện' }));
                 wardSelect.empty().append($('<option>', { value: '', text: 'Chọn Xã / Phường / Thị trấn' }));
-                districtSelect.data('loaded', false);
                 wardSelect.data('loaded', false);
+                if (wardSelect.hasClass('select2-hidden-accessible')) {
+                    wardSelect.trigger('change.select2');
+                }
+
+                // District cũng được reset và ẩn
+                districtSelect.empty().append($('<option>', { value: '', text: 'Chọn Quận / Huyện' }));
                 if (districtSelect.hasClass('select2-hidden-accessible')) {
                     districtSelect.trigger('change.select2');
                 }
-                if (wardSelect.hasClass('select2-hidden-accessible')) {
-                    wardSelect.trigger('change.select2');
-                }
 
                 if (!provinceId) return;
-
-                districtSelect.data('loading', true);
-                $.ajax({
-                    url: apiBase + '/districts',
-                    method: 'GET',
-                    data: { province_id: provinceId },
-                    success: function(data) {
-                        districtSelect.data('loading', false);
-                        if (!$.isArray(data) || data.length === 0) return;
-                        
-                        var pendingVal = districtSelect.attr('data-pending-val') || districtSelect.val();
-                        districtSelect.empty().append($('<option>', { value: '', text: 'Chọn Quận / Huyện' }));
-                        
-                        $.each(data, function(i, district) {
-                            var option = $('<option>', {
-                                value: district.district_name,
-                                text:  district.district_name,
-                                'data-id': district.district_id
-                            });
-                            if (district.district_name === pendingVal) {
-                                option.attr('selected', 'selected');
-                            }
-                            districtSelect.append(option);
-                        });
-                        
-                        districtSelect.removeAttr('data-pending-val');
-                        districtSelect.data('loaded', true);
-                        
-                        if (districtSelect.hasClass('select2-hidden-accessible')) {
-                            districtSelect.trigger('change.select2');
-                        }
-                        
-                        // Kích hoạt load xã/phường nếu có quận/huyện được chọn
-                        if (districtSelect.val()) {
-                            districtSelect.trigger('change.devVN');
-                        }
-                    },
-                    error: function() {
-                        districtSelect.data('loading', false);
-                    }
-                });
-            });
-
-            // Khi chọn Quận/Huyện -> load Xã/Phường
-            districtSelect.on('change.devVN', function() {
-                var selectedOption = $(this).find('option:selected');
-                var districtId     = selectedOption.data('id');
-
-                wardSelect.empty().append($('<option>', { value: '', text: 'Chọn Xã / Phường / Thị trấn' }));
-                wardSelect.data('loaded', false);
-                if (wardSelect.hasClass('select2-hidden-accessible')) {
-                    wardSelect.trigger('change.select2');
-                }
-
-                if (!districtId) return;
 
                 wardSelect.data('loading', true);
                 $.ajax({
                     url: apiBase + '/wards',
                     method: 'GET',
-                    data: { district_id: districtId },
+                    data: { province_id: provinceId },
                     success: function(data) {
                         wardSelect.data('loading', false);
                         if (!$.isArray(data) || data.length === 0) return;
                         
-                        var pendingVal = wardSelect.attr('data-pending-val') || wardSelect.val();
+                        var pendingWardVal = wardSelect.attr('data-pending-val') || wardSelect.val();
                         wardSelect.empty().append($('<option>', { value: '', text: 'Chọn Xã / Phường / Thị trấn' }));
                         
                         $.each(data, function(i, ward) {
+                            var optionText = ward.ward_name + ' (' + ward.district_name + ')';
                             var option = $('<option>', {
                                 value: ward.ward_name,
-                                text:  ward.ward_name
+                                text:  optionText,
+                                'data-district': ward.district_name
                             });
-                            if (ward.ward_name === pendingVal) {
+                            if (ward.ward_name === pendingWardVal) {
                                 option.attr('selected', 'selected');
                             }
                             wardSelect.append(option);
@@ -522,6 +470,12 @@ function dev_checkout_address_dropdown_script() {
                         if (wardSelect.hasClass('select2-hidden-accessible')) {
                             wardSelect.trigger('change.select2');
                         }
+
+                        // Sau khi nạp xã/phường, nếu có xã/phường được chọn (do pending hoặc mặc định)
+                        // thì tự động cập nhật Quận/Huyện tương ứng
+                        if (wardSelect.val()) {
+                            wardSelect.trigger('change.devVN');
+                        }
                     },
                     error: function() {
                         wardSelect.data('loading', false);
@@ -529,8 +483,40 @@ function dev_checkout_address_dropdown_script() {
                 });
             });
 
-            // Load lần đầu/sau reload nếu đã chọn Tỉnh/Thành nhưng chưa load Quận/Huyện
-            if (provinceSelect.val() && !districtSelect.data('loaded') && !districtSelect.data('loading')) {
+            // Khi chọn Xã/Phường -> tự động cập nhật Quận/Huyện (City) ẩn bên dưới
+            wardSelect.on('change.devVN', function() {
+                var selectedOption = $(this).find('option:selected');
+                var districtName   = selectedOption.data('district');
+
+                if (districtName) {
+                    // Cập nhật giá trị vào trường Quận/Huyện ẩn
+                    districtSelect.empty().append($('<option>', {
+                        value: districtName,
+                        text:  districtName,
+                        selected: true
+                    }));
+                    if (districtSelect.hasClass('select2-hidden-accessible')) {
+                        districtSelect.trigger('change.select2');
+                    } else {
+                        districtSelect.trigger('change');
+                    }
+                } else {
+                    districtSelect.empty().append($('<option>', { value: '', text: 'Chọn Quận / Huyện' }));
+                    if (districtSelect.hasClass('select2-hidden-accessible')) {
+                        districtSelect.trigger('change.select2');
+                    } else {
+                        districtSelect.trigger('change');
+                    }
+                }
+            });
+
+            // Khởi chạy load lần đầu nếu đã chọn Tỉnh/Thành
+            if (provinceSelect.val() && !wardSelect.data('loaded') && !wardSelect.data('loading')) {
+                // Đảm bảo pending district value cũng được xử lý nếu có
+                var pendingDistrictVal = districtSelect.attr('data-pending-val') || districtSelect.val();
+                if (pendingDistrictVal) {
+                    districtSelect.removeAttr('data-pending-val');
+                }
                 provinceSelect.trigger('change.devVN');
             }
         }
