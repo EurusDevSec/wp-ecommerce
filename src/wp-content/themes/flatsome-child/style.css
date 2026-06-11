@@ -2716,7 +2716,30 @@ form.woocommerce-checkout #order_review {
     display: none !important;
 }
 
+/* ==========================================================================
+   CLASSIC CHECKOUT LAYOUT AND FIELD ALIGNMENT (RESTORE 3-TIER STRUCTURE)
+   ========================================================================== */
+.woocommerce-checkout .form-row-wide {
+    clear: both !important;
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 15px !important;
+}
 
+/* Fix overlapping select/input labels in Flatsome form fields */
+.woocommerce-checkout .form-row label {
+    display: block !important;
+    margin-bottom: 5px !important;
+    font-weight: 600 !important;
+    color: var(--text-color-slate) !important;
+}
 
-
-
+.woocommerce-checkout select,
+.woocommerce-checkout input.input-text {
+    width: 100% !important;
+    height: 42px !important;
+    padding: 8px 12px !important;
+    border: 1px solid var(--border-color-light) !important;
+    border-radius: var(--border-radius-minimal) !important;
+    background-color: #ffffff !important;
+}
