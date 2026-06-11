@@ -1,13 +1,14 @@
 # SESSION MEMORY — HKT Fashion
-> Session: 2026-06-11 | Status: Static Page Templates & 404 Page Implemented
+> Session: 2026-06-11 | Status: Checkout Address Cascade Refactored (Direct Province-to-Ward Selection)
 
 ---
 
 ## ⚡ Active Task Completed
-**Tạo trang tĩnh thông tin và chính sách cho HKT Fashion**
-- Tạo mới 5 template page: `page-gioi-thieu.php`, `page-lien-he.php`, `page-chinh-sach-doi-tra.php`, `page-chinh-sach-bao-mat.php`, `page-van-chuyen-va-giao-hang.php`, `page-thoa-thuan-dich-vu.php`.
-- Tạo mới `404.php` trong child theme với giao diện thân thiện và shortcode sản phẩm bán chạy.
-- Bổ sung CSS chuyên dụng cho các trang tĩnh và 404 trong `style.css` để đảm bảo layout tối giản, trắng sáng, và responsive.
+**Tối ưu hóa bộ chọn địa chỉ Checkout (Tỉnh/Thành -> Xã/Phường)**
+- Ẩn trường Quận/Huyện khỏi giao diện Checkout để tối giản quy trình nhập liệu của khách hàng.
+- Nâng cấp API `/hkt/v1/wards` hỗ trợ tham số `province_id` để lấy toàn bộ danh sách Xã/Phường của Tỉnh/Thành được chọn trong một lần gọi duy nhất.
+- Cấu hình Javascript tự động điền Quận/Huyện ngầm dựa trên metadata của Xã/Phường được chọn, đảm bảo tính hợp lệ dữ liệu của WooCommerce (không làm lỗi phí ship hay lưu đơn hàng).
+- Làm sạch nhãn (label) danh sách xã/phường, loại bỏ hậu tố trong ngoặc đơn theo phản hồi người dùng.
 
 ---
 
@@ -15,24 +16,19 @@
 
 | File | Key Change |
 |---|---|
-| `src/wp-content/themes/flatsome-child/page-gioi-thieu.php` | Thêm trang Giới thiệu thương hiệu HKT Fashion. |
-| `src/wp-content/themes/flatsome-child/page-lien-he.php` | Thêm trang Liên hệ với bản đồ Google Maps và form Contact Form 7. |
-| `src/wp-content/themes/flatsome-child/page-chinh-sach-doi-tra.php` | Thêm trang chính sách đổi trả rõ ràng. |
-| `src/wp-content/themes/flatsome-child/page-chinh-sach-bao-mat.php` | Thêm trang chính sách bảo mật thông tin. |
-| `src/wp-content/themes/flatsome-child/page-van-chuyen-va-giao-hang.php` | Thêm trang vận chuyển & giao hàng. |
-| `src/wp-content/themes/flatsome-child/page-thoa-thuan-dich-vu.php` | Thêm trang thỏa thuận dịch vụ. |
-| `src/wp-content/themes/flatsome-child/404.php` | Thêm trang lỗi 404 thân thiện với button về trang chủ và sản phẩm bán chạy. |
-| `src/wp-content/themes/flatsome-child/style.css` | Bổ sung CSS layout, thẻ, và responsive cho các trang tĩnh mới. |
+| `src/wp-content/themes/flatsome-child/inc/vietnam-divisions.php` | Cập nhật API `/wards` hỗ trợ `province_id`, trả về toàn bộ Xã/Phường kèm tên Quận/Huyện cha tương ứng. |
+| `src/wp-content/themes/flatsome-child/inc/checkout-customizer.php` | Thêm class ẩn trường Quận/Huyện; cập nhật kịch bản JS gọi API và tự điền ngầm trường Quận/Huyện khi chọn Xã/Phường. |
+| `src/wp-content/themes/flatsome-child/style.css` | Thêm CSS `.hkt-hidden-field { display: none !important; }` để ẩn trường Quận/Huyện khỏi form checkout. |
 
 ---
 
 ## 🔜 Next Steps (3 immediate technical actions)
 
-### Step 1 — Kiểm tra page slug `gioi-thieu`, `lien-he`, `chinh-sach-doi-tra`, `chinh-sach-bao-mat`, `van-chuyen-va-giao-hang`, `thoa-thuan-dich-vu`
-- Đảm bảo các trang WordPress đã tạo slug đúng và chọn template mặc định để hiển thị file PHP tương ứng.
+### Step 1 — Chạy thử nghiệm đặt hàng thực tế (Staging)
+- Thực hiện đặt hàng nháp với các địa chỉ khác nhau (ví dụ: Hà Nội, Bình Dương, TP. HCM) để đảm bảo đơn hàng lưu đúng tên Quận/Huyện và Xã/Phường trong trang quản trị Admin.
 
-### Step 2 — Điền ID Contact Form 7
-- Cập nhật `id="xxxx"` trong `page-lien-he.php` thành ID thực tế của form liên hệ.
+### Step 2 — Xác thực tương thích với cổng thanh toán & phí vận chuyển
+- Đảm bảo phí vận chuyển vẫn được tính toán bình thường dựa trên dữ liệu tỉnh thành và quận huyện được điền ngầm.
 
-### Step 3 — Kiểm tra hiển thị 404 và shortcode sản phẩm
-- Tải trang 404 test và đảm bảo shortcode `[best_selling_products]` hiển thị sản phẩm bán chạy đúng. 
+### Step 3 — Kiểm tra hiển thị trên thiết bị di động
+- Kiểm tra tính tương thích của Select2 và các trường địa chỉ dọc trên giao diện di động.

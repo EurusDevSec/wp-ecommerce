@@ -63,11 +63,11 @@ Build **HKT Fashion** — a minimalist fashion e-commerce site using WordPress +
 - [ ] Sticky add-to-cart bar on scroll
 
 ### Checkout Page
-- [x] Province → District → Ward cascade dropdowns working
+- [x] Province → District → Ward cascade dropdowns working (direct Province-to-Ward select with hidden District lookup)
 - [x] VN phone number format validation
 - [x] BACS payment with dynamic QR code
 - [ ] 2-column minimal layout (responsive)
-- [ ] Hide unnecessary fields (company, postcode)
+- [x] Hide unnecessary fields (company, postcode)
 
 ### Mobile UI
 - [x] `mobile-navigation.php` — sticky bottom nav bar
@@ -95,7 +95,5 @@ Build **HKT Fashion** — a minimalist fashion e-commerce site using WordPress +
 
 | # | Issue | File | Severity |
 |---|---|---|---|
-| 1 | Duplicate district options possible when `updated_checkout` re-triggers `devBootstrap` | `checkout-customizer.php` L408 | Medium |
-| 2 | `billing_state` won't render if DB default country ≠ VN (DB fix applied, not code-level) | `checkout-customizer.php` | Medium |
-| 3 | Ward Select2 widget may not visually refresh immediately after options load | `checkout-customizer.php` L370 | Low |
-| 4 | Many frontend features in requirements not yet implemented | `style.css`, templates | High |
+| 1 | `billing_state` won't render if DB default country ≠ VN (DB fix applied, not code-level) | `checkout-customizer.php` | Medium |
+| 2 | Many frontend features in requirements not yet implemented | `style.css`, templates | High |
