@@ -102,7 +102,7 @@ function dev_render_side_cart_content() {
                     </div>
 
                     <!-- Nút xóa nhanh sản phẩm -->
-                    <button class="dev-item-remove-btn" data-cart-key="<?php echo esc_attr( $cart_item_key ); ?>" title="Xóa sản phẩm này">&times;</button>
+                    <button class="dev-item-remove-btn" data-cart-key="<?php echo esc_attr( $cart_item_key ); ?>" title="Xóa sản phẩm này">Xóa</button>
                 </div>
                 <?php
             }
@@ -356,19 +356,23 @@ function dev_side_cart_styles() {
         
         /* Nút xóa item */
         .dev-item-remove-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #bbb;
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            padding: 5px;
-            position: absolute;
-            top: 0;
-            right: 0;
-            line-height: 1;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            align-self: center;
+            line-height: 1.2;
         }
         .dev-item-remove-btn:hover {
-            color: #d32f2f;
+            background-color: #dc2626;
+            color: #ffffff;
+            border-color: #dc2626;
         }
 
         /* Tổng kết tiền và các nút */

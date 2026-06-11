@@ -20,7 +20,7 @@ function dev_add_social_login_buttons() {
     ?>
     <div class="dev-social-login-container">
         <div class="dev-social-separator">
-            <span>or</span>
+            <span>hoặc</span>
         </div>
         
         <!-- Nút Đăng nhập bằng Google -->
@@ -31,7 +31,7 @@ function dev_add_social_login_buttons() {
                 <path fill="#FBBC05" d="M5.32 14.57c-.24-.7-.38-1.46-.38-2.25s.14-1.55.38-2.25L1.92 7.44C1.07 9.15.6 11.02.6 13s.47 3.85 1.32 5.56l3.4-2.63z"/>
                 <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.93 1.19 15.24 0 12 0 8.11 0 4.81 3.7 2.92 7.44l3.4 2.63c.94-2.85 3.57-4.96 6.68-4.96z"/>
             </svg>
-            <span>Sign in with Google</span>
+            <span>Đăng nhập bằng Google</span>
         </a>
 
         <!-- Nút Đăng nhập bằng Facebook -->
@@ -39,7 +39,7 @@ function dev_add_social_login_buttons() {
             <svg class="dev-social-icon" viewBox="0 0 24 24" width="20" height="20" fill="#ffffff">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
-            <span>Sign in with Facebook</span>
+            <span>Đăng nhập bằng Facebook</span>
         </a>
     </div>
     <?php
@@ -132,18 +132,56 @@ function dev_social_login_styles() {
 add_action( 'template_redirect', 'dev_handle_social_login' );
 add_action( 'login_init', 'dev_handle_social_login' );
 
+/**
+ * 2.5. Các hàm lấy API keys với giá trị mặc định để chạy thực tế trên mọi môi trường
+ */
+function dev_get_google_client_id() {
+    $val = get_option( 'hkt_google_client_id' );
+    if ( ! empty( $val ) ) {
+        return $val;
+    }
+    return defined( 'GOOGLE_CLIENT_ID' ) ? GOOGLE_CLIENT_ID : '';
+}
+
+function dev_get_google_client_secret() {
+    $val = get_option( 'hkt_google_client_secret' );
+    if ( ! empty( $val ) ) {
+        return $val;
+    }
+    return defined( 'GOOGLE_CLIENT_SECRET' ) ? GOOGLE_CLIENT_SECRET : '';
+}
+
+function dev_get_facebook_app_id() {
+    $val = get_option( 'hkt_facebook_app_id' );
+    if ( ! empty( $val ) ) {
+        return $val;
+    }
+    return defined( 'FACEBOOK_APP_ID' ) ? FACEBOOK_APP_ID : '';
+}
+
+function dev_get_facebook_app_secret() {
+    $val = get_option( 'hkt_facebook_app_secret' );
+    if ( ! empty( $val ) ) {
+        return $val;
+    }
+    return defined( 'FACEBOOK_APP_SECRET' ) ? FACEBOOK_APP_SECRET : '';
+}
+
 function dev_handle_social_login() {
+    $google_client_id     = dev_get_google_client_id();
+    $facebook_app_id      = dev_get_facebook_app_id();
+
     // 3.1. Nếu có yêu cầu chuyển sang trang đăng nhập giả lập (?social_login=...)
     if ( isset( $_GET['social_login'] ) ) {
         $provider = sanitize_text_field( $_GET['social_login'] );
         if ( in_array( $provider, array( 'google', 'facebook' ), true ) ) {
             
-            // KIỂM TRA: Nếu đã cấu hình API key trong wp-config.php thì chạy OAuth thật
-            if ( defined( 'GOOGLE_CLIENT_ID' ) && $provider === 'google' ) {
+            // KIỂM TRA: Nếu đã cấu hình API key trong wp-config.php hoặc có fallback thì chạy OAuth thật
+            if ( ! empty( $google_client_id ) && $provider === 'google' ) {
                 dev_redirect_to_real_google_oauth();
                 exit;
             }
-            if ( defined( 'FACEBOOK_APP_ID' ) && $provider === 'facebook' ) {
+            if ( ! empty( $facebook_app_id ) && $provider === 'facebook' ) {
                 dev_redirect_to_real_facebook_oauth();
                 exit;
             }
@@ -160,7 +198,7 @@ function dev_handle_social_login() {
         $code     = sanitize_text_field( $_GET['code'] );
         $state    = sanitize_text_field( $_GET['state'] );
 
-        if ( $provider === 'google' && defined( 'GOOGLE_CLIENT_ID' ) ) {
+        if ( $provider === 'google' && ! empty( $google_client_id ) ) {
             // Kiểm tra tính hợp lệ của mã Nonce (State) để chống tấn công CSRF
             if ( ! wp_verify_nonce( $state, 'google_oauth_state' ) ) {
                 wp_die( 'Yêu cầu không hợp lệ! Xác thực mã bảo mật (CSRF State) thất bại.', 'Lỗi Bảo Mật', array( 'back_link' => true ) );
@@ -168,7 +206,7 @@ function dev_handle_social_login() {
             dev_handle_real_google_callback( $code );
             exit;
         }
-        if ( $provider === 'facebook' && defined( 'FACEBOOK_APP_ID' ) ) {
+        if ( $provider === 'facebook' && ! empty( $facebook_app_id ) ) {
             // Kiểm tra tính hợp lệ của mã Nonce (State) để chống tấn công CSRF
             if ( ! wp_verify_nonce( $state, 'facebook_oauth_state' ) ) {
                 wp_die( 'Yêu cầu không hợp lệ! Xác thực mã bảo mật (CSRF State) thất bại.', 'Lỗi Bảo Mật', array( 'back_link' => true ) );
@@ -500,7 +538,7 @@ function dev_render_mock_consent_screen( $provider ) {
  * 6. Hiện thực hóa tích hợp API Đăng nhập thật (Google OAuth 2.0 & Facebook Graph API)
  */
 function dev_redirect_to_real_google_oauth() {
-    $client_id = defined( 'GOOGLE_CLIENT_ID' ) ? constant( 'GOOGLE_CLIENT_ID' ) : '';
+    $client_id = dev_get_google_client_id();
     $redirect_uri = home_url( '/?social_callback=google' );
     
     // Tạo link chuyển hướng đến trang đăng nhập Google
@@ -517,8 +555,8 @@ function dev_redirect_to_real_google_oauth() {
 }
 
 function dev_handle_real_google_callback( $code ) {
-    $client_id     = defined( 'GOOGLE_CLIENT_ID' ) ? constant( 'GOOGLE_CLIENT_ID' ) : '';
-    $client_secret = defined( 'GOOGLE_CLIENT_SECRET' ) ? constant( 'GOOGLE_CLIENT_SECRET' ) : '';
+    $client_id     = dev_get_google_client_id();
+    $client_secret = dev_get_google_client_secret();
     $redirect_uri  = home_url( '/?social_callback=google' );
 
     // Gửi POST request đến Google đổi Code lấy Access Token
@@ -540,7 +578,7 @@ function dev_handle_real_google_callback( $code ) {
     $access_token = isset( $body['access_token'] ) ? $body['access_token'] : '';
 
     if ( empty( $access_token ) ) {
-        wp_die( 'Không tìm thấy Access Token từ Google. Vui lòng cấu hình lại Client ID và Secret trong wp-config.php.' );
+        wp_die( 'Không tìm thấy Access Token từ Google. Vui lòng kiểm tra lại cấu hình Client ID và Secret.' );
     }
 
     // Gửi GET request lấy thông tin Profile người dùng
@@ -562,7 +600,7 @@ function dev_handle_real_google_callback( $code ) {
 }
 
 function dev_redirect_to_real_facebook_oauth() {
-    $app_id = defined( 'FACEBOOK_APP_ID' ) ? constant( 'FACEBOOK_APP_ID' ) : '';
+    $app_id = dev_get_facebook_app_id();
     $redirect_uri = home_url( '/?social_callback=facebook' );
     
     // Tạo link chuyển hướng đến trang đăng nhập Facebook
@@ -578,8 +616,8 @@ function dev_redirect_to_real_facebook_oauth() {
 }
 
 function dev_handle_real_facebook_callback( $code ) {
-    $app_id       = defined( 'FACEBOOK_APP_ID' ) ? constant( 'FACEBOOK_APP_ID' ) : '';
-    $app_secret   = defined( 'FACEBOOK_APP_SECRET' ) ? constant( 'FACEBOOK_APP_SECRET' ) : '';
+    $app_id       = dev_get_facebook_app_id();
+    $app_secret   = dev_get_facebook_app_secret();
     $redirect_uri = home_url( '/?social_callback=facebook' );
 
     // Đổi code lấy Access Token của Facebook
@@ -731,4 +769,81 @@ function dev_social_login_toast_notification() {
             <?php
         }
     }
+}
+
+/**
+ * 8. Tạo trang cấu hình Google/Facebook Login trong WP-Admin để người quản trị cấu hình trực tiếp trên VPS
+ */
+add_action( 'admin_menu', 'hkt_social_login_admin_menu' );
+function hkt_social_login_admin_menu() {
+    add_options_page(
+        'HKT Social Login',
+        'HKT Social Login',
+        'manage_options',
+        'hkt-social-login',
+        'hkt_social_login_settings_page'
+    );
+}
+
+function hkt_social_login_settings_page() {
+    // Lưu cài đặt nếu form được submit
+    if ( isset( $_POST['hkt_social_login_nonce'] ) && wp_verify_nonce( $_POST['hkt_social_login_nonce'], 'hkt_save_social_login_settings' ) ) {
+        update_option( 'hkt_google_client_id', sanitize_text_field( $_POST['hkt_google_client_id'] ) );
+        update_option( 'hkt_google_client_secret', sanitize_text_field( $_POST['hkt_google_client_secret'] ) );
+        update_option( 'hkt_facebook_app_id', sanitize_text_field( $_POST['hkt_facebook_app_id'] ) );
+        update_option( 'hkt_facebook_app_secret', sanitize_text_field( $_POST['hkt_facebook_app_secret'] ) );
+        echo '<div class="updated"><p><strong>Cấu hình đã được lưu thành công!</strong></p></div>';
+    }
+
+    $google_client_id = get_option( 'hkt_google_client_id', '' );
+    $google_client_secret = get_option( 'hkt_google_client_secret', '' );
+    $facebook_app_id = get_option( 'hkt_facebook_app_id', '' );
+    $facebook_app_secret = get_option( 'hkt_facebook_app_secret', '' );
+    ?>
+    <div class="wrap">
+        <h1>Cấu hình đăng nhập Google & Facebook (HKT Social Login)</h1>
+        <p>Giúp người quản trị dễ dàng cấu hình API Keys đăng nhập mạng xã hội mà không cần chỉnh sửa tệp <code>wp-config.php</code> trên máy chủ.</p>
+        <form method="post" action="">
+            <?php wp_nonce_field( 'hkt_save_social_login_settings', 'hkt_social_login_nonce' ); ?>
+            
+            <h2 class="title">1. Đăng nhập bằng Google</h2>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">Google Client ID</th>
+                    <td>
+                        <input type="text" name="hkt_google_client_id" value="<?php echo esc_attr( $google_client_id ); ?>" class="large-text" />
+                        <p class="description">Đăng ký tại Google Cloud Console. Link redirect URI của bạn: <code><?php echo esc_url( home_url( '/?social_callback=google' ) ); ?></code></p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Google Client Secret</th>
+                    <td>
+                        <input type="password" name="hkt_google_client_secret" value="<?php echo esc_attr( $google_client_secret ); ?>" class="large-text" />
+                    </td>
+                </tr>
+            </table>
+
+            <hr />
+
+            <h2 class="title">2. Đăng nhập bằng Facebook</h2>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">Facebook App ID</th>
+                    <td>
+                        <input type="text" name="hkt_facebook_app_id" value="<?php echo esc_attr( $facebook_app_id ); ?>" class="large-text" />
+                        <p class="description">Đăng ký tại Facebook Developers. Link redirect URI của bạn: <code><?php echo esc_url( home_url( '/?social_callback=facebook' ) ); ?></code></p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Facebook App Secret</th>
+                    <td>
+                        <input type="password" name="hkt_facebook_app_secret" value="<?php echo esc_attr( $facebook_app_secret ); ?>" class="large-text" />
+                    </td>
+                </tr>
+            </table>
+
+            <?php submit_button('Lưu cấu hình'); ?>
+        </form>
+    </div>
+    <?php
 }
