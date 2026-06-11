@@ -69,10 +69,10 @@
             html += '<a href="' + item.url + '" class="hkt-search-result-item" role="option">' +
                 imgTag +
                 '<div class="hkt-search-result-info">' +
-                    '<span class="hkt-search-result-name">' + hktEscapeHtml(item.title) + '</span>' +
-                    '<span class="hkt-search-result-price">' + item.price + '</span>' +
+                '<span class="hkt-search-result-name">' + hktEscapeHtml(item.title) + '</span>' +
+                '<span class="hkt-search-result-price">' + item.price + '</span>' +
                 '</div>' +
-            '</a>';
+                '</a>';
         });
 
         $dropdown.html(html).addClass('open');
@@ -225,5 +225,118 @@
             }
         }
     }, 2000);
+
+
+    /* ----------------------------------------------------------------
+     * 6. PRODUCT CATALOG IMAGE LIGHTBOX PREVIEW
+     * Intercept clicks on product image link in the catalog loop
+     * and open a photo lightbox gallery instead of navigating.
+     * ---------------------------------------------------------------- */
+    $(document).on('click', '.product-small .box-image a', function (e) {
+        // Skip clicks landing on inner tool overlays like Wishlist heart or Quick View
+        if ($(e.target).closest('.image-tools, .quick-view, .wishlist-button, .add-to-wishlist-button, .yith-add-to-wishlist-button-block').length) {
+            return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var images = [];
+        var $card = $(this).closest('.product-small');
+        
+        // Find product title for caption
+        var productTitle = $card.find('.product-title a').text() || $card.find('.name a').text() || 'Sản phẩm';
+
+        // Helper to get high-resolution image URL by stripping WordPress dimensions suffix (e.g. -300x300)
+        function getLargeImageUrl($img) {
+            if (!$img.length) return '';
+            var finalUrl = '';
+            var srcset = $img.attr('srcset');
+            if (srcset) {
+                var parts = srcset.split(',');
+                var largestSrc = '';
+                var largestWidth = 0;
+                parts.forEach(function(part) {
+                    var match = part.trim().match(/^(\S+)\s+(\d+)w$/);
+                    if (match) {
+                        var url = match[1];
+                        var width = parseInt(match[2], 10);
+                        if (width > largestWidth) {
+                            largestWidth = width;
+                            largestSrc = url;
+                        }
+                    }
+                });
+                if (largestSrc) {
+                    finalUrl = largestSrc;
+                }
+            }
+            if (!finalUrl) {
+                finalUrl = $img.attr('src') || '';
+            }
+            return finalUrl.replace(/-[0-9]+x[0-9]+(\.[a-zA-Z0-9]+)$/, '$1');
+        }
+
+        // 1. Get main image src
+        var $mainImg = $card.find('.box-image a img').first();
+        var mainSrc = getLargeImageUrl($mainImg);
+        if (mainSrc) {
+            images.push({
+                src: mainSrc,
+                title: productTitle
+            });
+        }
+
+        // 2. Get hover image / secondary image src if exists
+        var $secondaryImg = $card.find('.box-image img.secondary-image, .box-image img.show-on-hover, .box-image img.back-image');
+        $secondaryImg.each(function() {
+            var src = getLargeImageUrl($(this));
+            if (src && src !== mainSrc) {
+                // Ensure different from main image to avoid duplicates
+                var duplicate = false;
+                for (var i = 0; i < images.length; i++) {
+                    if (images[i].src === src) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (!duplicate) {
+                    images.push({
+                        src: src,
+                        title: productTitle
+                    });
+                }
+            }
+        });
+
+        // Open Magnific Popup gallery (ensuring it is loaded via Flatsome's on-demand loader)
+        if (images.length > 0) {
+            var openPopup = function() {
+                $.magnificPopup.open({
+                    items: images,
+                    type: 'image',
+                    gallery: {
+                        enabled: true,
+                        navigateByImgClick: true,
+                        arrowMarkup: '<button title="%title%" type="button" class="mfp-arrow mfp-arrow-%dir%"></button>',
+                        tCounter: '<span class="mfp-counter">%curr% / %total%</span>'
+                    },
+                    image: {
+                        titleSrc: function (item) {
+                            return item.data.title;
+                        }
+                    },
+                    mainClass: 'mfp-fade mfp-img-mobile',
+                    removalDelay: 300
+                });
+            };
+
+            if ($.magnificPopup) {
+                setTimeout(openPopup, 0);
+            } else if ($.loadMagnificPopup) {
+                $.loadMagnificPopup().then(openPopup);
+            }
+        }
+    });
 
 }(jQuery));

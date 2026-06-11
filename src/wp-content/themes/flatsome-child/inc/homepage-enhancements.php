@@ -17,11 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 add_action( 'wp_enqueue_scripts', 'hkt_enqueue_homepage_scripts' );
 function hkt_enqueue_homepage_scripts() {
-    // Enqueue on homepage (front page) only
-    if ( ! is_front_page() && ! is_home() && ! is_page_template( 'template-custom-home.php' ) ) {
-        return;
-    }
-
     wp_enqueue_script(
         'hkt-homepage-effects',
         get_stylesheet_directory_uri() . '/assets/js/homepage-effects.js',
@@ -34,6 +29,19 @@ function hkt_enqueue_homepage_scripts() {
         'ajaxUrl' => admin_url( 'admin-ajax.php' ),
         'nonce'   => wp_create_nonce( 'hkt_live_search_nonce' ),
     ) );
+}
+
+/**
+ * Thay thế nút mua hàng ở danh sách sản phẩm (loop) thành nút "Xem chi tiết" trỏ về trang chi tiết sản phẩm.
+ */
+add_filter( 'woocommerce_loop_add_to_cart_link', 'hkt_loop_add_to_cart_to_detail_link', 20, 2 );
+function hkt_loop_add_to_cart_to_detail_link( $html, $product ) {
+    return sprintf(
+        '<a href="%s" class="button product_type_%s">%s</a>',
+        esc_url( $product->get_permalink() ),
+        esc_attr( $product->get_type() ),
+        esc_html__( 'Xem chi tiết', 'woocommerce' )
+    );
 }
 
 
