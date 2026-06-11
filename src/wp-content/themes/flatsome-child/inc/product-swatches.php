@@ -18,24 +18,55 @@ function dev_render_single_product_trust_badges() {
     ?>
     <div class="dev-trust-badges-wrapper">
         <div class="dev-trust-badge-item">
-            <span class="dev-badge-icon">🛡️</span>
+            <div class="dev-badge-icon-wrapper">
+                <svg class="dev-badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
             <div class="dev-badge-info">
-                <strong>100% CHÍNH HÃNG</strong>
-                <span>Cam kết hoàn tiền 200% nếu phát hiện hàng giả</span>
+                <strong>Cam kết chính hãng 100%</strong>
+                <span>Hoàn tiền gấp đôi nếu phát hiện giả</span>
             </div>
         </div>
         <div class="dev-trust-badge-item">
-            <span class="dev-badge-icon">🔄</span>
+            <div class="dev-badge-icon-wrapper">
+                <svg class="dev-badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+            </div>
             <div class="dev-badge-info">
-                <strong>30 NGÀY ĐỔI TRẢ</strong>
-                <span>Hỗ trợ đổi size, mẫu miễn phí tận nhà</span>
+                <strong>Đổi trả dễ dàng trong 7 ngày</strong>
+                <span>Hỗ trợ đổi size tận nơi miễn phí</span>
             </div>
         </div>
         <div class="dev-trust-badge-item">
-            <span class="dev-badge-icon">🚚</span>
+            <div class="dev-badge-icon-wrapper">
+                <svg class="dev-badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+            </div>
             <div class="dev-badge-info">
-                <strong>MIỄN PHÍ VẬN CHUYỂN</strong>
-                <span>Freeship cho mọi đơn hàng từ 500k toàn quốc</span>
+                <strong>Giao hàng nhanh toàn quốc</strong>
+                <span>Đồng giá ship 30k toàn quốc</span>
+            </div>
+        </div>
+        <div class="dev-trust-badge-item">
+            <div class="dev-badge-icon-wrapper">
+                <svg class="dev-badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+            </div>
+            <div class="dev-badge-info">
+                <strong>Thanh toán VietQR động</strong>
+                <span>Quét mã thanh toán cực nhanh</span>
             </div>
         </div>
     </div>
@@ -352,7 +383,138 @@ function dev_product_swatches_script() {
                     $('body').css('overflow', '');
                 }
             });
+
+            // --- Sticky Add to Cart Bar Sync Logic ---
+            var stickyBar = $('#dev-sticky-add-to-cart');
+            if (stickyBar.length) {
+                var mainForm = $('.variations_form');
+                var buyBtn = $('.hkt-buy-now-button');
+                var showThreshold = buyBtn.length ? (buyBtn.offset().top + buyBtn.outerHeight()) : 400;
+
+                $(window).on('scroll.devSticky', function() {
+                    if ($(window).scrollTop() > showThreshold) {
+                        stickyBar.addClass('visible');
+                    } else {
+                        stickyBar.removeClass('visible');
+                    }
+                });
+
+                // Helper function to normalize attribute names (removing attribute_ prefix if present)
+                function getBaseAttr(name) {
+                    return name ? name.replace(/^attribute_/, '') : '';
+                }
+
+                // Sync selection: sticky dropdown -> main selects/swatches
+                $('.dev-sticky-attr-select').on('change', function() {
+                    var attrName = $(this).attr('data-attribute') || $(this).data('attribute');
+                    var val = $(this).val();
+                    var baseName = getBaseAttr(attrName);
+                    
+                    var mainSelect = mainForm.find('select[name="attribute_' + baseName + '"], select[name="' + baseName + '"]');
+                    if (mainSelect.length) {
+                        mainSelect.val(val).trigger('change');
+                        
+                        var swatchContainer = $('.dev-swatches-container[data-attribute="attribute_' + baseName + '"], .dev-swatches-container[data-attribute="' + baseName + '"]');
+                        if (swatchContainer.length) {
+                            swatchContainer.find('.dev-swatch-item').removeClass('active');
+                            if (val) {
+                                swatchContainer.find('.dev-swatch-item[data-value="' + val + '"]').addClass('active');
+                            }
+                        }
+                    }
+                });
+
+                // Sync selection: main select changes -> update sticky dropdowns
+                mainForm.on('change', 'select', function() {
+                    var attrName = $(this).attr('name');
+                    var val = $(this).val();
+                    var baseName = getBaseAttr(attrName);
+                    $('.dev-sticky-attr-select[data-attribute="' + baseName + '"]').val(val);
+                });
+
+
+                // Trigger buy now
+                $('.dev-sticky-buy-now-btn').on('click', function(e) {
+                    e.preventDefault();
+                    var allSelected = true;
+                    $('.dev-sticky-attr-select').each(function() {
+                        if (!$(this).val()) {
+                            allSelected = false;
+                            return false;
+                        }
+                    });
+
+                    if (!allSelected) {
+                        $('html, body').animate({
+                            scrollTop: mainForm.offset().top - 150
+                        }, 500);
+                        mainForm.addClass('shake-effect');
+                        setTimeout(function() {
+                            mainForm.removeClass('shake-effect');
+                        }, 500);
+                        return;
+                    }
+
+                    if (buyBtn.length) {
+                        buyBtn.trigger('click');
+                    }
+                });
+            }
         });
     </script>
+    <?php
+}
+
+/**
+ * 4. Hiển thị thanh Mua Hàng Dính (Sticky Add-to-cart Bar) khi cuộn trang (AC-FE-03)
+ */
+add_action( 'wp_footer', 'dev_render_sticky_add_to_cart_bar' );
+function dev_render_sticky_add_to_cart_bar() {
+    if ( ! is_product() ) {
+        return;
+    }
+    global $product;
+    if ( ! $product || ! $product->is_purchasable() || ! $product->is_in_stock() ) {
+        return;
+    }
+    
+    $title = $product->get_name();
+    $price_html = $product->get_price_html();
+    $image_id = $product->get_image_id();
+    $image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'thumbnail' ) : wc_placeholder_img_src();
+    
+    ?>
+    <div id="dev-sticky-add-to-cart" class="dev-sticky-add-to-cart-bar">
+        <div class="dev-sticky-container">
+            <div class="dev-sticky-info">
+                <img src="<?php echo esc_url( $image_url ); ?>" class="dev-sticky-thumb" alt="<?php echo esc_attr( $title ); ?>">
+                <div class="dev-sticky-title-price">
+                    <h4 class="dev-sticky-title"><?php echo esc_html( $title ); ?></h4>
+                    <span class="dev-sticky-price"><?php echo $price_html; ?></span>
+                </div>
+            </div>
+            
+            <div class="dev-sticky-actions">
+                <?php if ( $product->is_type( 'variable' ) ) : 
+                    $attributes = $product->get_variation_attributes();
+                    foreach ( $attributes as $attribute_name => $options ) : 
+                        $taxonomy = get_taxonomy( $attribute_name );
+                        $label = $taxonomy ? $taxonomy->labels->singular_name : wc_attribute_label( $attribute_name );
+                        ?>
+                        <select class="dev-sticky-attr-select" data-attribute="<?php echo esc_attr( $attribute_name ); ?>">
+                            <option value=""><?php echo esc_html( 'Chọn ' . $label ); ?></option>
+                            <?php foreach ( $options as $option ) : 
+                                $term = get_term_by( 'slug', $option, $attribute_name );
+                                $name = $term ? $term->name : $option;
+                                ?>
+                                <option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $name ); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    <?php endforeach; 
+                endif; ?>
+                <button type="button" class="dev-sticky-buy-now-btn">MUA NGAY</button>
+            </div>
+        </div>
+    </div>
     <?php
 }
