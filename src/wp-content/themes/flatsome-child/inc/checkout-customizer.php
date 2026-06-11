@@ -192,7 +192,7 @@ function dev_custom_vietnam_states( $states ) {
 
 /**
  * 5. Điều chỉnh cấu hình vùng miền của WooCommerce cho Việt Nam (VN)
- * Đảm bảo trường Tỉnh/Thành (state) luôn hiển thị và bắt buộc, không bị country-select.js ẩn đi.
+ * Đảm bảo các trường Tỉnh/Thành, Quận/Huyện, Xã/Phường hiển thị dọc, 100% width, và đúng thứ tự ưu tiên.
  */
 add_filter( 'woocommerce_get_country_locale', 'dev_custom_vietnam_country_locale' );
 
@@ -205,26 +205,69 @@ function dev_custom_vietnam_country_locale( $locale ) {
         'required' => true,
         'hidden'   => false,
         'label'    => 'Tỉnh / Thành phố',
+        'priority' => 50,
+        'class'    => array( 'form-row-wide' ),
     );
     
     $locale['VN']['city'] = array(
         'required' => true,
         'hidden'   => false,
         'label'    => 'Quận / Huyện',
+        'priority' => 60,
+        'class'    => array( 'form-row-wide' ),
     );
     
     $locale['VN']['address_2'] = array(
         'required' => true,
         'hidden'   => false,
         'label'    => 'Xã / Phường / Thị trấn',
+        'priority' => 70,
+        'class'    => array( 'form-row-wide' ),
+    );
+    
+    $locale['VN']['address_1'] = array(
+        'required' => true,
+        'hidden'   => false,
+        'label'    => 'Địa chỉ nhận hàng (Số nhà, tên đường...)',
+        'priority' => 80,
+        'class'    => array( 'form-row-wide' ),
+    );
+
+    $locale['VN']['postcode'] = array(
+        'required' => false,
+        'hidden'   => true,
     );
     
     return $locale;
 }
 
 /**
+ * 5b. Đồng bộ cấu trúc trường địa chỉ mặc định của WooCommerce
+ */
+add_filter( 'woocommerce_default_address_fields', 'dev_custom_default_address_fields' );
+
+function dev_custom_default_address_fields( $fields ) {
+    $fields['state']['priority']     = 50;
+    $fields['state']['class']        = array( 'form-row-wide' );
+    
+    $fields['city']['priority']      = 60;
+    $fields['city']['class']         = array( 'form-row-wide' );
+    
+    $fields['address_2']['priority'] = 70;
+    $fields['address_2']['class']    = array( 'form-row-wide' );
+    
+    $fields['address_1']['priority'] = 80;
+    $fields['address_1']['class']    = array( 'form-row-wide' );
+    
+    $fields['postcode']['required']  = false;
+    $fields['postcode']['hidden']    = true;
+    
+    return $fields;
+}
+
+/**
  * 6. Tiêm dữ liệu Locale Việt Nam vào wc_address_i18n_params TRƯỚC KHI country-select.js xử lý
- * Đây là bước BẮT BUỘC để WooCommerce hiển thị trường Tỉnh/Thành phố cho Việt Nam
+ * Đây là bước BẮT BUỘC để WooCommerce hiển thị trường Tỉnh/Thành phố cho Việt Nam đúng thứ tự và class.
  */
 add_action( 'wp_head', 'dev_patch_wc_country_locale_vn', 100 );
 
@@ -241,26 +284,39 @@ function dev_patch_wc_country_locale_vn() {
             if (!wc_address_i18n_params.locale) wc_address_i18n_params.locale = {};
 
             // Inject dữ liệu locale cho Việt Nam
-            // Đảm bảo state (Tỉnh/Thành phố) luôn được hiển thị và bắt buộc
+            // Đảm bảo các trường được xếp dọc (form-row-wide) và đúng thứ tự ưu tiên 50 -> 60 -> 70 -> 80
             wc_address_i18n_params.locale['VN'] = {
                 "state": {
                     "label": "T\u1ec9nh \/ Th\u00e0nh ph\u1ed1",
                     "required": true,
-                    "hidden": false
+                    "hidden": false,
+                    "priority": 50,
+                    "class": ["form-row-wide"]
                 },
                 "city": {
                     "label": "Qu\u1eadn \/ Huy\u1ec7n",
                     "required": true,
-                    "hidden": false
-                },
-                "postcode": {
-                    "required": false,
-                    "hidden": true
+                    "hidden": false,
+                    "priority": 60,
+                    "class": ["form-row-wide"]
                 },
                 "address_2": {
                     "label": "X\u00e3 \/ Ph\u01b0\u1eddng \/ Th\u1ecb tr\u1ea5n",
                     "required": true,
-                    "hidden": false
+                    "hidden": false,
+                    "priority": 70,
+                    "class": ["form-row-wide"]
+                },
+                "address_1": {
+                    "label": "\u0110\u1ecba ch\u1ec9 nh\u1eadn h\u00e0ng (S\u1ed1 nh\u00e0, t\u00ean \u0111\u01b0\u1eddng...)",
+                    "required": true,
+                    "hidden": false,
+                    "priority": 80,
+                    "class": ["form-row-wide"]
+                },
+                "postcode": {
+                    "required": false,
+                    "hidden": true
                 }
             };
 
