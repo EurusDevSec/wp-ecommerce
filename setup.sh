@@ -78,9 +78,10 @@ else
     echo "ℹ️ WordPress đã được cài đặt cơ sở dữ liệu từ trước."
 fi
 
-# 5. Cài đặt và kích hoạt plugin WooCommerce
-echo "📦 Đang kiểm tra và cài đặt WooCommerce..."
-docker compose run --rm --user root cli wp plugin install woocommerce --activate --allow-root
+# 5. Cài đặt và kích hoạt các plugin cần thiết (WooCommerce, Contact Form 7, Nextend Social Login)
+echo "📦 Đang kiểm tra và cài đặt các plugin cần thiết..."
+docker compose run --rm --user root cli wp plugin install woocommerce contact-form-7 nextend-facebook-connect --activate --allow-root
+
 
 # 6. Tự động bỏ qua Setup Wizard của WooCommerce và cấu hình Quốc gia/Tiền tệ VN
 echo "⚡ Tối ưu hóa cấu hình WooCommerce (Bỏ qua Setup Wizard & Cài đặt Việt Nam)..."
