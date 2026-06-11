@@ -985,7 +985,7 @@
     "Districts": [
       {
         "Id": "024",
-        "Name": "Thành phố Hà Giang",
+        "Name": "Thị xã Hà Giang",
         "Wards": [
           {
             "Id": "00691",
@@ -1595,7 +1595,7 @@
     "Districts": [
       {
         "Id": "094",
-        "Name": "Thành phố Điện Biên Phủ",
+        "Name": "Thị xã Điện Biên Phủ",
         "Wards": [
           {
             "Id": "03127",
@@ -2671,7 +2671,7 @@
       },
       {
         "Id": "132",
-        "Name": "Thành phố Yên Bái",
+        "Name": "Thị xã Yên Bái",
         "Wards": [
           {
             "Id": "04252",
@@ -3169,7 +3169,7 @@
       },
       {
         "Id": "165",
-        "Name": "Thành phố Sông Công",
+        "Name": "Thị xã Sông Công",
         "Wards": [
           {
             "Id": "05518",
@@ -3353,7 +3353,7 @@
       },
       {
         "Id": "172",
-        "Name": "Thành phố Phổ Yên",
+        "Name": "Thị xã Phổ Yên",
         "Wards": [
           {
             "Id": "05857",
@@ -3743,7 +3743,7 @@
     "Districts": [
       {
         "Id": "193",
-        "Name": "Thành phố Hạ Long",
+        "Name": "Thị xã Hạ Long",
         "Wards": [
           {
             "Id": "06652",
@@ -3793,7 +3793,7 @@
       },
       {
         "Id": "194",
-        "Name": "Thành phố Móng Cái",
+        "Name": "Thị xã Móng Cái",
         "Wards": [
           {
             "Id": "06709",
@@ -3823,7 +3823,7 @@
       },
       {
         "Id": "195",
-        "Name": "Thành phố Cẩm Phả",
+        "Name": "Thị xã Cẩm Phả",
         "Wards": [
           {
             "Id": "06760",
@@ -3849,7 +3849,7 @@
       },
       {
         "Id": "196",
-        "Name": "Thành phố Uông Bí",
+        "Name": "Thị xã Uông Bí",
         "Wards": [
           {
             "Id": "06811",
@@ -3971,7 +3971,7 @@
       },
       {
         "Id": "205",
-        "Name": "Thành phố Đông Triều",
+        "Name": "Thị xã Đông Triều",
         "Wards": [
           {
             "Id": "07069",
@@ -4043,7 +4043,7 @@
     "Districts": [
       {
         "Id": "213",
-        "Name": "Thành phố Bắc Giang",
+        "Name": "Thị xã Bắc Giang",
         "Wards": [
           {
             "Id": "07210",
@@ -4447,7 +4447,7 @@
       },
       {
         "Id": "261",
-        "Name": "Thành phố Từ Sơn",
+        "Name": "Thị xã Từ Sơn",
         "Wards": [
           {
             "Id": "09367",
@@ -4553,7 +4553,7 @@
     "Districts": [
       {
         "Id": "148",
-        "Name": "Thành phố Hòa Bình",
+        "Name": "Thị xã Hòa Bình",
         "Wards": [
           {
             "Id": "04792",
@@ -4797,7 +4797,7 @@
       },
       {
         "Id": "227",
-        "Name": "Thành phố Việt Trì",
+        "Name": "Thị xã Việt Trì",
         "Wards": [
           {
             "Id": "07894",
@@ -5139,7 +5139,7 @@
       },
       {
         "Id": "243",
-        "Name": "Thành phố Vĩnh Yên",
+        "Name": "Thị xã Vĩnh Yên",
         "Wards": [
           {
             "Id": "08707",
@@ -5153,7 +5153,7 @@
       },
       {
         "Id": "244",
-        "Name": "Thành phố Phúc Yên",
+        "Name": "Thị xã Phúc Yên",
         "Wards": [
           {
             "Id": "08740",
@@ -5343,7 +5343,7 @@
     "Districts": [
       {
         "Id": "288",
-        "Name": "Thành phố Hải Dương",
+        "Name": "Quận Hải Dương",
         "Wards": [
           {
             "Id": "10507",
@@ -5381,7 +5381,7 @@
       },
       {
         "Id": "290",
-        "Name": "Thành phố Chí Linh",
+        "Name": "Quận Chí Linh",
         "Wards": [
           {
             "Id": "10546",
@@ -5755,7 +5755,7 @@
       },
       {
         "Id": "311",
-        "Name": "Thành phố Thuỷ Nguyên",
+        "Name": "Quận Thuỷ Nguyên",
         "Wards": [
           {
             "Id": "11473",
@@ -6183,7 +6183,7 @@
       },
       {
         "Id": "336",
-        "Name": "Thành phố Thái Bình",
+        "Name": "Thị xã Thái Bình",
         "Wards": [
           {
             "Id": "12452",
@@ -6497,7 +6497,7 @@
     "Districts": [
       {
         "Id": "347",
-        "Name": "Thành phố Phủ Lý",
+        "Name": "Thị xã Phủ Lý",
         "Wards": [
           {
             "Id": "13285",
@@ -6665,7 +6665,7 @@
       },
       {
         "Id": "356",
-        "Name": "Thành phố Nam Định",
+        "Name": "Thị xã Nam Định",
         "Wards": [
           {
             "Id": "13669",
@@ -6947,7 +6947,7 @@
       },
       {
         "Id": "374",
-        "Name": "Thành phố Hoa Lư",
+        "Name": "Thị xã Hoa Lư",
         "Wards": [
           {
             "Id": "14329",
@@ -6965,7 +6965,7 @@
       },
       {
         "Id": "370",
-        "Name": "Thành phố Tam Điệp",
+        "Name": "Thị xã Tam Điệp",
         "Wards": [
           {
             "Id": "14362",
@@ -7911,7 +7911,7 @@
       },
       {
         "Id": "382",
-        "Name": "Thành phố Sầm Sơn",
+        "Name": "Thị xã Sầm Sơn",
         "Wards": [
           {
             "Id": "16516",
@@ -7977,7 +7977,7 @@
     "Districts": [
       {
         "Id": "412",
-        "Name": "Thành phố Vinh",
+        "Name": "Thị xã Vinh",
         "Wards": [
           {
             "Id": "16681",
@@ -9189,7 +9189,7 @@
       },
       {
         "Id": "461",
-        "Name": "Thành phố Đông Hà",
+        "Name": "Thị xã Đông Hà",
         "Wards": [
           {
             "Id": "19333",
@@ -9735,7 +9735,7 @@
       },
       {
         "Id": "502",
-        "Name": "Thành phố Tam Kỳ",
+        "Name": "Quận Tam Kỳ",
         "Wards": [
           {
             "Id": "20335",
@@ -9775,7 +9775,7 @@
       },
       {
         "Id": "503",
-        "Name": "Thành phố Hội An",
+        "Name": "Quận Hội An",
         "Wards": [
           {
             "Id": "20401",
@@ -10457,7 +10457,7 @@
       },
       {
         "Id": "608",
-        "Name": "Thành phố Kon Tum",
+        "Name": "Thị xã Kon Tum",
         "Wards": [
           {
             "Id": "23284",
@@ -10683,7 +10683,7 @@
     "Districts": [
       {
         "Id": "540",
-        "Name": "Thành phố Quy Nhơn",
+        "Name": "Thị xã Quy Nhơn",
         "Wards": [
           {
             "Id": "21553",
@@ -10981,7 +10981,7 @@
       },
       {
         "Id": "622",
-        "Name": "Thành phố Pleiku",
+        "Name": "Thị xã Pleiku",
         "Wards": [
           {
             "Id": "23563",
@@ -11397,7 +11397,7 @@
     "Districts": [
       {
         "Id": "568",
-        "Name": "Thành phố Nha Trang",
+        "Name": "Thị xã Nha Trang",
         "Wards": [
           {
             "Id": "22333",
@@ -11419,7 +11419,7 @@
       },
       {
         "Id": "569",
-        "Name": "Thành phố Cam Ranh",
+        "Name": "Thị xã Cam Ranh",
         "Wards": [
           {
             "Id": "22411",
@@ -11615,7 +11615,7 @@
       },
       {
         "Id": "582",
-        "Name": "Thành phố Phan Rang-Tháp Chàm",
+        "Name": "Thị xã Phan Rang-Tháp Chàm",
         "Wards": [
           {
             "Id": "22738",
@@ -11759,7 +11759,7 @@
     "Districts": [
       {
         "Id": "555",
-        "Name": "Thành phố Tuy Hoà",
+        "Name": "Thị xã Tuy Hoà",
         "Wards": [
           {
             "Id": "22015",
@@ -11949,7 +11949,7 @@
       },
       {
         "Id": "643",
-        "Name": "Thành phố Buôn Ma Thuột",
+        "Name": "Thị xã Buôn Ma Thuột",
         "Wards": [
           {
             "Id": "24121",
@@ -12317,7 +12317,7 @@
     "Districts": [
       {
         "Id": "593",
-        "Name": "Thành phố Phan Thiết",
+        "Name": "Thị xã Phan Thiết",
         "Wards": [
           {
             "Id": "22918",
@@ -12557,7 +12557,7 @@
       },
       {
         "Id": "660",
-        "Name": "Thành phố Gia Nghĩa",
+        "Name": "Thị xã Gia Nghĩa",
         "Wards": [
           {
             "Id": "24611",
@@ -12717,7 +12717,7 @@
       },
       {
         "Id": "672",
-        "Name": "Thành phố Đà Lạt",
+        "Name": "Thị xã Đà Lạt",
         "Wards": [
           {
             "Id": "24778",
@@ -12739,7 +12739,7 @@
       },
       {
         "Id": "673",
-        "Name": "Thành phố Bảo Lộc",
+        "Name": "Thị xã Bảo Lộc",
         "Wards": [
           {
             "Id": "24820",
@@ -12987,7 +12987,7 @@
     "Districts": [
       {
         "Id": "689",
-        "Name": "Thành phố Đồng Xoài",
+        "Name": "Thị xã Đồng Xoài",
         "Wards": [
           {
             "Id": "25195",
@@ -13213,7 +13213,7 @@
       },
       {
         "Id": "731",
-        "Name": "Thành phố Biên Hòa",
+        "Name": "Thị xã Biên Hòa",
         "Wards": [
           {
             "Id": "25993",
@@ -13255,7 +13255,7 @@
       },
       {
         "Id": "732",
-        "Name": "Thành phố Long Khánh",
+        "Name": "Thị xã Long Khánh",
         "Wards": [
           {
             "Id": "26080",
@@ -13505,7 +13505,7 @@
     "Districts": [
       {
         "Id": "718",
-        "Name": "Thành phố Thủ Dầu Một",
+        "Name": "Quận Thủ Dầu Một",
         "Wards": [
           {
             "Id": "25747",
@@ -13553,7 +13553,7 @@
       },
       {
         "Id": "721",
-        "Name": "Thành phố Bến Cát",
+        "Name": "Quận Bến Cát",
         "Wards": [
           {
             "Id": "25813",
@@ -13619,7 +13619,7 @@
       },
       {
         "Id": "723",
-        "Name": "Thành phố Tân Uyên",
+        "Name": "Quận Tân Uyên",
         "Wards": [
           {
             "Id": "25888",
@@ -13659,7 +13659,7 @@
       },
       {
         "Id": "724",
-        "Name": "Thành phố Dĩ An",
+        "Name": "Quận Dĩ An",
         "Wards": [
           {
             "Id": "25942",
@@ -13677,7 +13677,7 @@
       },
       {
         "Id": "725",
-        "Name": "Thành phố Thuận An",
+        "Name": "Quận Thuận An",
         "Wards": [
           {
             "Id": "25966",
@@ -13703,7 +13703,7 @@
       },
       {
         "Id": "747",
-        "Name": "Thành phố Vũng Tàu",
+        "Name": "Quận Vũng Tàu",
         "Wards": [
           {
             "Id": "26506",
@@ -13729,7 +13729,7 @@
       },
       {
         "Id": "748",
-        "Name": "Thành phố Bà Rịa",
+        "Name": "Quận Bà Rịa",
         "Wards": [
           {
             "Id": "26560",
@@ -13829,7 +13829,7 @@
       },
       {
         "Id": "754",
-        "Name": "Thành phố Phú Mỹ",
+        "Name": "Quận Phú Mỹ",
         "Wards": [
           {
             "Id": "26704",
@@ -13913,7 +13913,7 @@
       },
       {
         "Id": "769",
-        "Name": "Thành phố Thủ Đức",
+        "Name": "Quận Thủ Đức",
         "Wards": [
           {
             "Id": "26800",
@@ -14609,7 +14609,7 @@
       },
       {
         "Id": "794",
-        "Name": "Thành phố Tân An",
+        "Name": "Thị xã Tân An",
         "Wards": [
           {
             "Id": "27694",
@@ -14945,7 +14945,7 @@
     "Districts": [
       {
         "Id": "815",
-        "Name": "Thành phố Mỹ Tho",
+        "Name": "Thị xã Mỹ Tho",
         "Wards": [
           {
             "Id": "28249",
@@ -14971,7 +14971,7 @@
       },
       {
         "Id": "816",
-        "Name": "Thành phố Gò Công",
+        "Name": "Thị xã Gò Công",
         "Wards": [
           {
             "Id": "28297",
@@ -15239,7 +15239,7 @@
       },
       {
         "Id": "866",
-        "Name": "Thành phố Cao Lãnh",
+        "Name": "Thị xã Cao Lãnh",
         "Wards": [
           {
             "Id": "29869",
@@ -15257,7 +15257,7 @@
       },
       {
         "Id": "867",
-        "Name": "Thành phố Sa Đéc",
+        "Name": "Thị xã Sa Đéc",
         "Wards": [
           {
             "Id": "29905",
@@ -15289,7 +15289,7 @@
       },
       {
         "Id": "868",
-        "Name": "Thành phố Hồng Ngự",
+        "Name": "Thị xã Hồng Ngự",
         "Wards": [
           {
             "Id": "29954",
@@ -15497,7 +15497,7 @@
     "Districts": [
       {
         "Id": "829",
-        "Name": "Thành phố Bến Tre",
+        "Name": "Thị xã Bến Tre",
         "Wards": [
           {
             "Id": "28756",
@@ -15743,7 +15743,7 @@
       },
       {
         "Id": "842",
-        "Name": "Thành phố Trà Vinh",
+        "Name": "Thị xã Trà Vinh",
         "Wards": [
           {
             "Id": "29242",
@@ -16155,7 +16155,7 @@
     "Districts": [
       {
         "Id": "883",
-        "Name": "Thành phố Long Xuyên",
+        "Name": "Thị xã Long Xuyên",
         "Wards": [
           {
             "Id": "30292",
@@ -16177,7 +16177,7 @@
       },
       {
         "Id": "884",
-        "Name": "Thành phố Châu Đốc",
+        "Name": "Thị xã Châu Đốc",
         "Wards": [
           {
             "Id": "30316",
@@ -16437,7 +16437,7 @@
       },
       {
         "Id": "899",
-        "Name": "Thành phố Rạch Giá",
+        "Name": "Thị xã Rạch Giá",
         "Wards": [
           {
             "Id": "30742",
@@ -16451,7 +16451,7 @@
       },
       {
         "Id": "900",
-        "Name": "Thành phố Hà Tiên",
+        "Name": "Thị xã Hà Tiên",
         "Wards": [
           {
             "Id": "30766",
@@ -16695,7 +16695,7 @@
       },
       {
         "Id": "911",
-        "Name": "Thành phố Phú Quốc",
+        "Name": "Thị xã Phú Quốc",
         "Wards": [
           {
             "Id": "31078",
@@ -16907,7 +16907,7 @@
       },
       {
         "Id": "930",
-        "Name": "Thành phố Vị Thanh",
+        "Name": "Quận Vị Thanh",
         "Wards": [
           {
             "Id": "31321",
@@ -16925,7 +16925,7 @@
       },
       {
         "Id": "931",
-        "Name": "Thành phố Ngã Bảy",
+        "Name": "Quận Ngã Bảy",
         "Wards": [
           {
             "Id": "31340",
@@ -17067,7 +17067,7 @@
       },
       {
         "Id": "941",
-        "Name": "Thành phố Sóc Trăng",
+        "Name": "Quận Sóc Trăng",
         "Wards": [
           {
             "Id": "31507",
@@ -17311,7 +17311,7 @@
     "Districts": [
       {
         "Id": "954",
-        "Name": "Thành phố Bạc Liêu",
+        "Name": "Thị xã Bạc Liêu",
         "Wards": [
           {
             "Id": "31825",
