@@ -360,3 +360,67 @@ function dev_override_shop_page_content( $value ) {
     return '';
 }
 
+/**
+ * Tự động tạo 6 trang tĩnh (Giới thiệu, Liên hệ, Chính sách...) nếu chưa tồn tại
+ * Đảm bảo các trang này hoạt động ngay lập tức mà không cần tạo tay trong WP-Admin.
+ */
+add_action( 'init', 'hkt_auto_create_static_pages' );
+function hkt_auto_create_static_pages() {
+    if ( is_admin() ) {
+        return;
+    }
+    
+    // Chỉ chạy một lần duy nhất bằng cách kiểm tra option trong DB
+    if ( get_option( 'hkt_static_pages_created_v1' ) ) {
+        return;
+    }
+    
+    $pages = array(
+        'gioi-thieu' => array(
+            'title'    => 'Giới thiệu',
+            'template' => 'page-gioi-thieu.php'
+        ),
+        'lien-he' => array(
+            'title'    => 'Liên hệ',
+            'template' => 'page-lien-he.php'
+        ),
+        'chinh-sach-bao-mat' => array(
+            'title'    => 'Chính sách bảo mật',
+            'template' => 'page-chinh-sach-bao-mat.php'
+        ),
+        'chinh-sach-doi-tra' => array(
+            'title'    => 'Chính sách đổi trả',
+            'template' => 'page-chinh-sach-doi-tra.php'
+        ),
+        'thoa-thuan-dich-vu' => array(
+            'title'    => 'Thỏa thuận dịch vụ',
+            'template' => 'page-thoa-thuan-dich-vu.php'
+        ),
+        'van-chuyen-va-giao-hang' => array(
+            'title'    => 'Vận chuyển và Giao hàng',
+            'template' => 'page-van-chuyen-va-giao-hang.php'
+        )
+    );
+    
+    foreach ( $pages as $slug => $data ) {
+        $page = get_page_by_path( $slug );
+        if ( ! $page ) {
+            $page_id = wp_insert_post( array(
+                'post_title'  => $data['title'],
+                'post_name'   => $slug,
+                'post_status' => 'publish',
+                'post_type'   => 'page',
+            ) );
+            if ( $page_id && ! is_wp_error( $page_id ) ) {
+                update_post_meta( $page_id, '_wp_page_template', $data['template'] );
+            }
+        } else {
+            // Cập nhật lại template nếu trang đã có sẵn nhưng chưa gắn template
+            update_post_meta( $page->ID, '_wp_page_template', $data['template'] );
+        }
+    }
+    
+    update_option( 'hkt_static_pages_created_v1', true );
+}
+
+

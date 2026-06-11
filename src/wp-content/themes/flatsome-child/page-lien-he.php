@@ -31,7 +31,23 @@ get_header();
         <div class="hkt-contact-card hkt-contact-form-card">
             <h3>Gửi tin nhắn cho chúng tôi</h3>
             <p>Nếu bạn cần hỗ trợ, điền thông tin vào form dưới đây và đội ngũ HKT sẽ phản hồi nhanh nhất.</p>
-            <?php echo do_shortcode( '[contact-form-7 id="xxxx" title="Form liên hệ"]' ); ?>
+            <?php 
+            $cf7_form_id = '';
+            $form_titles = array( 'Form liên hệ', 'Form liên hệ 1', 'Contact form 1' );
+            foreach ( $form_titles as $form_title ) {
+                $cf7_form = get_page_by_title( $form_title, OBJECT, 'wpcf7_contact_form' );
+                if ( $cf7_form ) {
+                    $cf7_form_id = $cf7_form->ID;
+                    $cf7_form_title = $form_title;
+                    break;
+                }
+            }
+            if ( $cf7_form_id ) {
+                echo do_shortcode( '[contact-form-7 id="' . $cf7_form_id . '" title="' . esc_attr($cf7_form_title) . '"]' );
+            } else {
+                echo do_shortcode( '[contact-form-7 title="Form liên hệ"]' );
+            }
+            ?>
         </div>
     </section>
 </main>
