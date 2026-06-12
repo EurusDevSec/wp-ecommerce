@@ -134,37 +134,50 @@ add_action( 'login_init', 'dev_handle_social_login' );
 
 /**
  * 2.5. Các hàm lấy API keys với giá trị mặc định để chạy thực tế trên mọi môi trường
+ * Ưu tiên: PHP Constant (wp-config.php) > Environment Variable (Docker/OS) > Database Option
  */
 function dev_get_google_client_id() {
-    $val = get_option( 'hkt_google_client_id' );
-    if ( ! empty( $val ) ) {
-        return $val;
+    if ( defined( 'GOOGLE_CLIENT_ID' ) && ! empty( GOOGLE_CLIENT_ID ) ) {
+        return GOOGLE_CLIENT_ID;
     }
-    return defined( 'GOOGLE_CLIENT_ID' ) ? GOOGLE_CLIENT_ID : '';
+    $env_val = getenv( 'GOOGLE_CLIENT_ID' );
+    if ( ! empty( $env_val ) ) {
+        return $env_val;
+    }
+    return get_option( 'hkt_google_client_id', '' );
 }
 
 function dev_get_google_client_secret() {
-    $val = get_option( 'hkt_google_client_secret' );
-    if ( ! empty( $val ) ) {
-        return $val;
+    if ( defined( 'GOOGLE_CLIENT_SECRET' ) && ! empty( GOOGLE_CLIENT_SECRET ) ) {
+        return GOOGLE_CLIENT_SECRET;
     }
-    return defined( 'GOOGLE_CLIENT_SECRET' ) ? GOOGLE_CLIENT_SECRET : '';
+    $env_val = getenv( 'GOOGLE_CLIENT_SECRET' );
+    if ( ! empty( $env_val ) ) {
+        return $env_val;
+    }
+    return get_option( 'hkt_google_client_secret', '' );
 }
 
 function dev_get_facebook_app_id() {
-    $val = get_option( 'hkt_facebook_app_id' );
-    if ( ! empty( $val ) ) {
-        return $val;
+    if ( defined( 'FACEBOOK_APP_ID' ) && ! empty( FACEBOOK_APP_ID ) ) {
+        return FACEBOOK_APP_ID;
     }
-    return defined( 'FACEBOOK_APP_ID' ) ? FACEBOOK_APP_ID : '';
+    $env_val = getenv( 'FACEBOOK_APP_ID' );
+    if ( ! empty( $env_val ) ) {
+        return $env_val;
+    }
+    return get_option( 'hkt_facebook_app_id', '' );
 }
 
 function dev_get_facebook_app_secret() {
-    $val = get_option( 'hkt_facebook_app_secret' );
-    if ( ! empty( $val ) ) {
-        return $val;
+    if ( defined( 'FACEBOOK_APP_SECRET' ) && ! empty( FACEBOOK_APP_SECRET ) ) {
+        return FACEBOOK_APP_SECRET;
     }
-    return defined( 'FACEBOOK_APP_SECRET' ) ? FACEBOOK_APP_SECRET : '';
+    $env_val = getenv( 'FACEBOOK_APP_SECRET' );
+    if ( ! empty( $env_val ) ) {
+        return $env_val;
+    }
+    return get_option( 'hkt_facebook_app_secret', '' );
 }
 
 function dev_handle_social_login() {
