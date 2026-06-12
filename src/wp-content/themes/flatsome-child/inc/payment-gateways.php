@@ -253,17 +253,17 @@ function dev_init_custom_gateways() {
                     'title'       => 'Mã định danh ngân hàng (Bank ID)',
                     'type'        => 'text',
                     'description' => 'Mã ngân hàng (ví dụ: MB, VCB, TCB, ACB, VPB...). Tra cứu mã tại VietQR.',
-                    'default'     => 'MB',
+                    'default'     => 'VCB',
                 ),
                 'bank_account' => array(
                     'title'       => 'Số tài khoản thụ hưởng',
                     'type'        => 'text',
-                    'default'     => '999999999999',
+                    'default'     => '012345678999',
                 ),
                 'bank_owner' => array(
                     'title'       => 'Chủ tài khoản (Không dấu)',
                     'type'        => 'text',
-                    'default'     => 'NGUYEN VAN A',
+                    'default'     => 'CONG TY CO PHAN HKT COMPANY',
                 ),
                 'instructions' => array(
                     'title'       => 'Hướng dẫn',

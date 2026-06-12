@@ -21,10 +21,11 @@ function dev_add_vietqr_to_bacs_thankyou( $order_id ) {
         return;
     }
 
-    // Cấu hình tài khoản Vietcombank (VCB) thụ hưởng của HKT FASHION
-    $bank_id      = 'VCB'; // Vietcombank
-    $account_no   = '0123456789999'; // Số tài khoản HKT Fashion
-    $account_name = 'CONG TY CO PHAN HKT FASHION'; // Tên chủ tài khoản (Không dấu)
+    // Lấy cấu hình tài khoản thụ hưởng từ cài đặt cổng QR trong Admin (Hình 1)
+    $qr_settings  = get_option( 'woocommerce_dev_qr_settings', array() );
+    $bank_id      = isset( $qr_settings['bank_id'] ) ? $qr_settings['bank_id'] : 'VCB';
+    $account_no   = isset( $qr_settings['bank_account'] ) ? $qr_settings['bank_account'] : '012345678999';
+    $account_name = isset( $qr_settings['bank_owner'] ) ? $qr_settings['bank_owner'] : 'CONG TY CO PHAN HKT COMPANY';
 
     $amount = (int) $order->get_total();
     
@@ -42,15 +43,15 @@ function dev_add_vietqr_to_bacs_thankyou( $order_id ) {
     );
     ?>
     <div style="background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 25px; border-radius: 8px; margin: 25px 0; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-        <h3 style="color: #1e3a8a; margin-top: 0; margin-bottom: 10px; font-weight: 700;">⚡ Thanh toán quét mã QR Vietcombank</h3>
+        <h3 style="color: #1e3a8a; margin-top: 0; margin-bottom: 10px; font-weight: 700;">⚡ Thanh toán quét mã QR <?php echo esc_html( $bank_id ); ?></h3>
         <p style="color: #4a5568; font-size: 14px; margin-bottom: 15px;">Quét mã QR dưới đây bằng ứng dụng ngân hàng của bạn để thanh toán tự động.</p>
         
         <div style="background: #ffffff; display: inline-block; padding: 15px; border-radius: 12px; border: 1px solid #edf2f7; box-shadow: 0 2px 4px rgba(0,0,0,0.04); margin-bottom: 15px;">
-            <img src="<?php echo esc_url( $qr_url ); ?>" alt="VietQR Vietcombank" style="max-width: 240px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            <img src="<?php echo esc_url( $qr_url ); ?>" alt="VietQR <?php echo esc_attr( $bank_id ); ?>" style="max-width: 240px; width: 100%; height: auto; display: block; margin: 0 auto;">
         </div>
         
         <div style="max-width: 320px; margin: 0 auto; text-align: left; font-size: 13px; color: #2d3748; line-height: 1.6; border-top: 1px dashed #e2e8f0; padding-top: 12px;">
-            <div>🏦 <strong>Ngân hàng:</strong> Vietcombank (VCB)</div>
+            <div>🏦 <strong>Ngân hàng:</strong> <?php echo esc_html( $bank_id ); ?></div>
             <div>💳 <strong>Số tài khoản:</strong> <span style="font-family: monospace; font-weight: bold; font-size: 14px;"><?php echo esc_html( $account_no ); ?></span></div>
             <div>👤 <strong>Chủ tài khoản:</strong> <?php echo esc_html( $account_name ); ?></div>
             <div>💰 <strong>Số tiền:</strong> <span style="color: #e53e3e; font-weight: bold;"><?php echo $order->get_formatted_order_total(); ?></span></div>
@@ -81,10 +82,11 @@ function dev_add_vietqr_to_bacs_email( $order, $sent_to_admin, $plain_text, $ema
         return;
     }
 
-    // Cấu hình tài khoản Vietcombank (VCB) thụ hưởng của HKT FASHION
-    $bank_id      = 'VCB';
-    $account_no   = '0123456789999';
-    $account_name = 'CONG TY CO PHAN HKT FASHION';
+    // Lấy cấu hình tài khoản thụ hưởng từ cài đặt cổng QR trong Admin (Hình 1)
+    $qr_settings  = get_option( 'woocommerce_dev_qr_settings', array() );
+    $bank_id      = isset( $qr_settings['bank_id'] ) ? $qr_settings['bank_id'] : 'VCB';
+    $account_no   = isset( $qr_settings['bank_account'] ) ? $qr_settings['bank_account'] : '012345678999';
+    $account_name = isset( $qr_settings['bank_owner'] ) ? $qr_settings['bank_owner'] : 'CONG TY CO PHAN HKT COMPANY';
 
     $amount = (int) $order->get_total();
     
@@ -106,11 +108,11 @@ function dev_add_vietqr_to_bacs_email( $order, $sent_to_admin, $plain_text, $ema
         <p style="color: #4a5568; font-size: 13px; margin-bottom: 12px;">Bạn có thể mở ứng dụng ngân hàng quét mã dưới đây để chuyển khoản nhanh chóng:</p>
         
         <div style="background: #ffffff; display: inline-block; padding: 10px; border-radius: 8px; border: 1px solid #edf2f7; margin-bottom: 12px;">
-            <img src="<?php echo esc_url( $qr_url ); ?>" alt="VietQR Vietcombank" style="max-width: 200px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            <img src="<?php echo esc_url( $qr_url ); ?>" alt="VietQR <?php echo esc_attr( $bank_id ); ?>" style="max-width: 200px; width: 100%; height: auto; display: block; margin: 0 auto;">
         </div>
         
         <div style="max-width: 280px; margin: 0 auto; text-align: left; font-size: 12px; color: #2d3748; line-height: 1.5; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
-            <div>🏦 <strong>Ngân hàng:</strong> Vietcombank (VCB)</div>
+            <div>🏦 <strong>Ngân hàng:</strong> <?php echo esc_html( $bank_id ); ?></div>
             <div>💳 <strong>Số tài khoản:</strong> <span style="font-family: monospace; font-weight: bold;"><?php echo esc_html( $account_no ); ?></span></div>
             <div>👤 <strong>Chủ tài khoản:</strong> <?php echo esc_html( $account_name ); ?></div>
             <div>💰 <strong>Số tiền:</strong> <span style="color: #e53e3e; font-weight: bold;"><?php echo strip_tags( $order->get_formatted_order_total() ); ?></span></div>
