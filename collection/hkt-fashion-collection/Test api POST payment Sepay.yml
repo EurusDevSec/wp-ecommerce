@@ -5,10 +5,10 @@ info:
 
 http:
   method: post
-  url: http://167.172.91.249/wp-json/sepay/v1/webhook
+  url: {{baseUrl}}/wp-json/sepay/v1/webhook
   headers:
     - name: Authorization
-      value: Bearer HKTFASHION_SEPAY_KEY_2026
+      value: {{sepayKey}}
     - name: Content-Type
       value: application/json
   body:
