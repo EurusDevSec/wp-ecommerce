@@ -43,3 +43,4 @@ docs/cloudpanel_deployment_guide.md
 docs/devops.md
 # Allow tracking premium Flatsome zip for automation
 !flatsome.zip
+collection/hkt-fashion-collection/environments/Staging.yml
