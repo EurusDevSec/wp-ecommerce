@@ -31,11 +31,22 @@ function dev_render_ajax_filter_bar() {
         ) );
     }
 
-    // 1.2. Lấy thông tin Màu sắc tự động
+    // 1.2. Lấy thông tin Màu sắc tự động và lọc theo danh sách chuẩn (tránh rác dữ liệu)
     $colors = get_terms( array(
         'taxonomy'   => 'pa_color',
         'hide_empty' => true,
     ) );
+
+    if ( ! is_wp_error( $colors ) && ! empty( $colors ) ) {
+        $valid_color_slugs = array(
+            'den', 'trang', 'xam', 'xam-dam', 'xam-nhat', 
+            'xanh', 'xanh-duong', 'xanh-la', 'xanh-wash', 
+            'do', 'vang', 'cam', 'hong', 'nau', 'tim', 'kem-be', 'indigo'
+        );
+        $colors = array_filter( $colors, function( $color ) use ( $valid_color_slugs ) {
+            return in_array( $color->slug, $valid_color_slugs, true );
+        } );
+    }
 
     // 1.3. Lấy thông tin Kích thước tự động (AC-FE-03)
     $sizes = get_terms( array(
@@ -43,54 +54,50 @@ function dev_render_ajax_filter_bar() {
         'hide_empty' => true,
     ) );
 
-    // Hàm phụ trợ để lấy mã màu HEX từ tên màu để hiển thị vòng tròn màu sắc đẹp mắt (hỗ trợ cả tiếng Việt)
-    function dev_map_color_name_to_hex( $name ) {
-        $name_lower = mb_strtolower( trim( $name ), 'UTF-8' );
+    // Hàm phụ trợ để lấy mã màu HEX từ tên màu và slug (tránh lỗi font/unicode và trùng lặp xám)
+    function dev_map_color_name_to_hex( $name, $slug = '' ) {
+        $slug_lower = $slug ? strtolower( trim( $slug ) ) : sanitize_title( $name );
         
         $color_map = array(
-            'đen'        => '#1a1a1a', // Tone đen nhám tinh tế
-            'black'      => '#1a1a1a',
-            'trắng'      => '#ffffff',
-            'trang'      => '#ffffff',
-            'white'      => '#ffffff',
-            'xám'        => '#8e8e93',
-            'xam'        => '#8e8e93',
-            'gray'       => '#8e8e93',
-            'grey'       => '#8e8e93',
-            'be'         => '#e5d3b3',
-            'beige'      => '#e5d3b3',
-            'kem'        => '#f5f5dc',
-            'cream'      => '#f5f5dc',
-            'xanh dương' => '#1b4f72',
-            'xanh duong' => '#1b4f72',
-            'blue'       => '#1b4f72',
+            'den'          => '#1a1a1a', // Đen nhám
+            'black'        => '#1a1a1a',
+            'trang'        => '#ffffff', // Trắng
+            'white'        => '#ffffff',
+            'xam-dam'      => '#555555', // Xám đậm
+            'xam-nhat'     => '#d1d1d6', // Xám nhạt
+            'xam'          => '#8e8e93', // Xám thường
+            'gray'         => '#8e8e93',
+            'grey'         => '#8e8e93',
+            'be'           => '#e5d3b3',
+            'beige'        => '#e5d3b3',
+            'kem-be'       => '#e5d3b3',
+            'kem'          => '#f5f5dc',
+            'cream'        => '#f5f5dc',
+            'xanh-duong'   => '#1b4f72', // Xanh dương
+            'xanh-wash'    => '#4a8ec8', // Xanh wash
+            'indigo'       => '#2f4f4f',
+            'blue'         => '#1b4f72',
             'navy'       => '#1b4f72',
-            'xanh lá'    => '#2e7d32',
-            'xanh la'    => '#2e7d32',
-            'green'      => '#2e7d32',
-            'rêu'        => '#4e5d4c',
-            'reu'        => '#4e5d4c',
-            'đỏ'         => '#c0392b',
-            'do'         => '#c0392b',
-            'red'        => '#c0392b',
-            'vàng'       => '#f1c40f',
-            'vang'       => '#f1c40f',
-            'yellow'     => '#f1c40f',
-            'cam'        => '#d35400',
-            'orange'     => '#d35400',
-            'hồng'       => '#e91e63',
-            'hong'       => '#e91e63',
-            'pink'       => '#e91e63',
-            'nâu'        => '#5c4033',
-            'nau'        => '#5c4033',
-            'brown'      => '#5c4033',
-            'tím'        => '#8e44ad',
-            'tim'        => '#8e44ad',
-            'purple'     => '#8e44ad'
+            'xanh-la'      => '#2e7d32', // Xanh lá
+            'green'        => '#2e7d32',
+            'reu'          => '#4e5d4c',
+            'do'           => '#c0392b', // Đỏ
+            'red'          => '#c0392b',
+            'vang'         => '#f1c40f', // Vàng
+            'yellow'       => '#f1c40f',
+            'cam'          => '#d35400', // Cam
+            'orange'       => '#d35400',
+            'hong'         => '#e91e63', // Hồng
+            'pink'         => '#e91e63',
+            'nau'          => '#5c4033', // Nâu
+            'brown'        => '#5c4033',
+            'tim'          => '#8e44ad', // Tím
+            'purple'       => '#8e44ad',
+            'xanh'         => '#3a86c8'  // Xanh nói chung
         );
         
         foreach ( $color_map as $key => $hex ) {
-            if ( strpos( $name_lower, $key ) !== false ) {
+            if ( strpos( $slug_lower, $key ) !== false ) {
                 return $hex;
             }
         }
@@ -158,11 +165,11 @@ function dev_render_ajax_filter_bar() {
                     <div class="dev-filter-options dev-color-options">
                         <a href="<?php echo esc_url( remove_query_arg( 'filter_color' ) ); ?>" class="dev-filter-link <?php echo empty( $current_color ) ? 'active' : ''; ?>">Tất cả</a>
                         <?php foreach ( $colors as $color ) : 
-                            $hex = dev_map_color_name_to_hex( $color->name );
+                            $hex = dev_map_color_name_to_hex( $color->name, $color->slug );
                             $is_active = ( $current_color === $color->slug );
                         ?>
                             <a href="<?php echo esc_url( add_query_arg( 'filter_color', $color->slug ) ); ?>" class="dev-color-circle <?php echo $is_active ? 'active' : ''; ?>" title="<?php echo esc_attr( $color->name ); ?>" style="background-color: <?php echo esc_attr( $hex ); ?>;">
-                                <?php if ( strtolower($color->name) === 'white' ) : ?>
+                                <?php if ( strtolower($color->name) === 'white' || $hex === '#ffffff' ) : ?>
                                     <span style="border: 1px solid #ddd; border-radius: 50%; width: 100%; height: 100%; display: block; box-sizing: border-box;"></span>
                                 <?php endif; ?>
                             </a>
