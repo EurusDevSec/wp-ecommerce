@@ -1,0 +1,30 @@
+info:
+  name: Test api POST payment Sepay
+  type: http
+  seq: 1
+
+http:
+  method: post
+  url: http://167.172.91.249/wp-json/sepay/v1/webhook
+  headers:
+    - name: Authorization
+      value: Bearer HKTFASHION_SEPAY_KEY_2026
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "gateway": "Vietcombank",
+        "transferType": "in",
+        "transferAmount": 519000,
+        "content": "HKTFASHION2062",
+        "code": "FTLOCAL123"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
