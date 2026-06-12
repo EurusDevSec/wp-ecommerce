@@ -118,7 +118,7 @@ function dev_render_side_cart_content() {
         </div>
         <div class="dev-summary-actions">
             <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button wc-forward">Xem giỏ hàng</a>
-            <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="button checkout wc-forward" style="background-color: #1e3a8a; color: white;">Thanh toán</a>
+            <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button checkout wc-forward" style="background-color: #1e3a8a; color: white;">Thanh toán</a>
         </div>
     </div>
     <?php

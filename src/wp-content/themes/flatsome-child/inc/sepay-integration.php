@@ -52,9 +52,12 @@ class HKT_SePay_Integration {
             $token = trim( $x_api_key );
         }
 
-        // Lấy cấu hình Token từ database (Lưu ở cấu hình cổng dev_qr)
-        $qr_settings = get_option( 'woocommerce_dev_qr_settings', array() );
-        $configured_token = isset( $qr_settings['sepay_webhook_key'] ) ? trim( $qr_settings['sepay_webhook_key'] ) : '';
+        // Lấy cấu hình Token từ database (Lưu ở HKT Settings hoặc cổng thanh toán dev_qr)
+        $configured_token = get_option( 'hkt_sepay_webhook_key', '' );
+        if ( empty( $configured_token ) ) {
+            $qr_settings = get_option( 'woocommerce_dev_qr_settings', array() );
+            $configured_token = isset( $qr_settings['sepay_webhook_key'] ) ? trim( $qr_settings['sepay_webhook_key'] ) : '';
+        }
 
         // Dự phòng mặc định: HKTFASHION_SEPAY_KEY_2026 cho phép test nhanh
         $fallback_token = 'HKTFASHION_SEPAY_KEY_2026';

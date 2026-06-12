@@ -289,11 +289,8 @@ function dev_process_user_login( $email, $name, $provider ) {
     wp_set_current_user( $user->ID ); // Thiết lập phiên người dùng hiện tại
     wp_set_auth_cookie( $user->ID, true ); // Thiết lập cookie đăng nhập (nhớ tài khoản)
 
-    // Chuyển hướng người dùng về trang Tài khoản của tôi hoặc trang chủ
-    $redirect_url = wc_get_page_permalink( 'myaccount' );
-    if ( ! $redirect_url ) {
-        $redirect_url = home_url();
-    }
+    // Chuyển hướng người dùng về trang chủ sau khi đăng nhập thành công
+    $redirect_url = home_url();
 
     // Thêm tham số thông báo đăng nhập thành công để hiển thị thông báo
     $redirect_url = add_query_arg( 'login_status', 'social_success', $redirect_url );
@@ -772,78 +769,14 @@ function dev_social_login_toast_notification() {
 }
 
 /**
- * 8. Tạo trang cấu hình Google/Facebook Login trong WP-Admin để người quản trị cấu hình trực tiếp trên VPS
+ * 8. Cấu hình Google/Facebook Login trong WP-Admin đã được chuyển sang inc/hkt-settings.php
  */
-add_action( 'admin_menu', 'hkt_social_login_admin_menu' );
-function hkt_social_login_admin_menu() {
-    add_options_page(
-        'HKT Social Login',
-        'HKT Social Login',
-        'manage_options',
-        'hkt-social-login',
-        'hkt_social_login_settings_page'
-    );
+
+/**
+ * 9. Điều hướng tất cả đăng nhập thành công của WooCommerce về trang chủ
+ */
+add_filter( 'woocommerce_login_redirect', 'hkt_login_redirect_to_homepage', 9999, 2 );
+function hkt_login_redirect_to_homepage( $redirect_to, $user ) {
+    return home_url();
 }
 
-function hkt_social_login_settings_page() {
-    // Lưu cài đặt nếu form được submit
-    if ( isset( $_POST['hkt_social_login_nonce'] ) && wp_verify_nonce( $_POST['hkt_social_login_nonce'], 'hkt_save_social_login_settings' ) ) {
-        update_option( 'hkt_google_client_id', sanitize_text_field( $_POST['hkt_google_client_id'] ) );
-        update_option( 'hkt_google_client_secret', sanitize_text_field( $_POST['hkt_google_client_secret'] ) );
-        update_option( 'hkt_facebook_app_id', sanitize_text_field( $_POST['hkt_facebook_app_id'] ) );
-        update_option( 'hkt_facebook_app_secret', sanitize_text_field( $_POST['hkt_facebook_app_secret'] ) );
-        echo '<div class="updated"><p><strong>Cấu hình đã được lưu thành công!</strong></p></div>';
-    }
-
-    $google_client_id = get_option( 'hkt_google_client_id', '' );
-    $google_client_secret = get_option( 'hkt_google_client_secret', '' );
-    $facebook_app_id = get_option( 'hkt_facebook_app_id', '' );
-    $facebook_app_secret = get_option( 'hkt_facebook_app_secret', '' );
-    ?>
-    <div class="wrap">
-        <h1>Cấu hình đăng nhập Google & Facebook (HKT Social Login)</h1>
-        <p>Giúp người quản trị dễ dàng cấu hình API Keys đăng nhập mạng xã hội mà không cần chỉnh sửa tệp <code>wp-config.php</code> trên máy chủ.</p>
-        <form method="post" action="">
-            <?php wp_nonce_field( 'hkt_save_social_login_settings', 'hkt_social_login_nonce' ); ?>
-            
-            <h2 class="title">1. Đăng nhập bằng Google</h2>
-            <table class="form-table">
-                <tr valign="top">
-                    <th scope="row">Google Client ID</th>
-                    <td>
-                        <input type="text" name="hkt_google_client_id" value="<?php echo esc_attr( $google_client_id ); ?>" class="large-text" />
-                        <p class="description">Đăng ký tại Google Cloud Console. Link redirect URI của bạn: <code><?php echo esc_url( home_url( '/?social_callback=google' ) ); ?></code></p>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">Google Client Secret</th>
-                    <td>
-                        <input type="password" name="hkt_google_client_secret" value="<?php echo esc_attr( $google_client_secret ); ?>" class="large-text" />
-                    </td>
-                </tr>
-            </table>
-
-            <hr />
-
-            <h2 class="title">2. Đăng nhập bằng Facebook</h2>
-            <table class="form-table">
-                <tr valign="top">
-                    <th scope="row">Facebook App ID</th>
-                    <td>
-                        <input type="text" name="hkt_facebook_app_id" value="<?php echo esc_attr( $facebook_app_id ); ?>" class="large-text" />
-                        <p class="description">Đăng ký tại Facebook Developers. Link redirect URI của bạn: <code><?php echo esc_url( home_url( '/?social_callback=facebook' ) ); ?></code></p>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">Facebook App Secret</th>
-                    <td>
-                        <input type="password" name="hkt_facebook_app_secret" value="<?php echo esc_attr( $facebook_app_secret ); ?>" class="large-text" />
-                    </td>
-                </tr>
-            </table>
-
-            <?php submit_button('Lưu cấu hình'); ?>
-        </form>
-    </div>
-    <?php
-}

@@ -3414,3 +3414,489 @@ form.woocommerce-checkout #order_review {
     background-color: var(--accent-color-hover, #e0651b) !important;
     transform: scale(1.02) !important;
 }
+
+/* ==========================================================================
+   E-INVOICE SENDER STYLES
+   ========================================================================== */
+.hkt-invoice-actions {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #fcfcfc;
+    border: 1px dashed #1a1a1a;
+    border-radius: 4px;
+    display: block;
+    text-align: center;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.hkt-invoice-actions p {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #555555;
+}
+.hkt-btn-send-invoice {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 1px solid #1a1a1a !important;
+    padding: 12px 24px !important;
+    font-family: "Montserrat", sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0px !important; /* Minimalist flat style */
+}
+.hkt-btn-send-invoice:hover {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+}
+.hkt-btn-send-invoice:disabled {
+    background-color: #eaeaea !important;
+    border-color: #eaeaea !important;
+    color: #999999 !important;
+    cursor: not-allowed !important;
+}
+.hkt-btn-send-invoice .hkt-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: hkt-spin 0.8s linear infinite;
+    margin-right: 10px;
+    display: none;
+}
+.hkt-btn-send-invoice:hover .hkt-spinner {
+    border-top-color: #1a1a1a;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+.hkt-btn-send-invoice.loading .hkt-spinner {
+    display: inline-block;
+}
+.hkt-invoice-message {
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+    font-family: "Inter", sans-serif;
+}
+.hkt-invoice-message.success {
+    color: #2e7d32;
+    display: block;
+}
+.hkt-invoice-message.error {
+    color: #c62828;
+    display: block;
+}
+@keyframes hkt-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   MINIMALIST CHECKOUT CUSTOMIZATION & HIDDEN FIELDS
+   ========================================================================== */
+.hkt-hidden-field {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Biến trường ảo hiển thị trỏ tay (pointer) khi hover để biết là click được */
+.hkt-address-picker-trigger-row input {
+    cursor: pointer !important;
+    background-color: #fcfcfc !important;
+}
+
+/* Hide ship to different address checkbox & title to make it super minimalist */
+#ship-to-different-address,
+.shipping_address {
+    display: none !important;
+}
+
+/* ==========================================================================
+   HKT ADDRESS PICKER MODAL SYSTEM (TỈNH -> QUẬN -> PHƯỜNG)
+   ========================================================================== */
+body.hkt-modal-open {
+    overflow: hidden !important;
+}
+
+.hkt-address-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    z-index: 999999 !important;
+    display: none !important; /* Ẩn mặc định để tránh ghi đè */
+    align-items: center !important;
+    justify-content: center !important;
+    backdrop-filter: blur(2px);
+    transition: all 0.3s ease;
+}
+
+.hkt-address-modal-overlay.active {
+    display: flex !important; /* Hiển thị khi active */
+}
+
+.hkt-address-modal {
+    width: 100% !important;
+    max-width: 480px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #1a1a1a !important;
+    border-radius: 0px !important; /* Flat design */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    max-height: 90vh !important;
+    animation: hkt-modal-zoom 0.25s ease-out;
+}
+
+@keyframes hkt-modal-zoom {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.hkt-address-modal-header {
+    padding: 16px 20px !important;
+    border-bottom: 1px solid #eeeeee !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.hkt-address-modal-header h3 {
+    margin: 0 !important;
+    font-family: "Montserrat", sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    color: #1a1a1a !important;
+}
+
+.hkt-address-modal-close {
+    font-size: 24px !important;
+    font-weight: 300 !important;
+    color: #999999 !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+    transition: color 0.2s ease !important;
+}
+
+.hkt-address-modal-close:hover {
+    color: #1a1a1a !important;
+}
+
+/* Tabs phân chia bước chọn */
+.hkt-address-modal-tabs {
+    display: flex !important;
+    border-bottom: 1px solid #eeeeee !important;
+    background-color: #fafafa !important;
+}
+
+.hkt-address-tab {
+    flex: 1 !important;
+    padding: 12px 10px !important;
+    text-align: center !important;
+    font-family: "Inter", sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: #999999 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-right: 1px solid #eeeeee !important;
+    transition: all 0.2s ease !important;
+}
+
+.hkt-address-tab:last-child {
+    border-right: none !important;
+}
+
+.hkt-address-tab .tab-num {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 18px !important;
+    height: 18px !important;
+    border: 1px solid #999999 !important;
+    border-radius: 50% !important;
+    margin-bottom: 4px !important;
+    font-size: 10px !important;
+}
+
+.hkt-address-tab.active {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+}
+
+.hkt-address-tab.active .tab-num {
+    border-color: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+.hkt-address-tab.disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+}
+
+/* Ô tìm kiếm phẳng */
+.hkt-address-modal-search-wrapper {
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #eeeeee !important;
+}
+
+.hkt-address-modal-search-wrapper input {
+    width: 100% !important;
+    border: 1px solid #dddddd !important;
+    border-radius: 0px !important;
+    padding: 10px 14px !important;
+    font-family: "Inter", sans-serif !important;
+    font-size: 13px !important;
+    outline: none !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.hkt-address-modal-search-wrapper input:focus {
+    border-color: #1a1a1a !important;
+}
+
+/* Vùng hiển thị danh sách */
+.hkt-address-modal-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 10px 0 !important;
+    min-height: 250px !important;
+    max-height: 50vh !important;
+}
+
+.hkt-address-list {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.hkt-address-list li.address-item {
+    padding: 12px 20px !important;
+    font-family: "Inter", sans-serif !important;
+    font-size: 13px !important;
+    color: #333333 !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid #f9f9f9 !important;
+    transition: all 0.2s ease !important;
+}
+
+.hkt-address-list li.address-item:last-child {
+    border-bottom: none !important;
+}
+
+.hkt-address-list li.address-item:hover {
+    background-color: #f5f5f5 !important;
+    color: #1a1a1a !important;
+    padding-left: 24px !important;
+}
+
+.hkt-address-list li.no-results,
+.hkt-address-list li.error-item {
+    padding: 20px !important;
+    text-align: center !important;
+    color: #777777 !important;
+    font-size: 13px !important;
+}
+
+/* Loading Spinner Modal */
+.hkt-address-loading {
+    padding: 40px 20px !important;
+    text-align: center !important;
+    color: #777777 !important;
+}
+
+.hkt-modal-spinner {
+    display: inline-block !important;
+    width: 28px !important;
+    height: 28px !important;
+    border: 2px solid rgba(0,0,0,0.06) !important;
+    border-radius: 50% !important;
+    border-top-color: #1a1a1a !important;
+    animation: hkt-spin 0.8s linear infinite !important;
+    margin-bottom: 12px !important;
+}
+
+/* ==========================================================================
+   GOOGLE PLACES AUTOCOMPLETE DROPDOWN STYLING
+   ========================================================================== */
+.pac-container {
+    border: 1px solid #1a1a1a !important;
+    border-radius: 0px !important; /* Flat design */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    font-family: "Inter", sans-serif !important;
+    margin-top: 2px !important;
+    z-index: 99999999 !important; /* Nổi bật trên mọi thành phần */
+    padding: 5px 0 !important;
+}
+
+.pac-item {
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    color: #555555 !important;
+    cursor: pointer !important;
+    border-top: none !important;
+    border-bottom: 1px solid #f6f6f6 !important;
+    transition: background-color 0.2s ease !important;
+    line-height: 1.5 !important;
+}
+
+.pac-item:last-child {
+    border-bottom: none !important;
+}
+
+.pac-item:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.pac-item-query {
+    font-size: 13px !important;
+    color: #1a1a1a !important;
+    font-weight: 600 !important;
+    padding-right: 5px !important;
+}
+
+.pac-icon {
+    display: none !important; /* Ẩn icon marker mặc định của Google cho gọn */
+}
+
+/* Mobile responsive cho Modal */
+@media (max-width: 550px) {
+    .hkt-address-modal-overlay {
+        align-items: flex-end !important; /* Slide up từ dưới lên trên Mobile */
+    }
+    
+    .hkt-address-modal {
+        max-width: 100% !important;
+        width: 100% !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+        max-height: 85vh !important;
+        border-radius: 12px 12px 0 0 !important; /* Rounded corners top on mobile */
+    }
+}
+
+/* ==========================================================================
+   HKT COUPON WALLET CARD STYLING (GLOBAL)
+   ========================================================================== */
+.hkt-coupon-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+    gap: 20px !important;
+}
+
+.hkt-coupon-card {
+    background: #ffffff !important;
+    border: 1px solid #eaeaea !important;
+    border-left: 5px solid #f77426 !important;
+    border-radius: 8px !important;
+    padding: 18px 20px !important;
+    position: relative !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.hkt-coupon-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.hkt-coupon-badge {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    background-color: #fff0eb !important;
+    color: #f77426 !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.hkt-coupon-badge.alert {
+    background-color: #ffebeb !important;
+    color: #cc0000 !important;
+}
+
+.hkt-coupon-value {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #1a1a1a !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+
+.hkt-coupon-desc {
+    font-size: 12px !important;
+    color: #666666 !important;
+    margin-bottom: 15px !important;
+    line-height: 1.5 !important;
+}
+
+.hkt-coupon-action {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #fafafa !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    border: 1px dashed #dddddd !important;
+}
+
+.hkt-coupon-code {
+    font-family: monospace !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+}
+
+.hkt-copy-coupon-btn {
+    background: #1a1a1a !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    outline: none !important;
+}
+
+.hkt-copy-coupon-btn:hover {
+    background: #f77426 !important;
+}
+
+.hkt-copy-coupon-btn.copied {
+    background: #7a9c59 !important;
+}
+
+
+
