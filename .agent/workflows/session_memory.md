@@ -1,17 +1,14 @@
 # SESSION MEMORY — HKT Fashion
-> Session: 2026-06-11 | Status: Finished Checkout Customizations & UI/UX Redesign
+> Session: 2026-06-11 | Status: Checkout Address Cascade Refactored (Direct Province-to-Ward Selection)
 
 ---
 
-## ⚡ Active Task (Redesign & Backend Checkpoint)
-**Vietnam Divisions 2025 sáp nhập integration & Checkout Redesign**
-- Integrated the 2025 sáp nhập administrative units (34 provinces, 3321 wards) into `vietnam-divisions.json`.
-- Simplified the address cascade to 2 levels (Province -> Xã/Phường/Thị trấn) in `checkout-customizer.php` and `vietnam-divisions.php`.
-- Resolved the WooCommerce checkout grid layout bug where the sidebar was restricted to a cramped width of ~299px. Expanded it to a spacious 507.5px.
-- Redesigned the "Your Order" (Đơn hàng của bạn) table layout to use Montserrat headers, Inter body, and clear vertical padding, with variation options neatly aligned inline.
-- Redesigned the payment gateways list as elegant cards, adding hover animations and a primary orange border with soft cream background tint for the checked payment method using CSS `:has(input[type=radio]:checked)`.
-- Verified the checkout page in the browser and confirmed that selections are preserved on AJAX updates without duplicates, and the layout looks modern and clean.
-- Created backups of the updated database to `db/init.sql`.
+## ⚡ Active Task Completed
+**Tối ưu hóa bộ chọn địa chỉ Checkout (Tỉnh/Thành -> Xã/Phường)**
+- Ẩn trường Quận/Huyện khỏi giao diện Checkout để tối giản quy trình nhập liệu của khách hàng.
+- Nâng cấp API `/hkt/v1/wards` hỗ trợ tham số `province_id` để lấy toàn bộ danh sách Xã/Phường của Tỉnh/Thành được chọn trong một lần gọi duy nhất.
+- Cấu hình Javascript tự động điền Quận/Huyện ngầm dựa trên metadata của Xã/Phường được chọn, đảm bảo tính hợp lệ dữ liệu của WooCommerce (không làm lỗi phí ship hay lưu đơn hàng).
+- Làm sạch nhãn (label) danh sách xã/phường, loại bỏ hậu tố trong ngoặc đơn theo phản hồi người dùng.
 
 ---
 
@@ -19,23 +16,19 @@
 
 | File | Key Change |
 |---|---|
-| `style.css` | Fixed checkout columns grid squeeze bug, removed double borders, redesigned order review table, and styled payment methods as selection cards. |
-| `inc/checkout-customizer.php` | Updated jQuery option builder to prevent duplicate selections, handled the simplified 2-level dropdown cascade (Province -> Ward), and mapped wards to `billing_city`. |
-| `inc/vietnam-divisions.php` | Updated the REST endpoint to return wards direct from province for the 2-level cascade. |
-| `inc/data/vietnam-divisions.json` | Embedded the 2025 sáp nhập administrative divisions (34 provinces, 3321 wards). |
-| `db/init.sql` | Backed up the final WordPress database state. |
-| `walkthrough.md` | Documented changes with verified order screenshots and browser recordings. |
-| `task.md` | Marked all checkout and frontend optimization tasks as completed. |
+| `src/wp-content/themes/flatsome-child/inc/vietnam-divisions.php` | Cập nhật API `/wards` hỗ trợ `province_id`, trả về toàn bộ Xã/Phường kèm tên Quận/Huyện cha tương ứng. |
+| `src/wp-content/themes/flatsome-child/inc/checkout-customizer.php` | Thêm class ẩn trường Quận/Huyện; cập nhật kịch bản JS gọi API và tự điền ngầm trường Quận/Huyện khi chọn Xã/Phường. |
+| `src/wp-content/themes/flatsome-child/style.css` | Thêm CSS `.hkt-hidden-field { display: none !important; }` để ẩn trường Quận/Huyện khỏi form checkout. |
 
 ---
 
 ## 🔜 Next Steps (3 immediate technical actions)
 
-### Step 1 — Product Swatches & Size Guide Customization
-- Build custom product variation swatches for colors and sizes in the catalog and single product pages, and implement a size guide modal popup.
+### Step 1 — Chạy thử nghiệm đặt hàng thực tế (Staging)
+- Thực hiện đặt hàng nháp với các địa chỉ khác nhau (ví dụ: Hà Nội, Bình Dương, TP. HCM) để đảm bảo đơn hàng lưu đúng tên Quận/Huyện và Xã/Phường trong trang quản trị Admin.
 
-### Step 2 — Wishlist & Quick View Verification
-- Review the wishlist item counts and ensure the corner heart icon updates live. Verify the Quick View popup markup conforms to HKT design system.
+### Step 2 — Xác thực tương thích với cổng thanh toán & phí vận chuyển
+- Đảm bảo phí vận chuyển vẫn được tính toán bình thường dựa trên dữ liệu tỉnh thành và quận huyện được điền ngầm.
 
-### Step 3 — DevOps & Deployment Workflow
-- Prepare the VPS environment for staging deployment (`tt.phung.vn`) and configure CI/CD GitHub Actions for auto-deploy on push to main.
+### Step 3 — Kiểm tra hiển thị trên thiết bị di động
+- Kiểm tra tính tương thích của Select2 và các trường địa chỉ dọc trên giao diện di động.

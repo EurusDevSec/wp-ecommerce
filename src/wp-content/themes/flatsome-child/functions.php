@@ -17,8 +17,10 @@ function hkt_cache_bust_child_style() {
         filemtime( get_stylesheet_directory() . '/style.css' )
     );
 }
-// Redundant guarantee text hook removed to prevent duplication with styled trust badges
-
+add_action( 'woocommerce_after_add_to_cart_form', 'dev_add_guarantee_text' );
+function dev_add_guarantee_text() {
+    echo '<p class="trust-text" style="color: green; font-weight: bold;">✔ Cam kết hàng chính hãng 100%</p>';
+}
 
 add_filter( 'woocommerce_product_single_add_to_cart_text', 'dev_custom_cart_button_text' );
 function dev_custom_cart_button_text() {
@@ -39,17 +41,18 @@ function hkt_add_buy_now_button() {
     echo '<button type="submit" name="buy_now" value="1" class="' . esc_attr( $classes ) . '">MUA NGAY</button>';
 }
 
-// Chuyển hướng thẳng đến trang thanh toán nếu nhấn nút "Mua Ngay"
+// Chuyển hướng đến trang giỏ hàng nếu nhấn nút "Mua Ngay"
 add_filter( 'woocommerce_add_to_cart_redirect', 'hkt_buy_now_redirect', 99, 1 );
 function hkt_buy_now_redirect( $url ) {
     if ( isset( $_REQUEST['buy_now'] ) ) {
-        return wc_get_checkout_url();
+        return wc_get_cart_url();
     }
     return $url;
 }
 
 // Tự động load các file xử lý chức năng trong thư mục inc/
 $custom_inc_files = array(
+    'hkt-settings.php',       // Cấu hình Store Settings tập trung
     'social-login.php',       // Đăng nhập Google/Facebook
     'payment-gateways.php',   // Thanh toán Banking/QR
     'shipping-methods.php',   // Phí vận chuyển tùy chỉnh
@@ -65,7 +68,8 @@ $custom_inc_files = array(
     'mobile-navigation.php',     // Thanh Bottom Navigation Bar trên mobile
     'sepay-integration.php',    // Tích hợp thanh toán tự động SePay Webhook
     'dashboard-helper.php',      // Các hàm hỗ trợ Dashboard & Mua lại nhanh AJAX
-    'homepage-enhancements.php'  // Ajax Live Search, Sticky Header JS, Secondary Image Swap
+    'homepage-enhancements.php', // Ajax Live Search, Sticky Header JS, Secondary Image Swap
+    'invoice-sender.php'         // Tự động và thủ công xuất hóa đơn qua email
 );
 
 foreach ( $custom_inc_files as $file ) {
@@ -382,6 +386,69 @@ function dev_override_shop_page_content( $value ) {
 }
 
 /**
+ * Tự động tạo 6 trang tĩnh (Giới thiệu, Liên hệ, Chính sách...) nếu chưa tồn tại
+ * Đảm bảo các trang này hoạt động ngay lập tức mà không cần tạo tay trong WP-Admin.
+ */
+add_action( 'init', 'hkt_auto_create_static_pages' );
+function hkt_auto_create_static_pages() {
+    if ( is_admin() ) {
+        return;
+    }
+    
+    // Chỉ chạy một lần duy nhất bằng cách kiểm tra option trong DB
+    if ( get_option( 'hkt_static_pages_created_v1' ) ) {
+        return;
+    }
+    
+    $pages = array(
+        'gioi-thieu' => array(
+            'title'    => 'Giới thiệu',
+            'template' => 'page-gioi-thieu.php'
+        ),
+        'lien-he' => array(
+            'title'    => 'Liên hệ',
+            'template' => 'page-lien-he.php'
+        ),
+        'chinh-sach-bao-mat' => array(
+            'title'    => 'Chính sách bảo mật',
+            'template' => 'page-chinh-sach-bao-mat.php'
+        ),
+        'chinh-sach-doi-tra' => array(
+            'title'    => 'Chính sách đổi trả',
+            'template' => 'page-chinh-sach-doi-tra.php'
+        ),
+        'thoa-thuan-dich-vu' => array(
+            'title'    => 'Thỏa thuận dịch vụ',
+            'template' => 'page-thoa-thuan-dich-vu.php'
+        ),
+        'van-chuyen-va-giao-hang' => array(
+            'title'    => 'Vận chuyển và Giao hàng',
+            'template' => 'page-van-chuyen-va-giao-hang.php'
+        )
+    );
+    
+    foreach ( $pages as $slug => $data ) {
+        $page = get_page_by_path( $slug );
+        if ( ! $page ) {
+            $page_id = wp_insert_post( array(
+                'post_title'  => $data['title'],
+                'post_name'   => $slug,
+                'post_status' => 'publish',
+                'post_type'   => 'page',
+            ) );
+            if ( $page_id && ! is_wp_error( $page_id ) ) {
+                update_post_meta( $page_id, '_wp_page_template', $data['template'] );
+            }
+        } else {
+            // Cập nhật lại template nếu trang đã có sẵn nhưng chưa gắn template
+            update_post_meta( $page->ID, '_wp_page_template', $data['template'] );
+        }
+    }
+    
+    update_option( 'hkt_static_pages_created_v1', true );
+}
+
+/**
  * Dịch các chuỗi ở Header (Đăng nhập / Đăng ký, Giỏ hàng) sang tiếng Việt
  */
 add_filter( 'gettext', 'hkt_translate_header_strings', 20, 3 );
@@ -457,6 +524,9 @@ function hkt_translate_header_strings( $translated_text, $text, $domain ) {
         'No products found matching your selection.' => 'Không tìm thấy sản phẩm nào phù hợp với lựa chọn của bạn.',
         'Apply coupon' => 'Áp dụng',
         'Coupon code' => 'Mã giảm giá',
+        'Have a coupon?' => 'Bạn có mã giảm giá?',
+        'Click here to enter your code' => 'Nhấp vào đây để nhập mã',
+        'If you have a coupon code, please apply it below.' => 'Nếu bạn có mã giảm giá, vui lòng nhập ở bên dưới.',
         'Update cart' => 'Cập nhật giỏ hàng',
         'Cart totals' => 'Cộng giỏ hàng',
         'Subtotal' => 'Tạm tính',
@@ -564,6 +634,88 @@ function hkt_translate_header_strings_nx( $translations, $single, $plural, $numb
     }
 
     return $translations;
+}
+
+/**
+ * Tự động tạo mã giảm giá HKT15OFF nếu chưa tồn tại trong WooCommerce
+ */
+add_action( 'init', 'hkt_create_default_coupons' );
+function hkt_create_default_coupons() {
+    if ( ! class_exists( 'WC_Coupon' ) ) {
+        return;
+    }
+
+    $default_coupons = array(
+        'HKT15OFF' => array(
+            'discount_type' => 'percent',
+            'amount'        => 15,
+            'description'   => 'Mã giảm giá 15% cho khách hàng HKT Fashion',
+            'min_spend'     => 500000, // Đơn hàng tối thiểu 500k
+        ),
+        'HKTNEW10' => array(
+            'discount_type' => 'percent',
+            'amount'        => 10,
+            'description'   => 'Mã giảm giá 10% chào mừng khách hàng mới',
+            'min_spend'     => 0,
+        ),
+        'HKTLOYAL50' => array(
+            'discount_type' => 'fixed_cart',
+            'amount'        => 50000, // Giảm giá 50k
+            'description'   => 'Mã giảm giá 50k cho đơn hàng tối thiểu từ 500k',
+            'min_spend'     => 500000,
+        ),
+        'VIPFREESHIP' => array(
+            'discount_type' => 'percent',
+            'amount'        => 0,
+            'description'   => 'Miễn phí vận chuyển toàn quốc cho đơn hàng tiếp theo',
+            'min_spend'     => 0,
+            'free_shipping' => true,
+        ),
+    );
+
+    foreach ( $default_coupons as $code => $data ) {
+        $coupon_id = wc_get_coupon_id_by_code( $code );
+
+        if ( ! $coupon_id ) {
+            $coupon = new WC_Coupon();
+            $coupon->set_code( $code );
+            $coupon->set_discount_type( $data['discount_type'] );
+            $coupon->set_amount( $data['amount'] );
+            $coupon->set_description( $data['description'] );
+            $coupon->set_individual_use( false );
+            $coupon->set_usage_limit( 0 ); // Không giới hạn tổng lượt sử dụng toàn hệ thống
+            $coupon->set_usage_limit_per_user( 1 ); // Mỗi khách hàng/email chỉ được sử dụng 1 lần
+            
+            if ( ! empty( $data['min_spend'] ) ) {
+                $coupon->set_minimum_amount( $data['min_spend'] );
+            }
+            if ( ! empty( $data['free_shipping'] ) ) {
+                $coupon->set_free_shipping( true );
+            }
+            
+            $coupon->save();
+        } else {
+            $coupon = new WC_Coupon( $coupon_id );
+            $updated = false;
+            
+            if ( $coupon->get_usage_limit_per_user() !== 1 ) {
+                $coupon->set_usage_limit_per_user( 1 );
+                $updated = true;
+            }
+            if ( ! empty( $data['min_spend'] ) && $coupon->get_minimum_amount() != $data['min_spend'] ) {
+                $coupon->set_minimum_amount( $data['min_spend'] );
+                $updated = true;
+            }
+            if ( ! empty( $data['free_shipping'] ) && ! $coupon->get_free_shipping() ) {
+                $coupon->set_free_shipping( true );
+                $updated = true;
+            }
+
+            if ( $updated ) {
+                $coupon->save();
+            }
+        }
+    }
 }
 
 

@@ -90,17 +90,17 @@ function dev_init_custom_gateways() {
                 'bank_name' => array(
                     'title'       => 'Tên Ngân hàng',
                     'type'        => 'text',
-                    'default'     => 'MB Bank (Ngân hàng Quân Đội)',
+                    'default'     => 'Vietcombank',
                 ),
                 'bank_account' => array(
                     'title'       => 'Số tài khoản',
                     'type'        => 'text',
-                    'default'     => '999999999999',
+                    'default'     => 'SBSEPAYFT81DYGMWBWR',
                 ),
                 'bank_owner' => array(
                     'title'       => 'Chủ tài khoản',
                     'type'        => 'text',
-                    'default'     => 'NGUYEN VAN A',
+                    'default'     => 'CONG TY CO PHAN HKT COMPANY',
                 ),
                 'instructions' => array(
                     'title'       => 'Hướng dẫn thanh toán',
@@ -253,17 +253,17 @@ function dev_init_custom_gateways() {
                     'title'       => 'Mã định danh ngân hàng (Bank ID)',
                     'type'        => 'text',
                     'description' => 'Mã ngân hàng (ví dụ: MB, VCB, TCB, ACB, VPB...). Tra cứu mã tại VietQR.',
-                    'default'     => 'MB',
+                    'default'     => 'VCB',
                 ),
                 'bank_account' => array(
                     'title'       => 'Số tài khoản thụ hưởng',
                     'type'        => 'text',
-                    'default'     => '999999999999',
+                    'default'     => 'SBSEPAYFT81DYGMWBWR',
                 ),
                 'bank_owner' => array(
                     'title'       => 'Chủ tài khoản (Không dấu)',
                     'type'        => 'text',
-                    'default'     => 'NGUYEN VAN A',
+                    'default'     => 'CONG TY CO PHAN HKT COMPANY',
                 ),
                 'instructions' => array(
                     'title'       => 'Hướng dẫn',

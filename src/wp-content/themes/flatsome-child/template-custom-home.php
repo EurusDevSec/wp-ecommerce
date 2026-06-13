@@ -150,6 +150,53 @@ get_header();
         </section>
 
         <?php /* ============================================================
+         *  SECTION: Ví Voucher Khẩn Cấp (Coupon Wallet)
+         * ============================================================ */ ?>
+        <section class="hkt-home-section hkt-section-coupons" aria-label="Ví Voucher Khẩn Cấp Của Bạn" style="margin-top: 40px; margin-bottom: 20px;">
+            <div class="hkt-section-inner" style="max-width: 1080px; margin: 0 auto; padding: 0 15px;">
+                <div class="hkt-section-head" style="border-bottom: 2px solid #ececec; margin-bottom: 25px; padding-bottom: 10px;">
+                    <h2 class="hkt-section-title" style="margin: 0; font-size: 18px; text-transform: uppercase; font-weight: 700; color: #1a1a1a; position: relative;">Ví Voucher Khẩn Cấp Của Bạn</h2>
+                </div>
+                <div class="hkt-coupon-grid">
+                    
+                    <!-- Voucher 1 -->
+                    <div class="hkt-coupon-card">
+                        <span class="hkt-coupon-badge">Chào mừng</span>
+                        <div class="hkt-coupon-value">GIẢM 10%</div>
+                        <div class="hkt-coupon-desc">Áp dụng cho mọi đơn hàng mới tại HKT Fashion. Không giới hạn chi tiêu.</div>
+                        <div class="hkt-coupon-action">
+                            <span class="hkt-coupon-code">HKTNEW10</span>
+                            <button class="hkt-copy-coupon-btn hkt-bento-copy-btn" data-coupon-code="HKTNEW10" data-code="HKTNEW10">SAO CHÉP</button>
+                        </div>
+                    </div>
+
+                    <!-- Voucher 2 -->
+                    <div class="hkt-coupon-card">
+                        <span class="hkt-coupon-badge alert">SẮP HẾT HẠN - CÒN 12H</span>
+                        <div class="hkt-coupon-value">GIẢM 50K</div>
+                        <div class="hkt-coupon-desc">Đơn hàng tối thiểu từ 500k. Đang ở ví ưu đãi khẩn cấp của bạn.</div>
+                        <div class="hkt-coupon-action">
+                            <span class="hkt-coupon-code">HKTLOYAL50</span>
+                            <button class="hkt-copy-coupon-btn hkt-bento-copy-btn" data-coupon-code="HKTLOYAL50" data-code="HKTLOYAL50">SAO CHÉP</button>
+                        </div>
+                    </div>
+
+                    <!-- Voucher 3 -->
+                    <div class="hkt-coupon-card">
+                        <span class="hkt-coupon-badge">Ưu đãi giới hạn</span>
+                        <div class="hkt-coupon-value">FREESHIP TOÀN QUỐC</div>
+                        <div class="hkt-coupon-desc">Miễn phí vận chuyển cho đơn hàng tiếp theo. Số lượng sử dụng có hạn.</div>
+                        <div class="hkt-coupon-action">
+                            <span class="hkt-coupon-code">VIPFREESHIP</span>
+                            <button class="hkt-copy-coupon-btn hkt-bento-copy-btn" data-coupon-code="VIPFREESHIP" data-code="VIPFREESHIP">SAO CHÉP</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <?php /* ============================================================
          *  SECTION: Danh mục sản phẩm (Category Slider)
          * ============================================================ */ ?>
         <section class="hkt-home-section hkt-section-categories" aria-label="Danh mục sản phẩm HKT Fashion">

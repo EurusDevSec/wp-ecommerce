@@ -698,27 +698,33 @@ jQuery(document).ready(function($) {
         var btn = $(this);
         var code = btn.data('coupon-code');
         
-        // Copy to clipboard
-        navigator.clipboard.writeText(code).then(function() {
+        function doCopySuccess() {
             var originalText = btn.text();
             btn.addClass('copied').text('Đã chép! ✓');
             setTimeout(function() {
                 btn.removeClass('copied').text(originalText);
             }, 2000);
-        }).catch(function(err) {
-            // Fallback for older browsers
+        }
+
+        function fallbackCopy() {
             var tempInput = $('<input>');
             $('body').append(tempInput);
             tempInput.val(code).select();
             document.execCommand('copy');
             tempInput.remove();
-            
-            var originalText = btn.text();
-            btn.addClass('copied').text('Đã chép! ✓');
-            setTimeout(function() {
-                btn.removeClass('copied').text(originalText);
-            }, 2000);
-        });
+            doCopySuccess();
+        }
+
+        // Copy to clipboard
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(code).then(function() {
+                doCopySuccess();
+            }).catch(function(err) {
+                fallbackCopy();
+            });
+        } else {
+            fallbackCopy();
+        }
     });
 });
 </script>
