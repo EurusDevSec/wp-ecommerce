@@ -46,7 +46,7 @@ class HKT_SePay_Integration {
         $x_api_key   = $request->get_header( 'X-API-Key' );
         
         $token = '';
-        if ( ! empty( $auth_header ) && preg_match( '/Bearer\s+(.*)$/i', $auth_header, $matches ) ) {
+        if ( ! empty( $auth_header ) && preg_match( '/(?:Bearer|Apikey)\s+(.*)$/i', $auth_header, $matches ) ) {
             $token = trim( $matches[1] );
         } elseif ( ! empty( $x_api_key ) ) {
             $token = trim( $x_api_key );
